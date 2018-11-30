@@ -1,0 +1,37 @@
+### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+### Imports
+
+import(S4Vectors)
+importClassesFrom(Biobase, AnnotatedDataFrame, AssayData, ExpressionSet, MIAME,
+                  Versions)
+importClassesFrom(methods, character, environment, matrix, missing)
+importMethodsFrom(Biobase, AnnotatedDataFrame, annotatedDataFrameFrom,
+                  annotation, exprs, featureData, pData, phenoData,
+                  protocolData, sampleNames)
+importFrom(Biobase, assayDataNew, MIAME)
+importFrom(Biostrings, BStringSet, DNAStringSet)
+importFrom(methods, callGeneric, is, new, validObject)
+importFrom(utils, read.csv, write.csv)
+
+### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+### Export S4 classes
+
+exportClasses(NanoStringRccSet)
+
+### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+### Export S4 generics
+
+export(NanoStringRccSet)
+
+### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+### Export S4 methods
+
+exportMethods(NanoStringRccSet)
+
+### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+### Export non-generic functions
+
+export(readNanoStringRccSet,
+       readRccFile,
+       readRlfFile,
+       writeNanoStringRccSet)
