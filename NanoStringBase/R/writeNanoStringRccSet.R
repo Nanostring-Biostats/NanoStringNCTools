@@ -38,19 +38,32 @@ function(x, dir = getwd())
     con <- file(fname, open = "a")
 
     # Write Header
-    with(protocolRow,
-         writeLines(sprintf(header, FileVersion, SoftwareVersion), con))
+    writeLines(sprintf(header,
+                       protocolRow[["FileVersion"]],
+                       protocolRow[["SoftwareVersion"]]),
+               con)
 
     # Write Sample_Attributes
-    with(phenoRow,
-         writeLines(sprintf(sampleAttr, SampleID, Owner, Comments,
-                            format(Date, "%Y%m%d"), geneRlf, SystemAPF), con))
+    writeLines(sprintf(sampleAttr,
+                       phenoRow[["SampleID"]],
+                       phenoRow[["Owner"]],
+                       phenoRow[["Comments"]],
+                       format(phenoRow[["Date"]], "%Y%m%d"),
+                       phenoRow[["geneRlf"]],
+                       phenoRow[["SystemAPF"]]),
+               con)
 
     # Write Lane_Attributes
-    with(protocolRow,
-         writeLines(sprintf(laneAttr, LaneID, FovCount, FovCounted, ScannerID,
-                            StagePosition, BindingDensity, CartridgeID,
-                            CartridgeBarcode), con))
+    writeLines(sprintf(laneAttr,
+                       protocolRow[["LaneID"]],
+                       protocolRow[["FovCount"]],
+                       protocolRow[["FovCounted"]],
+                       protocolRow[["ScannerID"]],
+                       protocolRow[["StagePosition"]],
+                       protocolRow[["BindingDensity"]],
+                       protocolRow[["CartridgeID"]],
+                       protocolRow[["CartridgeBarcode"]]),
+               con)
 
     # Write Code_Summary
     writeLines("<Code_Summary>", con)

@@ -30,10 +30,11 @@ function(rccFiles, rlfFile = NULL)
   if (!is.null(rlfFile)) {
     rlfData <- as.data.frame(readRlfFile(rlfFile))
     rlfData <- rlfData[rlfData[["GeneName"]] %in% feature[["GeneName"]] &
-                         rlfData[["Accession"]] %in% feature[["Accession"]],
-                       , drop = FALSE]
+                       rlfData[["Accession"]] %in% feature[["Accession"]], ,
+                       drop = FALSE]
     rownames(rlfData) <-
-      with(rlfData, sprintf("%s_%s_%s", CodeClass, GeneName, Accession))
+      sprintf("%s_%s_%s", rlfData[["CodeClass"]], rlfData[["GeneName"]],
+              rlfData[["Accession"]])
     for (j in c("CodeClass", "GeneName", "Accession")) {
       rlfData[[j]] <- NULL
     }

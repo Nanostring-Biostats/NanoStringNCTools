@@ -70,8 +70,10 @@ function(file)
              colClasses = c(CodeClass = "character", GeneName = "character",
                             Accession = "character", Count = "integer"))
   rownames(output[["Code_Summary"]]) <-
-    with(output[["Code_Summary"]],
-         sprintf("%s_%s_%s", CodeClass, GeneName, Accession))
+    sprintf("%s_%s_%s",
+            output[["Code_Summary"]][["CodeClass"]],
+            output[["Code_Summary"]][["GeneName"]],
+            output[["Code_Summary"]][["Accession"]])
 
   output
 }
