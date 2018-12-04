@@ -15,39 +15,33 @@ function(object)
       msg <- c(msg, "'sampleNames' must all have an \".RCC\" file extension")
     }
     # phenoData
-    if (!all(c("SampleID", "Owner", "Comments", "Date", "SystemAPF") %in%
-             varLabels(phenoData(object)))) {
+    phenoDataColNames <- c("SampleID", "Owner", "Comments", "Date", "SystemAPF")
+    if (!all(phenoDataColNames %in% varLabels(phenoData(object)))) {
       msg <-
         c(msg,
           sprintf("'phenoData' must contain columns %s",
-                  paste0("\"",
-                         c("SampleID", "Owner", "Comments", "Date",
-                           "SystemAPF"), "\"", collapse = ", ")))
+                  paste0("\"", phenoDataColNames, "\"", collapse = ", ")))
     }
     # protocolData
-    if (!all(c("LaneID", "FovCount", "FovCounted", "ScannerID", "StagePosition",
-               "BindingDensity", "CartridgeID", "CartridgeBarcode",
-               "FileVersion", "SoftwareVersion") %in%
-             varLabels(protocolData(object)))) {
+    protocolDataColNames <-
+      c("LaneID", "FovCount", "FovCounted", "ScannerID", "StagePosition",
+        "BindingDensity", "CartridgeID", "CartridgeBarcode", "FileVersion",
+        "SoftwareVersion")
+    if (!all(protocolDataColNames %in% varLabels(protocolData(object)))) {
       msg <-
         c(msg,
           sprintf("'protocolData' must contain columns %s",
-                  paste0("\"",
-                         c("LaneID", "FovCount", "FovCounted", "ScannerID",
-                           "StagePosition", "BindingDensity", "CartridgeID",
-                           "CartridgeBarcode", "FileVersion",
-                           "SoftwareVersion"), "\"", collapse = ", ")))
+                  paste0("\"", protocolDataColNames, "\"", collapse = ", ")))
     }
   }
   if (dim(object)[["Features"]] > 0L) {
     # featureData
-    if (!all(c("CodeClass", "GeneName", "Accession") %in%
-             varLabels(featureData(object)))) {
+    featureDataColNames <- c("CodeClass", "GeneName", "Accession")
+    if (!all(featureDataColNames %in% varLabels(featureData(object)))) {
       msg <-
         c(msg,
           sprintf("'featureData' must contain columns %s",
-                  paste0("\"", c("CodeClass", "GeneName", "Accession"), "\"",
-                         collapse = ", ")))
+                  paste0("\"", featureDataColNames, "\"", collapse = ", ")))
     }
   }
   if (sum(dim(object)) > 0L) {
