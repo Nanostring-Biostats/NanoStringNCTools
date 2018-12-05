@@ -69,5 +69,6 @@ function(rccFiles, rlfFile = NULL)
                    featureData = feature,
                    experimentData = experiment,
                    annotation = annotation,
-                   protocolData = protocol)
+                   protocolData = protocol,
+                   check = FALSE)
 }

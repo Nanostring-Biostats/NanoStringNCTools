@@ -5,7 +5,7 @@ setClass("NanoStringRccSet",
                versions = c(classVersion("ExpressionSet"),
                             NanoStringRccSet = "1.0.0"))))
 
-setValidity("NanoStringRccSet",
+setValidity2("NanoStringRccSet",
 function(object)
 {
   msg <- NULL
@@ -97,14 +97,14 @@ function(assayData,
          protocolData = annotatedDataFrameFrom(assayData, byrow = FALSE),
          ...)
 {
-  new("NanoStringRccSet",
-      assayData = assayData,
-      phenoData = phenoData,
-      featureData = featureData,
-      experimentData = experimentData,
-      annotation = annotation,
-      protocolData = protocolData,
-      ...)
+  new2("NanoStringRccSet",
+       assayData = assayData,
+       phenoData = phenoData,
+       featureData = featureData,
+       experimentData = experimentData,
+       annotation = annotation,
+       protocolData = protocolData,
+       ...)
 })
 
 setMethod("NanoStringRccSet", "matrix",
