@@ -7,32 +7,32 @@ function(file)
   # Split data by tags
   locs <- match(c("[Header]", "[Content]"), lines)
   sections <-
-    List("Header"  = lines[(locs[1L] + 1L):(locs[2L] - 1L)],
+    list("Header"  = lines[(locs[1L] + 1L):(locs[2L] - 1L)],
          "Content" = lines[(locs[2L] + 3L):length(lines)])
-  sections <- endoapply(sections, function(x)
+  sections <- lapply(sections, function(x)
     structure(sub(".*=(.*)", "\\1", x),
               names = sub("(.*)=.*", "\\1", x)))
 
   # Extract header
-  header <- list(Version = unname(sections[["Header"]]["Version"]),
-                 Date = as.Date(as.Date(sections[["Header"]]["Date"],
-                                        format = "%Y%m%d")),
+  header <- list(Version = numeric_version(sections[["Header"]]["Version"]),
+                 Date = as.Date(sections[["Header"]]["Date"],
+                                format = "%Y%m%d"),
                  NSpot = as.integer(sections[["Header"]]["NSpot"]),
                  Backbone = sections[["Header"]]["Backbone"],
                  NBasePair = as.integer(sections[["Header"]]["NBasePair"]),
                  ClassCount = as.integer(sections[["Header"]]["ClassCount"]))
-  header[["Version"]] <- numeric_version(header[["Version"]])
 
   # Create Classes
   k <- header[["ClassCount"]]
   getTagValues <- function(tag) sections[["Header"]][sprintf(tag, 0L:(k-1L))]
   classes <-
-    DataFrame(Classification = as.integer(getTagValues("ClassKey%d")),
-              CodeClass = getTagValues("ClassName%d"),
-              Active = as.integer(getTagValues("ClassActive%d")),
-              Date = as.Date(getTagValues("ClassDate%d"), format = "%Y%m%d"),
-              Source = getTagValues("ClassSource%d"),
-              Preparer = getTagValues("ClassPreparer%d"))
+    data.frame(Classification = as.integer(getTagValues("ClassKey%d")),
+               CodeClass = getTagValues("ClassName%d"),
+               Active = as.integer(getTagValues("ClassActive%d")),
+               Date = as.Date(getTagValues("ClassDate%d"), format = "%Y%m%d"),
+               Source = getTagValues("ClassSource%d"),
+               Preparer = getTagValues("ClassPreparer%d"),
+               stringsAsFactors = FALSE)
 
   # Parse Content
   if (sections[["Content"]][[1L]][1L] != "Classification,TargetSeq,BarCode,GeneName,ProbeID,Species,Accession,Comments")
@@ -45,7 +45,6 @@ function(file)
                             BarCode = "character", GeneName = "character",
                             ProbeID = "character", Species = "character",
                             Accession = "character", Comments = "character"))
-  output <- DataFrame(output)
 
   # Merge classes information with output
   output[["RowNames"]] <- rn
@@ -56,6 +55,9 @@ function(file)
   output <- output[rn, c("CodeClass", "GeneName", "Accession", "TargetSeq",
                          "BarCode", "ProbeID", "Species",  "Comments" ,
                          "Active", "Date", "Source", "Preparer")]
+
+  # Coerce output to DataFrame
+  output <- DataFrame(output)
 
   # Convert sequences to XStringSet columns
   if ("TargetSeq" %in% colnames(output)) {
