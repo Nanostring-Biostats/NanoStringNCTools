@@ -23,9 +23,9 @@ function(file)
     output[[tag]] <-
       structure(lapply(output[[tag]],
                        function(x) if (length(x) == 1L) "" else x[2L]),
-                names = lapply(output[[tag]], `[`, 1L))
-    output[[tag]] <- as.data.frame(output[[tag]], row.names = basename(file),
-                                   stringsAsFactors = FALSE)
+                names = lapply(output[[tag]], `[`, 1L),
+                class = "data.frame",
+                row.names = basename(file))
   }
 
   # Coerce numeric_version information in Header
