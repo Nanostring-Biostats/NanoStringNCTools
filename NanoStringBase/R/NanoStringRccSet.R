@@ -14,19 +14,12 @@ function(object)
     if (!all(grepl("\\.rcc$", sampleNames(object), ignore.case = TRUE))) {
       msg <- c(msg, "'sampleNames' must all have an \".RCC\" file extension")
     }
-    # phenoData
-    phenoDataColNames <- c("SampleID", "Owner", "Comments", "Date", "SystemAPF")
-    if (!all(phenoDataColNames %in% varLabels(phenoData(object)))) {
-      msg <-
-        c(msg,
-          sprintf("'phenoData' must contain columns %s",
-                  paste0("\"", phenoDataColNames, "\"", collapse = ", ")))
-    }
     # protocolData
     protocolDataColNames <-
-      c("LaneID", "FovCount", "FovCounted", "ScannerID", "StagePosition",
-        "BindingDensity", "CartridgeID", "CartridgeBarcode", "FileVersion",
-        "SoftwareVersion")
+      c("FileVersion", "SoftwareVersion",
+        "SampleID", "Owner", "Comments", "Date", "SystemAPF",
+        "LaneID", "FovCount", "FovCounted", "ScannerID", "StagePosition",
+        "BindingDensity", "CartridgeID", "CartridgeBarcode")
     if (!all(protocolDataColNames %in% varLabels(protocolData(object)))) {
       msg <-
         c(msg,

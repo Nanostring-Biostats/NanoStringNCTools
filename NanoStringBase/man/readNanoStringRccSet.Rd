@@ -10,13 +10,18 @@
 }
 
 \usage{
-readNanoStringRccSet(rccFiles, rlfFile = NULL)
+readNanoStringRccSet(rccFiles, rlfFile = NULL, phenoDataFile = NULL,
+                     phenoDataRccColName = "^RCC")
 }
 
 \arguments{
   \item{rccFiles}{A character vector containing the paths to the RCC files.}
   \item{rlfFile}{An optional character string representing the path to the
-  corresponding RLF file.}
+    corresponding RLF file.}
+  \item{phenoDataFile}{An optional character string representing the path
+    to the corresponding phenotypic csv data file.}
+  \item{phenoDataRccColName}{The regular expression that specifies the RCC
+    column in the \code{phenoDataFile}.}
 }
 
 \value{

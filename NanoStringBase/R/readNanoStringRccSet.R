@@ -1,5 +1,8 @@
 readNanoStringRccSet <-
-function(rccFiles, rlfFile = NULL)
+function(rccFiles,
+         rlfFile = NULL,
+         phenoDataFile = NULL,
+         phenoDataRccColName = "^RCC")
 {
   # Read data rccFiles
   data <- structure(lapply(rccFiles, readRccFile), names = basename(rccFiles))
@@ -12,14 +15,24 @@ function(rccFiles, rlfFile = NULL)
                         names = rownames(x[["Code_Summary"]]))))
 
   # Create phenoData
-  pheno <-
-    do.call(rbind,
-            lapply(seq_along(rccFiles), function(i) {
-              x <- data[[i]][["Sample_Attributes"]]
-              x[, setdiff(names(x), "GeneRLF")]
-            }))
-  pheno <- AnnotatedDataFrame(pheno,
-                              dimLabels = c("sampleNames", "sampleColumns"))
+  if (is.null(phenoDataFile)) {
+    pheno <- annotatedDataFrameFrom(assay, byrow = FALSE)
+  } else {
+    pheno <- read.csv(phenoDataFile, row.names = NULL, check.names = FALSE,
+                      stringsAsFactors = FALSE)
+    j <- grep(phenoDataRccColName, colnames(pheno), ignore.case = TRUE)
+    if (length(j) == 0L)
+      stop("Column `phenoDataRccColName` not found in `phenoDataFile`")
+    else if (length(j) > 1L)
+      stop("Multiple columns in `phenoDataFile` match `phenoDataRccColName`")
+    if (!all(colnames(assay) %in% pheno[[j]]))
+      stop("Column `phenoDataRccColName` in `phenoDataFile` does not match `rccFiles`")
+    rownames(pheno) <- pheno[[j]]
+    pheno[[j]] <- NULL
+    pheno <- pheno[colnames(assay), , drop = FALSE]
+    pheno <- AnnotatedDataFrame(pheno,
+                                dimLabels = c("sampleNames", "sampleColumns"))
+  }
 
   # Create featureData
   feature <- lapply(data, function(x) {
@@ -58,7 +71,9 @@ function(rccFiles, rlfFile = NULL)
   protocol <-
     do.call(rbind,
             lapply(seq_along(rccFiles), function(i) {
-              cbind(data[[i]][["Lane_Attributes"]], data[[i]][["Header"]])
+              x <- data[[i]][["Sample_Attributes"]]
+              x <- x[, setdiff(names(x), "GeneRLF")]
+              cbind(data[[i]][["Header"]], x, data[[i]][["Lane_Attributes"]])
             }))
   protocol <- AnnotatedDataFrame(protocol,
                                  dimLabels = c("sampleNames", "sampleColumns"))

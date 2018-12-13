@@ -30,19 +30,20 @@ NanoStringRccSet(assayData,
 
 \arguments{
   \item{assayData}{A \code{matrix} or \code{environment} containing the RCCs.}
-  \item{phenoData}{An \code{\link{AnnotatedDataFrame}} containing columns
-    \code{"SampleID"}, \code{"Owner"}, \code{"Comments"}, \code{"Date"}, and
-    \code{"SystemAPF"}.}
+  \item{phenoData}{An \code{\link{AnnotatedDataFrame}} containing the phenotypic
+    data.}
   \item{featureData}{An \code{\link{AnnotatedDataFrame}} containing columns
     \code{"CodeClass"}, \code{"GeneName"}, and \code{"Accession"}.}
   \item{experimentData}{An optional \code{\link{MIAME}} instance with meta-data
     about the experiment.}
   \item{annotation}{A character string for the \code{"GeneRLF"}.}
   \item{protocolData}{An \code{\link{AnnotatedDataFrame}} containing columns
+    \code{"FileVersion"}, \code{"SoftwareVersion"},
+    \code{"SampleID"}, \code{"Owner"}, \code{"Comments"}, \code{"Date"},
+    \code{"SystemAPF"},
     \code{"LaneID"}, \code{"FovCount"}, \code{"FovCounted"}, \code{"ScannerID"},
-    \code{"StagePosition"}, \code{"BindingDensity"}, \code{"CartridgeID"},
-    \code{"CartridgeBarcode"}, \code{"FileVersion"}, and
-    \code{"SoftwareVersion"}.}
+    \code{"StagePosition"}, \code{"BindingDensity"}, \code{"CartridgeID"}, and
+    \code{"CartridgeBarcode"}.}
   \item{\ldots}{Additional arguments for \code{\link{ExpressionSet}}.}
 }
 

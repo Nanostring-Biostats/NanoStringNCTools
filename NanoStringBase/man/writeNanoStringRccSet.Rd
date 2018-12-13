@@ -16,7 +16,7 @@ writeNanoStringRccSet(x, dir = getwd())
 \arguments{
   \item{x}{an instance of class \code{\linkS4class{NanoStringRccSet}.}}
   \item{dir}{An optional character string representing the path to the
-  directory for the RCC files.}
+    directory for the RCC files.}
 }
 
 \details{
