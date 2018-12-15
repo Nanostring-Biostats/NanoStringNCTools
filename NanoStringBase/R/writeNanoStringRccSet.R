@@ -15,10 +15,14 @@ function(x, dir = getwd())
   names(features)[2L] <- "Name"
 
   # Create output templates
-  header <- "<Header>\nFileVersion,%s\nSoftwareVersion,%s\n</Header>\n"
-  sampleAttr <-
+  header1.7 <- "<Header>\nFileVersion,%s\nSoftwareVersion,%s\n</Header>\n"
+  header2.0 <- "<Header>\nFileVersion,%s\nSoftwareVersion,%s\nSystemType,%s\n</Header>\n"
+  sampleAttr1.7 <-
     paste0("<Sample_Attributes>\nID,%s\nOwner,%s\nComments,%s\nDate,%s\n",
            "GeneRLF,%s\nSystemAPF,%s\n</Sample_Attributes>\n")
+  sampleAttr2.0 <-
+    paste0("<Sample_Attributes>\nID,%s\nOwner,%s\nComments,%s\nDate,%s\n",
+           "GeneRLF,%s\nSystemAPF,%s\nAssayType,%s\n</Sample_Attributes>\n")
   laneAttr <-
     paste0("<Lane_Attributes>\nID,%d\nFovCount,%d\nFovCounted,%d\n",
            "ScannerID,%s\nStagePosition,%d\nBindingDensity,%.2f\n",
@@ -27,7 +31,6 @@ function(x, dir = getwd())
   # Loop over samples
   for (i in seq_len(dim(x)[["Samples"]])) {
     # Select row data
-    phenoRow <- pData(phenoData(x))[i, ]
     protocolRow <- pData(protocolData(x))[i, ]
 
     # Open file connection
@@ -38,20 +41,38 @@ function(x, dir = getwd())
     con <- file(fname, open = "a")
 
     # Write Header
-    writeLines(sprintf(header,
-                       protocolRow[["FileVersion"]],
-                       protocolRow[["SoftwareVersion"]]),
-               con)
+    if (protocolRow[["FileVersion"]] < numeric_version("2.0"))
+      writeLines(sprintf(header1.7,
+                         protocolRow[["FileVersion"]],
+                         protocolRow[["SoftwareVersion"]]),
+                 con)
+    else
+      writeLines(sprintf(header2.0,
+                         protocolRow[["FileVersion"]],
+                         protocolRow[["SoftwareVersion"]],
+                         protocolRow[["SystemType"]]),
+                 con)
 
     # Write Sample_Attributes
-    writeLines(sprintf(sampleAttr,
-                       phenoRow[["SampleID"]],
-                       phenoRow[["Owner"]],
-                       phenoRow[["Comments"]],
-                       format(phenoRow[["Date"]], "%Y%m%d"),
-                       phenoRow[["geneRlf"]],
-                       phenoRow[["SystemAPF"]]),
-               con)
+    if (protocolRow[["FileVersion"]] < numeric_version("2.0"))
+      writeLines(sprintf(sampleAttr1.7,
+                         protocolRow[["SampleID"]],
+                         protocolRow[["Owner"]],
+                         protocolRow[["Comments"]],
+                         format(protocolRow[["Date"]], "%Y%m%d"),
+                         geneRlf,
+                         protocolRow[["SystemAPF"]]),
+                 con)
+    else
+      writeLines(sprintf(sampleAttr2.0,
+                         protocolRow[["SampleID"]],
+                         protocolRow[["Owner"]],
+                         protocolRow[["Comments"]],
+                         format(protocolRow[["Date"]], "%Y%m%d"),
+                         geneRlf,
+                         protocolRow[["SystemAPF"]],
+                         protocolRow[["AssayType"]]),
+                 con)
 
     # Write Lane_Attributes
     writeLines(sprintf(laneAttr,

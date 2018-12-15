@@ -76,6 +76,7 @@ function(rccFiles,
               cbind(data[[i]][["Header"]], x, data[[i]][["Lane_Attributes"]])
             }))
   protocol <- AnnotatedDataFrame(protocol,
+                                 .rccMetadata[["protocolData"]],
                                  dimLabels = c("sampleNames", "sampleColumns"))
 
   # Create NanoStringRccSet

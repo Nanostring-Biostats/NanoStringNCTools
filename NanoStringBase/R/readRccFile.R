@@ -5,8 +5,7 @@ function(file)
   lines <- trimws(readLines(file))
 
   # Split data by tags
-  tags <- c("Header", "Sample_Attributes", "Lane_Attributes", "Code_Summary",
-            "Messages")
+  tags <- names(.rccMetadata[["schema"]])
   output <- sapply(tags, function(tag)
   {
     bounds <- charmatch(sprintf(c("<%s>", "</%s>"), tag), lines)
@@ -17,8 +16,7 @@ function(file)
   }, simplify = FALSE)
 
   # Convert single row attributes to data.table objects
-  for (tag in intersect(c("Header", "Sample_Attributes", "Lane_Attributes"),
-                        names(output))) {
+  for (tag in c("Header", "Sample_Attributes", "Lane_Attributes")) {
     output[[tag]] <- strsplit(output[[tag]], split = ",")
     output[[tag]] <-
       structure(lapply(output[[tag]],
@@ -29,35 +27,46 @@ function(file)
   }
 
   # Coerce numeric_version information in Header
-  cols <- intersect(c("FileVersion", "SoftwareVersion"),
-                    colnames(output[["Header"]]))
-  if (length(cols)) {
-    output[["Header"]][, cols] <- lapply(output[["Header"]][, cols],
-                                         numeric_version)
+  metadata <- .rccMetadata[["schema"]][["Header"]]
+  cols <- c("FileVersion", "SoftwareVersion")
+  if (!(all(cols %in% colnames(output[["Header"]]))))
+    stop("Header section must contain \"FileVersion\" and \"SoftwareVersion\"")
+  output[["Header"]][, cols] <- lapply(output[["Header"]][, cols],
+                                       numeric_version)
+
+  # Extract FileVersion for internal checks
+  fileVersion <- output[["Header"]][1L, "FileVersion"]
+  if (!(fileVersion %in% numeric_version(c("1.7", "2.0"))))
+    stop("\"FileVersion\" in Header section must be either 1.7 or 2.0")
+
+  # Check single row attributes
+  for (section in c("Header", "Sample_Attributes", "Lane_Attributes")) {
+    valid <- .validRccSchema(output[[section]], fileVersion, section)
+    if (!isTRUE(valid))
+      stop(valid)
   }
 
   # Coerce date data type in Sample_Attributes
-  if ("Date" %in% colnames(output[["Sample_Attributes"]])) {
-    output[["Sample_Attributes"]][["Date"]] <-
-      as.Date(output[["Sample_Attributes"]][["Date"]], format = "%Y%m%d")
-  }
+  output[["Sample_Attributes"]][["Date"]] <-
+    as.Date(output[["Sample_Attributes"]][["Date"]], format = "%Y%m%d")
 
   # Coerce numeric data in Lane Attributes
-  cols <- intersect(c("ID", "FovCount", "FovCounted", "StagePosition"),
-                    colnames(output[["Lane_Attributes"]]))
-  if (length(cols)) {
-    output[["Lane_Attributes"]][, cols] <-
-      lapply(output[["Lane_Attributes"]][, cols], as.integer)
-  }
-  if ("BindingDensity" %in% colnames(output[["Lane_Attributes"]])) {
-    output[["Lane_Attributes"]][["BindingDensity"]] <-
-      as.numeric(output[["Lane_Attributes"]][["BindingDensity"]])
-  }
+  cols <- c("ID", "FovCount", "FovCounted", "StagePosition")
+  output[["Lane_Attributes"]][, cols] <-
+    lapply(output[["Lane_Attributes"]][, cols], as.integer)
+  output[["Lane_Attributes"]][["BindingDensity"]] <-
+    as.numeric(output[["Lane_Attributes"]][["BindingDensity"]])
 
-  # Rename ID columns
+  # Rename ID columns in Sample and Lane Attributes
   for (ptag in c("Sample", "Lane")) {
     tag <- sprintf("%s_Attributes", ptag)
     names(output[[tag]])[names(output[[tag]]) == "ID"] <- sprintf("%sID", ptag)
+  }
+
+  # For FileVersion 1.7, add SystemType to Header and AssayType to Sample Attrs
+  if (fileVersion == numeric_version("1.7")) {
+    output[["Header"]][["SystemType"]] <- "Gen2"
+    output[["Sample_Attributes"]][["AssayType"]] <- NA_character_
   }
 
   # Convert Code_Summary to data.frame object

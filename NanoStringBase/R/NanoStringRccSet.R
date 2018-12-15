@@ -15,16 +15,46 @@ function(object)
       msg <- c(msg, "'sampleNames' must all have an \".RCC\" file extension")
     }
     # protocolData
-    protocolDataColNames <-
-      c("FileVersion", "SoftwareVersion",
-        "SampleID", "Owner", "Comments", "Date", "SystemAPF",
-        "LaneID", "FovCount", "FovCounted", "ScannerID", "StagePosition",
-        "BindingDensity", "CartridgeID", "CartridgeBarcode")
+    protocolDataColNames <- rownames(.rccMetadata[["protocolData"]])
     if (!all(protocolDataColNames %in% varLabels(protocolData(object)))) {
       msg <-
         c(msg,
           sprintf("'protocolData' must contain columns %s",
                   paste0("\"", protocolDataColNames, "\"", collapse = ", ")))
+    }
+    # protocolData - FileVersion
+    if (!all(protocolData(object)[["FileVersion"]] %in%
+             numeric_version(c("1.7", "2.0")))) {
+      msg <-
+        c(msg, "'protocolData' \"FileVersion\" must all be either 1.7 or 2.0")
+    }
+    # protocolData - LaneID
+    if (!all(protocolData(object)[["LaneID"]] %in% 1L:12L)) {
+      msg <-
+        c(msg, "'protocolData' \"LaneID\" must all be integers from 1 to 12")
+    }
+    # protocolData - FovCount
+    if (!.validNonNegativeInteger(protocolData(object)[["FovCount"]])) {
+      msg <-
+        c(msg, "'protocolData' \"FovCount\" must all be non-negative integers")
+    }
+    # protocolData - FovCounted
+    if (!.validNonNegativeInteger(protocolData(object)[["FovCounted"]])) {
+      msg <-
+        c(msg,
+          "'protocolData' \"FovCounted\" must all be non-negative integers")
+    }
+    # protocolData - StagePosition
+    if (!all(protocolData(object)[["StagePosition"]] %in% 1L:6L)) {
+      msg <-
+        c(msg,
+          "'protocolData' \"StagePosition\" must all be integers from 1 to 6")
+    }
+    # protocolData - BindingDensity
+    if (!.validNonNegativeNumber(protocolData(object)[["BindingDensity"]])) {
+      msg <-
+        c(msg,
+          "'protocolData' \"BindingDensity\" must all be non-negative numbers")
     }
   }
   if (dim(object)[["Features"]] > 0L) {
@@ -46,8 +76,7 @@ function(object)
   }
   if (prod(dim(object)) > 0L) {
     # assayData
-    if (!is.integer(exprs(object)) || anyNA(exprs(object)) ||
-        min(exprs(object)) < 0L) {
+    if (!.validNonNegativeInteger(exprs(object))) {
       msg <- c(msg, "'exprs' must be a non-negative integer matrix")
     }
   }
