@@ -10,6 +10,9 @@
 \alias{NanoStringRccSet,matrix-method}
 \alias{NanoStringRccSet,missing-method}
 
+% utilities
+\alias{subset,NanoStringRccSet-method}
+
 \title{NanoStringRccSet objects}
 
 \description{

@@ -148,3 +148,12 @@ function(assayData,
               featureData = featureData, experimentData = experimentData,
               annotation = annotation, protocolData = protocolData, ...)
 })
+
+
+# Utilities
+setMethod("subset", "NanoStringRccSet",
+function(x, subset, select, ...)
+{
+  kvs <- c(pData(x), pData(protocolData(x)), fData(x))
+  eval(substitute(with(kvs, x[subset, select])))
+})
