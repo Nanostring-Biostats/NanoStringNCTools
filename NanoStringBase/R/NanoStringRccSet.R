@@ -43,6 +43,11 @@ function(object)
       msg <-
         c(msg,
           "'protocolData' \"FovCounted\" must all be non-negative integers")
+    } else if (!all(protocolData(object)[["FovCounted"]] <=
+                    protocolData(object)[["FovCount"]])) {
+      msg <-
+        c(msg,
+          "'protocolData' \"FovCounted\" must all be less than or equal to \"FovCount\"")
     }
     # protocolData - StagePosition
     if (!all(protocolData(object)[["StagePosition"]] %in% 1L:6L)) {
