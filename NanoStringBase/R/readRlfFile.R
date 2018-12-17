@@ -14,16 +14,17 @@ function(file)
               names = sub("(.*)=.*", "\\1", x)))
 
   # Extract header
-  header <- list(Version = numeric_version(sections[["Header"]]["Version"]),
-                 Date = as.Date(sections[["Header"]]["Date"],
-                                format = "%Y%m%d"),
-                 NSpot = as.integer(sections[["Header"]]["NSpot"]),
-                 Backbone = sections[["Header"]]["Backbone"],
-                 NBasePair = as.integer(sections[["Header"]]["NBasePair"]),
-                 ClassCount = as.integer(sections[["Header"]]["ClassCount"]))
+  header <- list(RlfFileVersion =
+                   numeric_version(sections[["Header"]][["Version"]]),
+                 RlfFileDate = as.Date(sections[["Header"]][["Date"]],
+                                       format = "%Y%m%d"),
+                 SpotsPerCode = as.integer(sections[["Header"]][["NSpot"]]),
+                 BasePairsPerSpot = as.integer(sections[["Header"]][["NBasePair"]]),
+                 BackboneType = sections[["Header"]][["Backbone"]],
+                 CodeClassCount = as.integer(sections[["Header"]][["ClassCount"]]))
 
   # Create Classes
-  k <- header[["ClassCount"]]
+  k <- header[["CodeClassCount"]]
   getTagValues <- function(tag) sections[["Header"]][sprintf(tag, 0L:(k-1L))]
   classes <-
     data.frame(Classification = as.integer(getTagValues("ClassKey%d")),

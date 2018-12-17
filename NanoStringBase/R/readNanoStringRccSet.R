@@ -40,15 +40,25 @@ function(rccFiles,
   })
   stopifnot(all(sapply(feature, function(x) identical(feature[[1L]], x))))
   feature <- feature[[1L]]
-  if (!is.null(rlfFile)) {
-    rlfData <- as.data.frame(readRlfFile(rlfFile))
+  if (is.null(rlfFile)) {
+    rlfHeader <- list()
+  } else if (!is.null(rlfFile)) {
+    rlfData <- readRlfFile(rlfFile)
+
+    rlfHeader <- metadata(rlfData)
+    rlfHeader[["RlfFileDate"]] <- as.character(rlfHeader[["RlfFileDate"]])
+
+    rlfData <- as.data.frame(rlfData)
     rlfData <- rlfData[rlfData[["GeneName"]] %in% feature[["GeneName"]] &
                        rlfData[["Accession"]] %in% feature[["Accession"]], ,
                        drop = FALSE]
+    if (!all(rlfData[["Active"]] %in% 0L:3L))
+      stop("\"ClassActive\" values in RLF Header must be integers between 0 and 3 inclusive")
+    rlfData[["IsControl"]] <- rlfData[["Active"]] == 3L
     rownames(rlfData) <-
       sprintf("%s_%s_%s", rlfData[["CodeClass"]], rlfData[["GeneName"]],
               rlfData[["Accession"]])
-    for (j in c("CodeClass", "GeneName", "Accession")) {
+    for (j in c("CodeClass", "GeneName", "Accession", "Active")) {
       rlfData[[j]] <- NULL
     }
     rlfData <- rlfData[rownames(feature), , drop = FALSE]
@@ -60,7 +70,7 @@ function(rccFiles,
   # Create experimentData
   name <- sapply(data, function(x) x[["Sample_Attributes"]][["Owner"]])
   name <- unique(na.omit(name))
-  experiment <- MIAME(name = name)
+  experiment <- MIAME(name = name, other = rlfHeader)
 
   # Create annotation
   annotation <- sapply(data, function(x) x[["Sample_Attributes"]][["GeneRLF"]])
