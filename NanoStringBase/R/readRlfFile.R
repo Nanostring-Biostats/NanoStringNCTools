@@ -6,6 +6,7 @@ function(file)
 
   # Split data by tags
   locs <- match(c("[Header]", "[Content]"), lines)
+  contentDim <- lines[(locs[2L] + 2L):(locs[2L] + 1L)]
   sections <-
     list("Header"  = lines[(locs[1L] + 1L):(locs[2L] - 1L)],
          "Content" = lines[(locs[2L] + 3L):length(lines)])
@@ -36,6 +37,11 @@ function(file)
                stringsAsFactors = FALSE)
 
   # Parse Content
+  nrecords <- length(sections[["Content"]]) - 1L
+  if (contentDim[1L] != sprintf("RecordCount=%d", nrecords))
+    stop(sprintf("Content section RecordCount must be %d", nrecords))
+  if (contentDim[2L] != "ColumnCount=8")
+    stop("Content section ColumnCount must be 8")
   if (sections[["Content"]][[1L]][1L] != "Classification,TargetSeq,BarCode,GeneName,ProbeID,Species,Accession,Comments")
     stop("Content section header is not \"Classification,TargetSeq,BarCode,GeneName,ProbeID,Species,Accession,Comments\"")
   rn <- names(sections[["Content"]])[-1L]
