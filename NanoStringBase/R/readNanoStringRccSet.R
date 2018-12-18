@@ -49,15 +49,13 @@ function(rccFiles,
     rlfHeader[["RlfFileDate"]] <- as.character(rlfHeader[["RlfFileDate"]])
 
     rlfData <- as.data.frame(rlfData)
-    rlfData <- rlfData[rlfData[["GeneName"]] %in% feature[["GeneName"]] &
-                       rlfData[["Accession"]] %in% feature[["Accession"]], ,
-                       drop = FALSE]
-    if (!all(rlfData[["Active"]] %in% 0L:3L))
-      stop("\"ClassActive\" values in RLF Header must be integers between 0 and 3 inclusive")
+    rlfData <- rlfData[rlfData[["Active"]] %in% c(2L, 3L), , drop = FALSE]
     rlfData[["IsControl"]] <- rlfData[["Active"]] == 3L
     rownames(rlfData) <-
       sprintf("%s_%s_%s", rlfData[["CodeClass"]], rlfData[["GeneName"]],
               rlfData[["Accession"]])
+    if (!identical(sort(rownames(feature)), sort(rownames(rlfData))))
+      stop("featureData mismatch between RLF and RCC files")
     for (j in c("CodeClass", "GeneName", "Accession", "Active")) {
       rlfData[[j]] <- NULL
     }
