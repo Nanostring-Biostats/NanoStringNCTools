@@ -31,7 +31,8 @@ function(file)
     data.frame(Classification = as.integer(getTagValues("ClassKey%d")),
                BarcodeClass = getTagValues("ClassName%d"),
                BarcodeClassActive = as.integer(getTagValues("ClassActive%d")),
-               BarcodeClassDate = as.Date(getTagValues("ClassDate%d"), format = "%Y%m%d"),
+               BarcodeClassDate = as.Date(getTagValues("ClassDate%d"),
+                                          format = "%Y%m%d"),
                BarcodeClassSource = getTagValues("ClassSource%d"),
                BarcodeClassPreparer = getTagValues("ClassPreparer%d"),
                stringsAsFactors = FALSE)
@@ -76,7 +77,8 @@ function(file)
     BStringSet(ifelse(is.na(output[["Barcode"]]), ".", output[["Barcode"]]))
 
   # Move constant columns to header
-  if (all(output[["BarcodeClassDate"]] == header[["RlfFileDate"]], na.rm = TRUE)) {
+  if (all(output[["BarcodeClassDate"]] == header[["RlfFileDate"]],
+          na.rm = TRUE)) {
     output[["BarcodeClassDate"]] <- NULL
   }
   for (j in c("BarcodeClassSource", "BarcodeClassPreparer")) {
