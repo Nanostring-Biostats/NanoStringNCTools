@@ -72,15 +72,15 @@ function(file)
   # Convert Code_Summary to data.frame object
   if (output[["Code_Summary"]][1L] != "CodeClass,Name,Accession,Count")
     stop("Code_Summary section header is not \"CodeClass,Name,Accession,Count\"")
-  output[["Code_Summary"]][1L] <- "CodeClass,GeneName,Accession,Count"
+  output[["Code_Summary"]][1L] <- "BarcodeClass,GeneName,Accession,Count"
   output[["Code_Summary"]] <- paste(output[["Code_Summary"]], collapse = "\n")
   output[["Code_Summary"]] <-
     read.csv(textConnection(output[["Code_Summary"]]),
-             colClasses = c(CodeClass = "character", GeneName = "character",
+             colClasses = c(BarcodeClass = "character", GeneName = "character",
                             Accession = "character", Count = "integer"))
   rownames(output[["Code_Summary"]]) <-
     sprintf("%s_%s_%s",
-            output[["Code_Summary"]][["CodeClass"]],
+            output[["Code_Summary"]][["BarcodeClass"]],
             output[["Code_Summary"]][["GeneName"]],
             output[["Code_Summary"]][["Accession"]])
 

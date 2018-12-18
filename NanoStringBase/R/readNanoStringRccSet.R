@@ -36,7 +36,7 @@ function(rccFiles,
 
   # Create featureData
   feature <- lapply(data, function(x) {
-    x[["Code_Summary"]][, c("CodeClass", "GeneName", "Accession")]
+    x[["Code_Summary"]][, c("BarcodeClass", "GeneName", "Accession")]
   })
   stopifnot(all(sapply(feature, function(x) identical(feature[[1L]], x))))
   feature <- feature[[1L]]
@@ -49,14 +49,15 @@ function(rccFiles,
     rlfHeader[["RlfFileDate"]] <- as.character(rlfHeader[["RlfFileDate"]])
 
     rlfData <- as.data.frame(rlfData)
-    rlfData <- rlfData[rlfData[["Active"]] %in% c(2L, 3L), , drop = FALSE]
-    rlfData[["IsControl"]] <- rlfData[["Active"]] == 3L
+    rlfData <- rlfData[rlfData[["BarcodeClassActive"]] %in% c(2L, 3L), ,
+                       drop = FALSE]
+    rlfData[["IsControl"]] <- rlfData[["BarcodeClassActive"]] == 3L
     rownames(rlfData) <-
-      sprintf("%s_%s_%s", rlfData[["CodeClass"]], rlfData[["GeneName"]],
+      sprintf("%s_%s_%s", rlfData[["BarcodeClass"]], rlfData[["GeneName"]],
               rlfData[["Accession"]])
     if (!identical(sort(rownames(feature)), sort(rownames(rlfData))))
       stop("featureData mismatch between RLF and RCC files")
-    for (j in c("CodeClass", "GeneName", "Accession", "Active")) {
+    for (j in c("BarcodeClass", "GeneName", "Accession", "BarcodeClassActive")) {
       rlfData[[j]] <- NULL
     }
     rlfData <- rlfData[rownames(feature), , drop = FALSE]

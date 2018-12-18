@@ -44,7 +44,7 @@
                              c(NA_character_, NA_character_, NA_character_,
                                NA_character_),
                            minVersion = numeric_version(c(rep("1.7", 4L))),
-                           row.names = c("CodeClass", "Name", "Accession", "Count"),
+                           row.names = c("BarcodeClass", "Name", "Accession", "Count"),
                            stringsAsFactors = FALSE),
               "Messages" = "character")
   )

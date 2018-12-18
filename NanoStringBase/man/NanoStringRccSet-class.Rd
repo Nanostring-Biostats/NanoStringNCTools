@@ -36,7 +36,7 @@ NanoStringRccSet(assayData,
   \item{phenoData}{An \code{\link{AnnotatedDataFrame}} containing the phenotypic
     data.}
   \item{featureData}{An \code{\link{AnnotatedDataFrame}} containing columns
-    \code{"CodeClass"}, \code{"GeneName"}, and \code{"Accession"}.}
+    \code{"BarcodeClass"}, \code{"GeneName"}, and \code{"Accession"}.}
   \item{experimentData}{An optional \code{\link{MIAME}} instance with meta-data
     about the experiment.}
   \item{annotation}{A character string for the \code{"GeneRLF"}.}

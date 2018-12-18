@@ -64,7 +64,7 @@ function(object)
   }
   if (dim(object)[["Features"]] > 0L) {
     # featureData
-    featureDataColNames <- c("CodeClass", "GeneName", "Accession")
+    featureDataColNames <- c("BarcodeClass", "GeneName", "Accession")
     if (!all(featureDataColNames %in% varLabels(featureData(object)))) {
       msg <-
         c(msg,

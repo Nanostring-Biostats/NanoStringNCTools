@@ -19,21 +19,21 @@ function(file)
                    numeric_version(sections[["Header"]][["Version"]]),
                  RlfFileDate = as.Date(sections[["Header"]][["Date"]],
                                        format = "%Y%m%d"),
-                 SpotsPerCode = as.integer(sections[["Header"]][["NSpot"]]),
+                 SpotsPerBarcode = as.integer(sections[["Header"]][["NSpot"]]),
                  BasePairsPerSpot = as.integer(sections[["Header"]][["NBasePair"]]),
                  BackboneType = sections[["Header"]][["Backbone"]],
-                 CodeClassCount = as.integer(sections[["Header"]][["ClassCount"]]))
+                 BarcodeClassCount = as.integer(sections[["Header"]][["ClassCount"]]))
 
   # Create Classes
-  k <- header[["CodeClassCount"]]
+  k <- header[["BarcodeClassCount"]]
   getTagValues <- function(tag) sections[["Header"]][sprintf(tag, 0L:(k-1L))]
   classes <-
     data.frame(Classification = as.integer(getTagValues("ClassKey%d")),
-               CodeClass = getTagValues("ClassName%d"),
-               Active = as.integer(getTagValues("ClassActive%d")),
-               Date = as.Date(getTagValues("ClassDate%d"), format = "%Y%m%d"),
-               Source = getTagValues("ClassSource%d"),
-               Preparer = getTagValues("ClassPreparer%d"),
+               BarcodeClass = getTagValues("ClassName%d"),
+               BarcodeClassActive = as.integer(getTagValues("ClassActive%d")),
+               BarcodeClassDate = as.Date(getTagValues("ClassDate%d"), format = "%Y%m%d"),
+               BarcodeClassSource = getTagValues("ClassSource%d"),
+               BarcodeClassPreparer = getTagValues("ClassPreparer%d"),
                stringsAsFactors = FALSE)
 
   # Parse Content
@@ -44,12 +44,13 @@ function(file)
     stop("Content section ColumnCount must be 8")
   if (sections[["Content"]][[1L]][1L] != "Classification,TargetSeq,BarCode,GeneName,ProbeID,Species,Accession,Comments")
     stop("Content section header is not \"Classification,TargetSeq,BarCode,GeneName,ProbeID,Species,Accession,Comments\"")
+  sections[["Content"]][[1L]][1L] <- "Classification,TargetSeq,Barcode,GeneName,ProbeID,Species,Accession,Comments"
   rn <- names(sections[["Content"]])[-1L]
   output <-
     read.csv(textConnection(paste(sections[["Content"]], collapse = "\n")),
              row.names = rn,
              colClasses = c(Classification = "integer", TargetSeq = "character",
-                            BarCode = "character", GeneName = "character",
+                            Barcode = "character", GeneName = "character",
                             ProbeID = "character", Species = "character",
                             Accession = "character", Comments = "character"))
 
@@ -59,29 +60,26 @@ function(file)
                    sort = FALSE)
   rownames(output) <- output[["RowNames"]]
   output[["Classification"]] <- output[["RowNames"]] <- NULL
-  output <- output[rn, c("CodeClass", "GeneName", "Accession", "TargetSeq",
-                         "BarCode", "ProbeID", "Species",  "Comments" ,
-                         "Active", "Date", "Source", "Preparer")]
+  output <- output[rn, c("BarcodeClass", "GeneName", "Accession", "TargetSeq",
+                         "Barcode", "ProbeID", "Species",  "Comments",
+                         "BarcodeClassActive", "BarcodeClassDate",
+                         "BarcodeClassSource", "BarcodeClassPreparer")]
 
   # Coerce output to DataFrame
   output <- DataFrame(output)
 
   # Convert sequences to XStringSet columns
-  if ("TargetSeq" %in% colnames(output)) {
-    output[["TargetSeq"]] <-
-      DNAStringSet(ifelse(is.na(output[["TargetSeq"]]), ".",
-                          output[["TargetSeq"]]))
-  }
-  if ("BarCode" %in% colnames(output)) {
-    output[["BarCode"]] <-
-      BStringSet(ifelse(is.na(output[["BarCode"]]), ".", output[["BarCode"]]))
-  }
+  output[["TargetSeq"]] <-
+    DNAStringSet(ifelse(is.na(output[["TargetSeq"]]), ".",
+                        output[["TargetSeq"]]))
+  output[["Barcode"]] <-
+    BStringSet(ifelse(is.na(output[["Barcode"]]), ".", output[["Barcode"]]))
 
   # Move constant columns to header
-  if (all(output[["Date"]] == header[["Date"]], na.rm = TRUE)) {
-    output[["Date"]] <- NULL
+  if (all(output[["BarcodeClassDate"]] == header[["RlfFileDate"]], na.rm = TRUE)) {
+    output[["BarcodeClassDate"]] <- NULL
   }
-  for (j in c("Source", "Preparer")) {
+  for (j in c("BarcodeClassSource", "BarcodeClassPreparer")) {
     if (length(value <- unique(output[[j]])) == 1L) {
       header[[j]] <- value
       output[[j]] <- NULL
