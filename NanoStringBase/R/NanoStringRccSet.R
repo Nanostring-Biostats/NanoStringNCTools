@@ -149,6 +149,23 @@ function(assayData,
               annotation = annotation, protocolData = protocolData, ...)
 })
 
+setMethod("NanoStringRccSet", "NanoStringRccSet",
+function(assayData,
+         phenoData = annotatedDataFrameFrom(assayData, byrow = FALSE),
+         featureData = annotatedDataFrameFrom(assayData, byrow = TRUE),
+         experimentData = MIAME(),
+         annotation = character(),
+         protocolData = annotatedDataFrameFrom(assayData, byrow = FALSE),
+         ...)
+{
+  callGeneric(assayData = copyEnv(assayData(assayData)),
+              phenoData = Biobase::phenoData(assayData),
+              featureData = Biobase::featureData(assayData),
+              experimentData = Biobase::experimentData(assayData),
+              annotation = Biobase::annotation(assayData),
+              protocolData = Biobase::protocolData(assayData), ...)
+})
+
 
 # Utilities
 setMethod("subset", "NanoStringRccSet",

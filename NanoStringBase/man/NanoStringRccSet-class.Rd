@@ -9,6 +9,7 @@
 \alias{NanoStringRccSet,environment-method}
 \alias{NanoStringRccSet,matrix-method}
 \alias{NanoStringRccSet,missing-method}
+\alias{NanoStringRccSet,NanoStringRccSet-method}
 
 % utilities
 \alias{subset,NanoStringRccSet-method}
