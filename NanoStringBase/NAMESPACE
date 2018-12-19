@@ -10,7 +10,7 @@ importMethodsFrom(Biobase, AnnotatedDataFrame, annotatedDataFrameFrom,
                   phenoData, protocolData, sampleNames)
 importFrom(Biobase, assayDataNew, copyEnv, MIAME, multiassign)
 importFrom(Biostrings, BStringSet, DNAStringSet)
-importFrom(methods, callGeneric, is, new, validObject)
+importFrom(methods, callGeneric, is, validObject)
 importFrom(utils, read.csv, write.csv)
 
 ### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
