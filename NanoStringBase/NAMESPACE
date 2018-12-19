@@ -32,7 +32,8 @@ exportMethods(esApply, subset)
 ### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ### Export non-generic functions
 
-export(readNanoStringRccSet,
+export(geomMean,
+       readNanoStringRccSet,
        readRccFile,
        readRlfFile,
        writeNanoStringRccSet)
