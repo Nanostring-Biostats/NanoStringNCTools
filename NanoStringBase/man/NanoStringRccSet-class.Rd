@@ -11,6 +11,20 @@
 \alias{NanoStringRccSet,missing-method}
 \alias{NanoStringRccSet,NanoStringRccSet-method}
 
+% subsetting
+\alias{controlSet}
+\alias{controlSet,NanoStringRccSet-method}
+\alias{nonControlSet}
+\alias{nonControlSet,NanoStringRccSet-method}
+\alias{endogenousSet}
+\alias{endogenousSet,NanoStringRccSet-method}
+\alias{housekeepingSet}
+\alias{housekeepingSet,NanoStringRccSet-method}
+\alias{negativeControlSet}
+\alias{negativeControlSet,NanoStringRccSet-method}
+\alias{positiveControlSet}
+\alias{positiveControlSet,NanoStringRccSet-method}
+
 % utilities
 \alias{esApply,NanoStringRccSet-method}
 \alias{subset,NanoStringRccSet-method}

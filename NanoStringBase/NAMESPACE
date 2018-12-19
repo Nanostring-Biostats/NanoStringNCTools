@@ -21,13 +21,19 @@ exportClasses(NanoStringRccSet)
 ### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ### Export S4 generics
 
-export(NanoStringRccSet)
+export(NanoStringRccSet,
+       controlSet, nonControlSet,
+       endogenousSet, housekeepingSet,
+       negativeControlSet, positiveControlSet)
 
 ### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ### Export S4 methods
 
-exportMethods(NanoStringRccSet)
-exportMethods(esApply, subset)
+exportMethods(NanoStringRccSet,
+              controlSet, nonControlSet,
+              endogenousSet, housekeepingSet,
+              negativeControlSet, positiveControlSet,
+              esApply, subset)
 
 ### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ### Export non-generic functions

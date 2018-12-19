@@ -167,6 +167,44 @@ function(assayData,
 })
 
 
+# Subsetting
+setGeneric("controlSet", signature = "object",
+           function(object) standardGeneric("controlSet"))
+setMethod("controlSet", "NanoStringRccSet",
+          function(object)
+            object[featureData(object)[["IsControl"]], ])
+
+setGeneric("nonControlSet", signature = "object",
+           function(object) standardGeneric("nonControlSet"))
+setMethod("nonControlSet", "NanoStringRccSet",
+          function(object)
+            object[!featureData(object)[["IsControl"]], ])
+
+setGeneric("endogenousSet", signature = "object",
+           function(object) standardGeneric("endogenousSet"))
+setMethod("endogenousSet", "NanoStringRccSet",
+          function(object)
+            object[featureData(object)[["BarcodeClass"]] == "Endogenous", ])
+
+setGeneric("housekeepingSet", signature = "object",
+           function(object) standardGeneric("housekeepingSet"))
+setMethod("housekeepingSet", "NanoStringRccSet",
+          function(object)
+            object[featureData(object)[["BarcodeClass"]] == "Housekeeping", ])
+
+setGeneric("negativeControlSet", signature = "object",
+           function(object) standardGeneric("negativeControlSet"))
+setMethod("negativeControlSet", "NanoStringRccSet",
+          function(object)
+            object[featureData(object)[["BarcodeClass"]] == "Negative", ])
+
+setGeneric("positiveControlSet", signature = "object",
+           function(object) standardGeneric("positiveControlSet"))
+setMethod("positiveControlSet", "NanoStringRccSet",
+          function(object)
+            object[featureData(object)[["BarcodeClass"]] == "Positive", ])
+
+
 # Utilities
 setMethod("esApply", "NanoStringRccSet",
 function(X, MARGIN, FUN, ...)
