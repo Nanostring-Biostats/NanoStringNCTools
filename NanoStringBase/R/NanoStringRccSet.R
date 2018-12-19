@@ -168,6 +168,19 @@ function(assayData,
 
 
 # Utilities
+setMethod("esApply", "NanoStringRccSet",
+function(X, MARGIN, FUN, ...)
+{
+  parent <- environment(FUN)
+  if (is.null(parent))
+    parent <- emptyenv()
+  e1 <- new.env(parent = parent)
+  kvs <- c(pData(X), pData(protocolData(X)), fData(X))
+  multiassign(names(kvs), kvs, envir = e1)
+  environment(FUN) <- e1
+  apply(exprs(X), MARGIN, FUN, ...)
+})
+
 setMethod("subset", "NanoStringRccSet",
 function(x, subset, select, ...)
 {

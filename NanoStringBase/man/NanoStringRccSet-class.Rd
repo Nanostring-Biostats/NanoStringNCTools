@@ -12,6 +12,7 @@
 \alias{NanoStringRccSet,NanoStringRccSet-method}
 
 % utilities
+\alias{esApply,NanoStringRccSet-method}
 \alias{subset,NanoStringRccSet-method}
 
 \title{NanoStringRccSet objects}

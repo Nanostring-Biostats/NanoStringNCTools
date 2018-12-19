@@ -6,9 +6,9 @@ importClassesFrom(Biobase, AnnotatedDataFrame, AssayData, ExpressionSet, MIAME,
                   Versions)
 importClassesFrom(methods, character, environment, matrix, missing)
 importMethodsFrom(Biobase, AnnotatedDataFrame, annotatedDataFrameFrom,
-                  annotation, exprs, fData, featureData, pData, phenoData,
-                  protocolData, sampleNames)
-importFrom(Biobase, assayDataNew, copyEnv, MIAME)
+                  annotation, esApply, exprs, fData, featureData, pData,
+                  phenoData, protocolData, sampleNames)
+importFrom(Biobase, assayDataNew, copyEnv, MIAME, multiassign)
 importFrom(Biostrings, BStringSet, DNAStringSet)
 importFrom(methods, callGeneric, is, new, validObject)
 importFrom(utils, read.csv, write.csv)
@@ -27,7 +27,7 @@ export(NanoStringRccSet)
 ### Export S4 methods
 
 exportMethods(NanoStringRccSet)
-exportMethods(subset)
+exportMethods(esApply, subset)
 
 ### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ### Export non-generic functions
