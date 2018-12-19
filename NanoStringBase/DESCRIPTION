@@ -8,3 +8,11 @@ Maintainer: Patrick Aboyoun <paboyoun@nanostring.com>
 Depends: R (>= 3.3.0), Biobase, Biostrings, S4Vectors
 Imports: methods, utils
 License: Artistic-2.0
+Collate: RccMetadata.R
+         NanoStringRccSet-class.R
+         NanoStringRccSet-utils.R
+         readRccFile.R
+         readRlfFile.R
+         readNanoStringRccSet.R
+         writeNanoStringRccSet.R
+         geomMean.R
