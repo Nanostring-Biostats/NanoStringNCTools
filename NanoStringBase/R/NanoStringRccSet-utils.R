@@ -74,11 +74,15 @@ setMethod("positiveControlApply", "NanoStringRccSet",
 setMethod("esApply", "NanoStringRccSet",
 function(X, MARGIN, FUN, ..., elt = "exprs")
 {
+  stopifnot(MARGIN %in% c(1L, 2L))
   parent <- environment(FUN)
   if (is.null(parent))
     parent <- emptyenv()
   e1 <- new.env(parent = parent)
-  kvs <- c(pData(X), pData(protocolData(X)), fData(X))
+  if (MARGIN == 1L)
+    kvs <- cbind(pData(X), pData(protocolData(X)))
+  else
+    kvs <- fData(X)
   multiassign(names(kvs), kvs, envir = e1)
   environment(FUN) <- e1
   apply(assayDataElement(X, elt), MARGIN, FUN, ...)
