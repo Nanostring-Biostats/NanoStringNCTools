@@ -25,6 +25,16 @@
 \alias{positiveControlSet}
 \alias{positiveControlSet,NanoStringRccSet-method}
 
+% apply
+\alias{endogenousApply}
+\alias{endogenousApply,NanoStringRccSet-method}
+\alias{housekeepingApply}
+\alias{housekeepingApply,NanoStringRccSet-method}
+\alias{negativeControlApply}
+\alias{negativeControlApply,NanoStringRccSet-method}
+\alias{positiveControlApply}
+\alias{positiveControlApply,NanoStringRccSet-method}
+
 % utilities
 \alias{esApply,NanoStringRccSet-method}
 \alias{subset,NanoStringRccSet-method}

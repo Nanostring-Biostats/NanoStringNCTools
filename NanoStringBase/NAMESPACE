@@ -24,7 +24,9 @@ exportClasses(NanoStringRccSet)
 export(NanoStringRccSet,
        controlSet, nonControlSet,
        endogenousSet, housekeepingSet,
-       negativeControlSet, positiveControlSet)
+       negativeControlSet, positiveControlSet,
+       endogenousApply, housekeepingApply,
+       negativeControlApply, positiveControlApply)
 
 ### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ### Export S4 methods
@@ -33,6 +35,8 @@ exportMethods(NanoStringRccSet,
               controlSet, nonControlSet,
               endogenousSet, housekeepingSet,
               negativeControlSet, positiveControlSet,
+              endogenousApply, housekeepingApply,
+              negativeControlApply, positiveControlApply,
               esApply, subset)
 
 ### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

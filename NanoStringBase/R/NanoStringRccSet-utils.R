@@ -36,6 +36,32 @@ setMethod("positiveControlSet", "NanoStringRccSet",
             object[featureData(object)[["BarcodeClass"]] == "Positive", ])
 
 
+# Apply
+setGeneric("endogenousApply", signature = "X",
+           function(X, MARGIN, FUN, ...) standardGeneric("endogenousApply"))
+setMethod("endogenousApply", "NanoStringRccSet",
+          function(X, MARGIN, FUN, ...)
+            esApply(endogenousSet(X), MARGIN = MARGIN, FUN = FUN, ...))
+
+setGeneric("housekeepingApply", signature = "X",
+           function(X, MARGIN, FUN, ...) standardGeneric("housekeepingApply"))
+setMethod("housekeepingApply", "NanoStringRccSet",
+          function(X, MARGIN, FUN, ...)
+            esApply(housekeepingSet(X), MARGIN = MARGIN, FUN = FUN, ...))
+
+setGeneric("negativeControlApply", signature = "X",
+           function(X, MARGIN, FUN, ...) standardGeneric("negativeControlApply"))
+setMethod("negativeControlApply", "NanoStringRccSet",
+          function(X, MARGIN, FUN, ...)
+            esApply(negativeControlSet(X), MARGIN = MARGIN, FUN = FUN, ...))
+
+setGeneric("positiveControlApply", signature = "X",
+           function(X, MARGIN, FUN, ...) standardGeneric("positiveControlApply"))
+setMethod("positiveControlApply", "NanoStringRccSet",
+          function(X, MARGIN, FUN, ...)
+            esApply(positiveControlSet(X), MARGIN = MARGIN, FUN = FUN, ...))
+
+
 # Utilities
 setMethod("esApply", "NanoStringRccSet",
 function(X, MARGIN, FUN, ...)
