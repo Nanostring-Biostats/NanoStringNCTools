@@ -37,6 +37,8 @@
 
 % utilities
 \alias{esApply,NanoStringRccSet-method}
+\alias{esSweep}
+\alias{esSweep,NanoStringRccSet-method}
 \alias{subset,NanoStringRccSet-method}
 
 \title{NanoStringRccSet objects}
