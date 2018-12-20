@@ -38,33 +38,41 @@ setMethod("positiveControlSet", "NanoStringRccSet",
 
 # Apply
 setGeneric("endogenousApply", signature = "X",
-           function(X, MARGIN, FUN, ...) standardGeneric("endogenousApply"))
+           function(X, MARGIN, FUN, ..., elt = "exprs")
+             standardGeneric("endogenousApply"))
 setMethod("endogenousApply", "NanoStringRccSet",
-          function(X, MARGIN, FUN, ...)
-            esApply(endogenousSet(X), MARGIN = MARGIN, FUN = FUN, ...))
+          function(X, MARGIN, FUN, ..., elt = "exprs")
+            esApply(endogenousSet(X), MARGIN = MARGIN, FUN = FUN, ...,
+                    elt = elt))
 
 setGeneric("housekeepingApply", signature = "X",
-           function(X, MARGIN, FUN, ...) standardGeneric("housekeepingApply"))
+           function(X, MARGIN, FUN, ..., elt = "exprs")
+             standardGeneric("housekeepingApply"))
 setMethod("housekeepingApply", "NanoStringRccSet",
-          function(X, MARGIN, FUN, ...)
-            esApply(housekeepingSet(X), MARGIN = MARGIN, FUN = FUN, ...))
+          function(X, MARGIN, FUN, ..., elt = "exprs")
+            esApply(housekeepingSet(X), MARGIN = MARGIN, FUN = FUN, ...,
+                    elt = elt))
 
 setGeneric("negativeControlApply", signature = "X",
-           function(X, MARGIN, FUN, ...) standardGeneric("negativeControlApply"))
+           function(X, MARGIN, FUN, ..., elt = "exprs")
+             standardGeneric("negativeControlApply"))
 setMethod("negativeControlApply", "NanoStringRccSet",
-          function(X, MARGIN, FUN, ...)
-            esApply(negativeControlSet(X), MARGIN = MARGIN, FUN = FUN, ...))
+          function(X, MARGIN, FUN, ..., elt = "exprs")
+            esApply(negativeControlSet(X), MARGIN = MARGIN, FUN = FUN, ...,
+                    elt = elt))
 
 setGeneric("positiveControlApply", signature = "X",
-           function(X, MARGIN, FUN, ...) standardGeneric("positiveControlApply"))
+           function(X, MARGIN, FUN, ..., elt = "exprs")
+             standardGeneric("positiveControlApply"))
 setMethod("positiveControlApply", "NanoStringRccSet",
-          function(X, MARGIN, FUN, ...)
-            esApply(positiveControlSet(X), MARGIN = MARGIN, FUN = FUN, ...))
+          function(X, MARGIN, FUN, ..., elt = "exprs")
+            esApply(positiveControlSet(X), MARGIN = MARGIN, FUN = FUN, ...,
+                    elt = elt))
 
 
 # Utilities
 setMethod("esApply", "NanoStringRccSet",
-function(X, MARGIN, FUN, ...)
+function(X, MARGIN, FUN, ..., elt = "exprs")
 {
   parent <- environment(FUN)
   if (is.null(parent))
@@ -73,7 +81,7 @@ function(X, MARGIN, FUN, ...)
   kvs <- c(pData(X), pData(protocolData(X)), fData(X))
   multiassign(names(kvs), kvs, envir = e1)
   environment(FUN) <- e1
-  apply(exprs(X), MARGIN, FUN, ...)
+  apply(assayDataElement(X, elt), MARGIN, FUN, ...)
 })
 
 setMethod("subset", "NanoStringRccSet",

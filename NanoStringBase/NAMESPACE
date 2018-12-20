@@ -8,7 +8,7 @@ importClassesFrom(methods, character, environment, matrix, missing)
 importMethodsFrom(Biobase, AnnotatedDataFrame, annotatedDataFrameFrom,
                   annotation, esApply, exprs, fData, featureData, pData,
                   phenoData, protocolData, sampleNames)
-importFrom(Biobase, assayDataNew, copyEnv, MIAME, multiassign)
+importFrom(Biobase, assayDataElement, assayDataNew, copyEnv, MIAME, multiassign)
 importFrom(Biostrings, BStringSet, DNAStringSet)
 importFrom(methods, callGeneric, is, validObject)
 importFrom(utils, read.csv, write.csv)
