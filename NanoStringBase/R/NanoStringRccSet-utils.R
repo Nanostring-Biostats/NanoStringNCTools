@@ -88,12 +88,12 @@ function(X, MARGIN, FUN, ..., elt = "exprs")
   apply(assayDataElement(X, elt), MARGIN, FUN, ...)
 })
 
-setGeneric("esSweep", signature = "x",
-           function(x, MARGIN, STATS, FUN = "-", check.margin = TRUE, ...,
+setGeneric("esSweep", signature = "X",
+           function(X, MARGIN, STATS, FUN = "-", check.margin = TRUE, ...,
                     fromElt = "exprs", toElt, validate = TRUE)
              standardGeneric("esSweep"))
 setMethod("esSweep", "NanoStringRccSet",
-function(x, MARGIN, STATS, FUN = "-", check.margin = TRUE, ...,
+function(X, MARGIN, STATS, FUN = "-", check.margin = TRUE, ...,
          fromElt = "exprs", toElt, validate = TRUE)
 {
   stopifnot(MARGIN %in% c(1L, 2L))
@@ -107,9 +107,9 @@ function(x, MARGIN, STATS, FUN = "-", check.margin = TRUE, ...,
     parent <- emptyenv()
   e1 <- new.env(parent = parent)
   if (MARGIN == 1L)
-    kvs <- fData(x)
+    kvs <- fData(X)
   else
-    kvs <- cbind(pData(x), pData(protocolData(x)))
+    kvs <- cbind(pData(X), pData(protocolData(X)))
   multiassign(names(kvs), kvs, envir = e1)
   environment(FUN) <- e1
 
@@ -121,14 +121,14 @@ function(x, MARGIN, STATS, FUN = "-", check.margin = TRUE, ...,
     STATS <- stats
 
   # Calculate matrix
-  value <- sweep(assayDataElement(x, fromElt), MARGIN = MARGIN, STATS = STATS,
+  value <- sweep(assayDataElement(X, fromElt), MARGIN = MARGIN, STATS = STATS,
                  FUN = FUN, check.margin = check.margin, ...)
 
   # Modify return value
-  assayDataElement(x, toElt, validate = validate) <- value
-  preproc(x)[[toElt]] <- match.call()
+  assayDataElement(X, toElt, validate = validate) <- value
+  preproc(X)[[toElt]] <- match.call()
 
-  x
+  X
 })
 
 setMethod("subset", "NanoStringRccSet",
