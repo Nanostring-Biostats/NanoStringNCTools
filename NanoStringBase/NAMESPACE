@@ -45,8 +45,7 @@ exportMethods(NanoStringRccSet,
 ### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ### Export non-generic functions
 
-export(geomMean,
-       readNanoStringRccSet,
+export(readNanoStringRccSet,
        readRccFile,
        readRlfFile,
        writeNanoStringRccSet)
