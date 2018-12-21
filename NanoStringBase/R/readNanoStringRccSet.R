@@ -25,11 +25,15 @@ function(rccFiles,
       stop("Column `phenoDataRccColName` not found in `phenoDataFile`")
     else if (length(j) > 1L)
       stop("Multiple columns in `phenoDataFile` match `phenoDataRccColName`")
-    if (!all(colnames(assay) %in% pheno[[j]]))
-      stop("Column `phenoDataRccColName` in `phenoDataFile` does not match `rccFiles`")
+    missingPhenoCount <- sum(!(colnames(assay) %in% pheno[[j]]))
     rownames(pheno) <- pheno[[j]]
     pheno[[j]] <- NULL
     pheno <- pheno[colnames(assay), , drop = FALSE]
+    if (missingPhenoCount != 0L) {
+      rownames(pheno) <- colnames(assay)
+      warning(sprintf("Column `phenoDataRccColName` in `phenoDataFile` is missing %d of %d Samples",
+                      missingPhenoCount, ncol(assay)))
+    }
     pheno <- AnnotatedDataFrame(pheno,
                                 dimLabels = c("sampleNames", "sampleColumns"))
   }
