@@ -6,7 +6,7 @@ Encoding: UTF-8
 Author: Patrick Aboyoun
 Maintainer: Patrick Aboyoun <paboyoun@nanostring.com>
 Depends: R (>= 3.3.0), Biobase, Biostrings, S4Vectors
-Imports: methods, utils
+Imports: methods, stats, utils
 License: Artistic-2.0
 Collate: RccMetadata.R
          NanoStringRccSet-class.R
@@ -16,3 +16,4 @@ Collate: RccMetadata.R
          readNanoStringRccSet.R
          writeNanoStringRccSet.R
          geomMean.R
+         skewness.R

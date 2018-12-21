@@ -12,6 +12,7 @@ importFrom(Biobase, assayDataElement, "assayDataElement<-", assayDataNew,
            copyEnv, MIAME, multiassign)
 importFrom(Biostrings, BStringSet, DNAStringSet)
 importFrom(methods, callGeneric, is, validObject)
+importFrom(stats, quantile)
 importFrom(utils, read.csv, write.csv)
 
 ### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -28,7 +29,7 @@ export(NanoStringRccSet,
        negativeControlSet, positiveControlSet,
        endogenousApply, housekeepingApply,
        negativeControlApply, positiveControlApply,
-       esSweep)
+       esSummary, esSweep)
 
 ### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ### Export S4 methods
@@ -39,7 +40,7 @@ exportMethods(NanoStringRccSet,
               negativeControlSet, positiveControlSet,
               endogenousApply, housekeepingApply,
               negativeControlApply, positiveControlApply,
-              esApply, esSweep, subset)
+              esApply, esSummary, esSweep, subset)
 
 ### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ### Export non-generic functions

@@ -88,6 +88,27 @@ function(X, MARGIN, FUN, ..., elt = "exprs")
   apply(assayDataElement(X, elt), MARGIN, FUN, ...)
 })
 
+setGeneric("esSummary", signature = "X",
+           function(X, MARGIN, elt = "exprs", na.rm = FALSE)
+             standardGeneric("esSummary"))
+setMethod("esSummary", "NanoStringRccSet",
+function(X, MARGIN, elt = "exprs", na.rm = FALSE)
+{
+  stopifnot(MARGIN %in% c(1L, 2L))
+  FUN <- function(x) {
+    quartiles <- quantile(x, probs = c(0, 0.25, 0.5, 0.75, 1))
+    names(quartiles) <- c("Min", "Q1", "Median", "Q3", "Max")
+    c("Mean"     = mean(x, na.rm = na.rm),
+      "SD"       = sd(x, na.rm = na.rm),
+      "Skewness" = skewness(x, na.rm = na.rm),
+      "Kurtosis" = kurtosis(x, na.rm = na.rm),
+      quartiles,
+      "N"        = length(x),
+      "NMiss"    = sum(is.na(x)))
+  }
+  t(esApply(X, MARGIN = MARGIN, FUN = FUN, elt = elt))
+})
+
 setGeneric("esSweep", signature = "X",
            function(X, MARGIN, STATS, FUN = "-", check.margin = TRUE, ...,
                     fromElt = "exprs", toElt, validate = TRUE)
