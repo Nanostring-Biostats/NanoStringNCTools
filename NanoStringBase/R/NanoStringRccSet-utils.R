@@ -89,19 +89,20 @@ function(X, MARGIN, FUN, ..., elt = "exprs")
 })
 
 setGeneric("esSummary", signature = "X",
-           function(X, MARGIN, elt = "exprs", na.rm = FALSE)
+           function(X, MARGIN, elt = "exprs")
              standardGeneric("esSummary"))
 setMethod("esSummary", "NanoStringRccSet",
-function(X, MARGIN, elt = "exprs", na.rm = FALSE)
+function(X, MARGIN, elt = "exprs")
 {
   stopifnot(MARGIN %in% c(1L, 2L))
-  FUN <- function(x) {
-    quartiles <- quantile(x, probs = c(0, 0.25, 0.5, 0.75, 1))
+  FUN <- function(x)
+  {
+    quartiles <- quantile(x, probs = c(0, 0.25, 0.5, 0.75, 1), na.rm = TRUE)
     names(quartiles) <- c("Min", "Q1", "Median", "Q3", "Max")
-    c("Mean"     = mean(x, na.rm = na.rm),
-      "SD"       = sd(x, na.rm = na.rm),
-      "Skewness" = skewness(x, na.rm = na.rm),
-      "Kurtosis" = kurtosis(x, na.rm = na.rm),
+    c("Mean"     = mean(x, na.rm = TRUE),
+      "SD"       = sd(x, na.rm = TRUE),
+      "Skewness" = skewness(x, na.rm = TRUE),
+      "Kurtosis" = kurtosis(x, na.rm = TRUE),
       quartiles,
       "N"        = length(x),
       "NMiss"    = sum(is.na(x)))
