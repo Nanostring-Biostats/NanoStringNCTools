@@ -23,7 +23,7 @@ exportClasses(NanoStringRccSet)
 ### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ### Export S4 generics
 
-export(NanoStringRccSet,
+export(NanoStringRccSet, sData,
        controlSet, nonControlSet,
        endogenousSet, housekeepingSet,
        negativeControlSet, positiveControlSet,
@@ -34,7 +34,7 @@ export(NanoStringRccSet,
 ### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ### Export S4 methods
 
-exportMethods(NanoStringRccSet,
+exportMethods(NanoStringRccSet, sData,
               controlSet, nonControlSet,
               endogenousSet, housekeepingSet,
               negativeControlSet, positiveControlSet,

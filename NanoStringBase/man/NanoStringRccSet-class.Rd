@@ -11,6 +11,10 @@
 \alias{NanoStringRccSet,missing-method}
 \alias{NanoStringRccSet,NanoStringRccSet-method}
 
+% accessors
+\alias{sData}
+\alias{sData,NanoStringRccSet-method}
+
 % subsetting
 \alias{controlSet}
 \alias{controlSet,NanoStringRccSet-method}

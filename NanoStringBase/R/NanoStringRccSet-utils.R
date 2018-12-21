@@ -1,3 +1,10 @@
+# Accessors
+setGeneric("sData", signature = "object",
+           function(object) standardGeneric("sData"))
+setMethod("sData", "NanoStringRccSet",
+          function(object) cbind(pData(object), pData(protocolData(object))))
+
+
 # Subsetting
 setGeneric("controlSet", signature = "object",
            function(object) standardGeneric("controlSet"))
@@ -80,7 +87,7 @@ function(X, MARGIN, FUN, ..., elt = "exprs")
     parent <- emptyenv()
   e1 <- new.env(parent = parent)
   if (MARGIN == 1L)
-    kvs <- cbind(pData(X), pData(protocolData(X)))
+    kvs <- sData(X)
   else
     kvs <- fData(X)
   multiassign(names(kvs), kvs, envir = e1)
@@ -131,7 +138,7 @@ function(X, MARGIN, STATS, FUN = "-", check.margin = TRUE, ...,
   if (MARGIN == 1L)
     kvs <- fData(X)
   else
-    kvs <- cbind(pData(X), pData(protocolData(X)))
+    kvs <- sData(X)
   multiassign(names(kvs), kvs, envir = e1)
   environment(FUN) <- e1
 
