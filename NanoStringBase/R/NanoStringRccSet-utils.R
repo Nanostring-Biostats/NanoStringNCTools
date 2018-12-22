@@ -4,6 +4,10 @@ setGeneric("sData", signature = "object",
 setMethod("sData", "NanoStringRccSet",
           function(object) cbind(pData(object), pData(protocolData(object))))
 
+setGeneric("svarLabels", signature = "object",
+           function(object) standardGeneric("svarLabels"))
+setMethod("svarLabels", "NanoStringRccSet",
+          function(object) c(varLabels(object), varLabels(protocolData(object))))
 
 # Subsetting
 setGeneric("controlSet", signature = "object",

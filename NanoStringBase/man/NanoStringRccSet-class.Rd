@@ -14,6 +14,8 @@
 % accessors
 \alias{sData}
 \alias{sData,NanoStringRccSet-method}
+\alias{svarLabels}
+\alias{svarLabels,NanoStringRccSet-method}
 
 % subsetting
 \alias{controlSet}

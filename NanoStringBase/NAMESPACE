@@ -9,7 +9,7 @@ importClassesFrom(methods, character, environment, matrix, missing)
 importMethodsFrom(Biobase, AnnotatedDataFrame, annotatedDataFrameFrom,
                   annotation, esApply, exprs, fData, featureData, fvarLabels,
                   pData, phenoData, preproc, "preproc<-", protocolData,
-                  sampleNames)
+                  sampleNames, varLabels)
 importFrom(Biobase, assayDataElement, "assayDataElement<-", assayDataNew,
            copyEnv, MIAME, multiassign)
 importFrom(Biostrings, BStringSet, DNAStringSet)
@@ -25,7 +25,8 @@ exportClasses(NanoStringRccSet)
 ### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ### Export S4 generics
 
-export(NanoStringRccSet, sData,
+export(NanoStringRccSet,
+       sData, svarLabels,
        controlSet, nonControlSet,
        endogenousSet, housekeepingSet,
        negativeControlSet, positiveControlSet,
@@ -36,7 +37,8 @@ export(NanoStringRccSet, sData,
 ### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ### Export S4 methods
 
-exportMethods(NanoStringRccSet, sData,
+exportMethods(NanoStringRccSet,
+              sData, svarLabels,
               controlSet, nonControlSet,
               endogenousSet, housekeepingSet,
               negativeControlSet, positiveControlSet,
