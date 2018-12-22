@@ -10,13 +10,19 @@ setGeneric("controlSet", signature = "object",
            function(object) standardGeneric("controlSet"))
 setMethod("controlSet", "NanoStringRccSet",
           function(object)
-            object[featureData(object)[["IsControl"]], ])
+            if ("IsControl" %in% fvarLabels(object))
+              object[featureData(object)[["IsControl"]], ]
+            else
+              stop("Missing \"IsControl\" column in featureData"))
 
 setGeneric("nonControlSet", signature = "object",
            function(object) standardGeneric("nonControlSet"))
 setMethod("nonControlSet", "NanoStringRccSet",
           function(object)
-            object[!featureData(object)[["IsControl"]], ])
+            if ("IsControl" %in% fvarLabels(object))
+              object[!featureData(object)[["IsControl"]], ]
+            else
+              stop("Missing \"IsControl\" column in featureData"))
 
 setGeneric("endogenousSet", signature = "object",
            function(object) standardGeneric("endogenousSet"))

@@ -7,8 +7,9 @@ importClassesFrom(Biobase, AnnotatedDataFrame, AssayData, ExpressionSet, MIAME,
                   Versions)
 importClassesFrom(methods, character, environment, matrix, missing)
 importMethodsFrom(Biobase, AnnotatedDataFrame, annotatedDataFrameFrom,
-                  annotation, esApply, exprs, fData, featureData, pData,
-                  phenoData, preproc, "preproc<-", protocolData, sampleNames)
+                  annotation, esApply, exprs, fData, featureData, fvarLabels,
+                  pData, phenoData, preproc, "preproc<-", protocolData,
+                  sampleNames)
 importFrom(Biobase, assayDataElement, "assayDataElement<-", assayDataNew,
            copyEnv, MIAME, multiassign)
 importFrom(Biostrings, BStringSet, DNAStringSet)
