@@ -43,3 +43,107 @@ test_NanoStringRccSet_constructor_simple <- function() {
                                          annotation = rcc$annotation,
                                          protocolData = rcc$protocolData)))
 }
+
+test_NanoStringRccSet_exception_sample_name <- function() {
+  x <- rcc$assayData
+  colnames(x) <- letters[1:3]
+  y <- rcc$protocolData
+  rownames(y) <- letters[1:3]
+  checkException(validObject(NanoStringRccSet(x,
+                                              featureData = rcc$featureData,
+                                              annotation = rcc$annotation,
+                                              protocolData = y)))
+}
+
+test_NanoStringRccSet_exception_featureData <- function() {
+  checkException(validObject(NanoStringRccSet(rcc$assayData,
+                                              featureData = rcc$featureData[,1:2],
+                                              annotation = rcc$annotation,
+                                              protocolData = rcc$protocolData)))
+}
+
+test_NanoStringRccSet_exception_annotation <- function() {
+  checkException(validObject(NanoStringRccSet(rcc$assayData,
+                                              featureData = rcc$featureData,
+                                              protocolData = rcc$protocolData)))
+}
+
+test_NanoStringRccSet_exception_protocolData <- function() {
+  checkException(validObject(NanoStringRccSet(rcc$assayData,
+                                              featureData = rcc$featureData,
+                                              annotation = rcc$annotation,
+                                              protocolData = rcc$protocolData[,1:2])))
+}
+
+test_NanoStringRccSet_exception_protocolData_FileVersion <- function() {
+  x <- rcc$protocolData
+  x[["FileVersion"]] <- numeric_version("1.6")
+  checkException(validObject(NanoStringRccSet(rcc$assayData,
+                                              featureData = rcc$featureData,
+                                              annotation = rcc$annotation,
+                                              protocolData = x)))
+}
+
+test_NanoStringRccSet_exception_protocolData_LaneID <- function() {
+  x <- rcc$protocolData
+  x[["LaneID"]] <- 0L
+  checkException(validObject(NanoStringRccSet(rcc$assayData,
+                                              featureData = rcc$featureData,
+                                              annotation = rcc$annotation,
+                                              protocolData = x)))
+  x[["LaneID"]] <- 13L
+  checkException(validObject(NanoStringRccSet(rcc$assayData,
+                                              featureData = rcc$featureData,
+                                              annotation = rcc$annotation,
+                                              protocolData = x)))
+}
+
+test_NanoStringRccSet_exception_protocolData_FovCount <- function() {
+  x <- rcc$protocolData
+  x[["FovCount"]] <- -1L
+  checkException(validObject(NanoStringRccSet(rcc$assayData,
+                                              featureData = rcc$featureData,
+                                              annotation = rcc$annotation,
+                                              protocolData = x)))
+}
+
+test_NanoStringRccSet_exception_protocolData_FovCounted <- function() {
+  x <- rcc$protocolData
+  x[["FovCounted"]] <- -1L
+  checkException(validObject(NanoStringRccSet(rcc$assayData,
+                                              featureData = rcc$featureData,
+                                              annotation = rcc$annotation,
+                                              protocolData = x)))
+}
+
+test_NanoStringRccSet_exception_protocolData_StagePosition <- function() {
+  x <- rcc$protocolData
+  x[["StagePosition"]] <- 0L
+  checkException(validObject(NanoStringRccSet(rcc$assayData,
+                                              featureData = rcc$featureData,
+                                              annotation = rcc$annotation,
+                                              protocolData = x)))
+  x[["StagePosition"]] <- 7L
+  checkException(validObject(NanoStringRccSet(rcc$assayData,
+                                              featureData = rcc$featureData,
+                                              annotation = rcc$annotation,
+                                              protocolData = x)))
+}
+
+test_NanoStringRccSet_exception_protocolData_BindingDensity <- function() {
+  x <- rcc$protocolData
+  x[["BindingDensity"]] <- -1.2
+  checkException(validObject(NanoStringRccSet(rcc$assayData,
+                                              featureData = rcc$featureData,
+                                              annotation = rcc$annotation,
+                                              protocolData = x)))
+}
+
+test_NanoStringRccSet_exception_assayData <- function() {
+  x <- rcc$assayData
+  x[] <- -1L
+  checkException(validObject(NanoStringRccSet(x,
+                                              featureData = rcc$featureData,
+                                              annotation = rcc$annotation,
+                                              protocolData = rcc$protocolData)))
+}
