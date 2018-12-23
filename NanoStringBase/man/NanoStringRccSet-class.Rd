@@ -47,6 +47,8 @@
 \alias{esSummary,NanoStringRccSet-method}
 \alias{esSweep}
 \alias{esSweep,NanoStringRccSet-method}
+\alias{esTransform}
+\alias{esTransform,NanoStringRccSet-method}
 \alias{subset,NanoStringRccSet-method}
 
 \title{NanoStringRccSet objects}
