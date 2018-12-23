@@ -28,9 +28,9 @@ exportClasses(NanoStringRccSet)
 
 export(NanoStringRccSet,
        sData, svarLabels,
-       controlSet, nonControlSet,
        endogenousSet, housekeepingSet,
        negativeControlSet, positiveControlSet,
+       controlSet, nonControlSet,
        endogenousApply, housekeepingApply,
        negativeControlApply, positiveControlApply)
 
@@ -40,9 +40,9 @@ export(NanoStringRccSet,
 exportMethods(NanoStringRccSet,
               sData, svarLabels,
               summary, subset,
-              controlSet, nonControlSet,
               endogenousSet, housekeepingSet,
               negativeControlSet, positiveControlSet,
+              controlSet, nonControlSet,
               esApply, endogenousApply, housekeepingApply,
               negativeControlApply, positiveControlApply,
               sweep, transform)

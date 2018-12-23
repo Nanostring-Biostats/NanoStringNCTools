@@ -39,24 +39,6 @@ function(x, subset, select, ...)
   eval(substitute(with(kvs, x[subset, select])))
 })
 
-setGeneric("controlSet", signature = "object",
-           function(object) standardGeneric("controlSet"))
-setMethod("controlSet", "NanoStringRccSet",
-          function(object)
-            if ("IsControl" %in% fvarLabels(object))
-              object[featureData(object)[["IsControl"]], ]
-            else
-              stop("Missing \"IsControl\" column in featureData"))
-
-setGeneric("nonControlSet", signature = "object",
-           function(object) standardGeneric("nonControlSet"))
-setMethod("nonControlSet", "NanoStringRccSet",
-          function(object)
-            if ("IsControl" %in% fvarLabels(object))
-              object[!featureData(object)[["IsControl"]], ]
-            else
-              stop("Missing \"IsControl\" column in featureData"))
-
 setGeneric("endogenousSet", signature = "object",
            function(object) standardGeneric("endogenousSet"))
 setMethod("endogenousSet", "NanoStringRccSet",
@@ -80,6 +62,24 @@ setGeneric("positiveControlSet", signature = "object",
 setMethod("positiveControlSet", "NanoStringRccSet",
           function(object)
             object[featureData(object)[["BarcodeClass"]] == "Positive", ])
+
+setGeneric("controlSet", signature = "object",
+           function(object) standardGeneric("controlSet"))
+setMethod("controlSet", "NanoStringRccSet",
+          function(object)
+            if ("IsControl" %in% fvarLabels(object))
+              object[featureData(object)[["IsControl"]], ]
+          else
+            stop("Missing \"IsControl\" column in featureData"))
+
+setGeneric("nonControlSet", signature = "object",
+           function(object) standardGeneric("nonControlSet"))
+setMethod("nonControlSet", "NanoStringRccSet",
+          function(object)
+            if ("IsControl" %in% fvarLabels(object))
+              object[!featureData(object)[["IsControl"]], ]
+          else
+            stop("Missing \"IsControl\" column in featureData"))
 
 
 # Looping
