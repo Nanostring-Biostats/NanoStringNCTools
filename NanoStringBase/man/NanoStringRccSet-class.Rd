@@ -121,7 +121,7 @@ NanoStringRccSet(assayData,
     \item{}{
       \code{subset(x, subset, select, \ldots)}: Subset the feature and sample
       dimensions using the \code{subset} and \code{select} arguments
-      respectively. The \subset{subset} argument will be evaluated with
+      respectively. The \code{subset} argument will be evaluated with
       respect to the feature data set, while the \code{select} argument
       will be evaluated with respect to the sample data set.
     }
