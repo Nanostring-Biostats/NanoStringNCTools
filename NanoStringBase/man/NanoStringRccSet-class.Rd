@@ -105,9 +105,11 @@ NanoStringRccSet(assayData,
 \section{Summary}{
   \describe{
     \item{}{
-      \code{summary(object, MARGIN, elt = "exprs")}: Summaries the features
-      (\code{MARGIN = 1}) or samples (\code{MARGIN = 2}) of the \code{elt}
-      assayData matrix.
+      \code{summary(object, MARGIN, elt = "exprs")}: Marginal summaries
+      (Mean, Standard Deviation, Skewness, Excess Kurtosis, Minimum,
+      First Quartile, Median, Third Quartile, Maximum, Count, Non-Missing
+      Count) of the \code{elt} assayData matrix along either the feature
+      (\code{MARGIN = 1}) or sample (\code{MARGIN = 2}) dimension.
     }
   }
 }
@@ -117,34 +119,37 @@ NanoStringRccSet(assayData,
   methods, NanoStringRccSet objects have the following:
   \describe{
     \item{}{
-      \code{subset(x, subset, select, \ldots)}: Subset the features and samples
-      using the \code{subset} and \code{select} arguments respectively.
+      \code{subset(x, subset, select, \ldots)}: Subset the feature and sample
+      dimensions using the \code{subset} and \code{select} arguments
+      respectively. The \subset{subset} argument will be evaluated with
+      respect to the feature data set, while the \code{select} argument
+      will be evaluated with respect to the sample data set.
     }
     \item{}{
       \code{endogenousSet(object)}: Extracts the endogenous barcode class
-      subset of \code{object}.
+      feature subset of \code{object}.
     }
     \item{}{
       \code{housekeepingSet(object)}: Extracts the housekeeping barcode class
-      subset of \code{object}.
+      feature subset of \code{object}.
     }
     \item{}{
       \code{negativeControlSet(object)}: Extracts the negative control barcode
-      class subset of \code{object}.
+      class feature subset of \code{object}.
     }
     \item{}{
       \code{positiveControlSet(object)}: Extracts the positive control barcode
-      class subset of \code{object}.
+      class feature subset of \code{object}.
     }
     \item{}{
       \code{controlSet(object)}: If the \code{"IsControl"} indicator column is
-      present in the features, extracts the subset representing the controls of
-      \code{object}.
+      present in the feature data, extracts the feature subset representing the
+      controls of \code{object}.
     }
     \item{}{
       \code{nonControlSet(object)}: If the \code{"IsControl"} indicator column
-      is present in the features, extracts the subset representing the
-      non-controls of \code{object}.
+      is present in the feature data, extracts the feature subset representing
+      the non-controls of \code{object}.
     }
   }
 }
@@ -157,28 +162,30 @@ NanoStringRccSet(assayData,
   \describe{
     \item{}{
       \code{esApply(X, MARGIN, FUN, \ldots, elt = "exprs")}: Loop over the
-      features (\code{MARGIN = 1}) or samples (\code{MARGIN = 2}) for all of
-      \code{X}.
+      feature (\code{MARGIN = 1}) or sample (\code{MARGIN = 2}) dimension
+      for all of \code{X}.
     }
     \item{}{
       \code{endogenousApply(X, MARGIN, FUN, \ldots, elt = "exprs")}: Loop
-      over the features (\code{MARGIN = 1}) or samples (\code{MARGIN = 2})
-      for the endogenous barcode class subset of \code{X}.
+      over the feature (\code{MARGIN = 1}) or sample (\code{MARGIN = 2})
+      dimension for the endogenous barcode class feature subset of \code{X}.
     }
     \item{}{
       \code{housekeepingApply(X, MARGIN, FUN, \ldots, elt = "exprs")}: Loop
-      over the features (\code{MARGIN = 1}) or samples (\code{MARGIN = 2})
-      for the housekeeping barcode class subset of \code{X}.
+      over the feature (\code{MARGIN = 1}) or sample (\code{MARGIN = 2})
+      dimension for the housekeeping barcode class feature subset of \code{X}.
     }
     \item{}{
       \code{negativeControlApply(X, MARGIN, FUN, \ldots, elt = "exprs")}: Loop
-      over the features (\code{MARGIN = 1}) or samples (\code{MARGIN = 2})
-      for the negative control barcode class subset of \code{X}.
+      over the feature (\code{MARGIN = 1}) or sample (\code{MARGIN = 2})
+      dimension for the negative control barcode class feature subset of
+      \code{X}.
     }
     \item{}{
       \code{positiveControlApply(X, MARGIN, FUN, \ldots, elt = "exprs")}: Loop
-      over the features (\code{MARGIN = 1}) or samples (\code{MARGIN = 2})
-      for the positive control barcode class subset of \code{X}.
+      over the feature (\code{MARGIN = 1}) or sample (\code{MARGIN = 2})
+      dimension for the positive control barcode class feature subset of
+      \code{X}.
     }
   }
 }
@@ -192,7 +199,8 @@ NanoStringRccSet(assayData,
          fromElt = "exprs", toElt)}: Similar to the \code{\link[base]{sweep}}
          function in the \pkg{base} package, creates a \code{toElt} assayData
          matrix by sweeping out a summary statistic from the \code{fromElt}
-         assayData matrix.
+         assayData matrix along the feature (\code{MARGIN = 1}) or sample
+         (\code{MARGIN = 2}) dimension.
     }
     \item{}{
       \code{transform(`_data`, \ldots)}: Similar to the
