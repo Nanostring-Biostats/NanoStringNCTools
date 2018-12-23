@@ -17,7 +17,11 @@
 \alias{svarLabels}
 \alias{svarLabels,NanoStringRccSet-method}
 
+% summary
+\alias{summary,NanoStringRccSet-method}
+
 % subsetting
+\alias{subset,NanoStringRccSet-method}
 \alias{controlSet}
 \alias{controlSet,NanoStringRccSet-method}
 \alias{nonControlSet}
@@ -31,7 +35,8 @@
 \alias{positiveControlSet}
 \alias{positiveControlSet,NanoStringRccSet-method}
 
-% apply
+% looping
+\alias{esApply,NanoStringRccSet-method}
 \alias{endogenousApply}
 \alias{endogenousApply,NanoStringRccSet-method}
 \alias{housekeepingApply}
@@ -41,15 +46,9 @@
 \alias{positiveControlApply}
 \alias{positiveControlApply,NanoStringRccSet-method}
 
-% utilities
-\alias{esApply,NanoStringRccSet-method}
-\alias{esSummary}
-\alias{esSummary,NanoStringRccSet-method}
-\alias{esSweep}
-\alias{esSweep,NanoStringRccSet-method}
-\alias{esTransform}
-\alias{esTransform,NanoStringRccSet-method}
-\alias{subset,NanoStringRccSet-method}
+% transforming
+\alias{sweep,NanoStringRccSet-method}
+\alias{transform,NanoStringRccSet-method}
 
 \title{NanoStringRccSet objects}
 

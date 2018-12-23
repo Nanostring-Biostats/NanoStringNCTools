@@ -9,7 +9,36 @@ setGeneric("svarLabels", signature = "object",
 setMethod("svarLabels", "NanoStringRccSet",
           function(object) c(varLabels(object), varLabels(protocolData(object))))
 
+
+# Summary
+setMethod("summary", "NanoStringRccSet",
+function(object, MARGIN, elt = "exprs")
+{
+  stopifnot(MARGIN %in% c(1L, 2L))
+  FUN <- function(x)
+  {
+    quartiles <- quantile(x, probs = c(0, 0.25, 0.5, 0.75, 1), na.rm = TRUE)
+    names(quartiles) <- c("Min", "Q1", "Median", "Q3", "Max")
+    c("Mean"     = mean(x, na.rm = TRUE),
+      "SD"       = sd(x, na.rm = TRUE),
+      "Skewness" = skewness(x, na.rm = TRUE),
+      "Kurtosis" = kurtosis(x, na.rm = TRUE),
+      quartiles,
+      "N"        = length(x),
+      "NMiss"    = sum(is.na(x)))
+  }
+  t(esApply(object, MARGIN = MARGIN, FUN = FUN, elt = elt))
+})
+
+
 # Subsetting
+setMethod("subset", "NanoStringRccSet",
+function(x, subset, select, ...)
+{
+  kvs <- c(sData(x), fData(x))
+  eval(substitute(with(kvs, x[subset, select])))
+})
+
 setGeneric("controlSet", signature = "object",
            function(object) standardGeneric("controlSet"))
 setMethod("controlSet", "NanoStringRccSet",
@@ -53,7 +82,26 @@ setMethod("positiveControlSet", "NanoStringRccSet",
             object[featureData(object)[["BarcodeClass"]] == "Positive", ])
 
 
-# Apply
+# Looping
+setMethod("esApply", "NanoStringRccSet",
+function(X, MARGIN, FUN, ..., elt = "exprs")
+{
+  stopifnot(MARGIN %in% c(1L, 2L))
+  if (MARGIN == 1L)
+    kvs <- sData(X)
+  else
+    kvs <- fData(X)
+
+  parent <- environment(FUN)
+  if (is.null(parent))
+    parent <- emptyenv()
+  e1 <- new.env(parent = parent)
+  multiassign(names(kvs), kvs, envir = e1)
+  environment(FUN) <- e1
+
+  apply(assayDataElement(X, elt), MARGIN, FUN, ...)
+})
+
 setGeneric("endogenousApply", signature = "X",
            function(X, MARGIN, FUN, ..., elt = "exprs")
              standardGeneric("endogenousApply"))
@@ -87,64 +135,19 @@ setMethod("positiveControlApply", "NanoStringRccSet",
                     elt = elt))
 
 
-# Utilities
-setMethod("esApply", "NanoStringRccSet",
-function(X, MARGIN, FUN, ..., elt = "exprs")
-{
-  stopifnot(MARGIN %in% c(1L, 2L))
-  if (MARGIN == 1L)
-    kvs <- sData(X)
-  else
-    kvs <- fData(X)
-
-  parent <- environment(FUN)
-  if (is.null(parent))
-    parent <- emptyenv()
-  e1 <- new.env(parent = parent)
-  multiassign(names(kvs), kvs, envir = e1)
-  environment(FUN) <- e1
-
-  apply(assayDataElement(X, elt), MARGIN, FUN, ...)
-})
-
-setGeneric("esSummary", signature = "X",
-           function(X, MARGIN, elt = "exprs")
-             standardGeneric("esSummary"))
-setMethod("esSummary", "NanoStringRccSet",
-function(X, MARGIN, elt = "exprs")
-{
-  stopifnot(MARGIN %in% c(1L, 2L))
-  FUN <- function(x)
-  {
-    quartiles <- quantile(x, probs = c(0, 0.25, 0.5, 0.75, 1), na.rm = TRUE)
-    names(quartiles) <- c("Min", "Q1", "Median", "Q3", "Max")
-    c("Mean"     = mean(x, na.rm = TRUE),
-      "SD"       = sd(x, na.rm = TRUE),
-      "Skewness" = skewness(x, na.rm = TRUE),
-      "Kurtosis" = kurtosis(x, na.rm = TRUE),
-      quartiles,
-      "N"        = length(x),
-      "NMiss"    = sum(is.na(x)))
-  }
-  t(esApply(X, MARGIN = MARGIN, FUN = FUN, elt = elt))
-})
-
-setGeneric("esSweep", signature = "X",
-           function(X, MARGIN, STATS, FUN = "-", check.margin = TRUE, ...,
-                    fromElt = "exprs", toElt, validate = TRUE)
-             standardGeneric("esSweep"))
-setMethod("esSweep", "NanoStringRccSet",
-function(X, MARGIN, STATS, FUN = "-", check.margin = TRUE, ...,
-         fromElt = "exprs", toElt, validate = TRUE)
+# Transforming
+setMethod("sweep", "NanoStringRccSet",
+function(x, MARGIN, STATS, FUN = "-", check.margin = TRUE, ...,
+         fromElt = "exprs", toElt)
 {
   if (missing(toElt))
     stop("argument \"toElt\" is missing, with no default")
 
   stopifnot(MARGIN %in% c(1L, 2L))
   if (MARGIN == 1L)
-    kvs <- fData(X)
+    kvs <- fData(x)
   else
-    kvs <- sData(X)
+    kvs <- sData(x)
 
   # Evaluate STATS argument
   STATS <- eval(substitute(STATS), kvs, parent.frame())
@@ -159,19 +162,17 @@ function(X, MARGIN, STATS, FUN = "-", check.margin = TRUE, ...,
   environment(FUN) <- e1
 
   # Calculate matrix
-  value <- sweep(assayDataElement(X, fromElt), MARGIN = MARGIN, STATS = STATS,
+  value <- sweep(assayDataElement(x, fromElt), MARGIN = MARGIN, STATS = STATS,
                  FUN = FUN, check.margin = check.margin, ...)
 
   # Modify return value
-  assayDataElement(X, toElt, validate = validate) <- value
-  preproc(X)[[toElt]] <- match.call()
+  assayDataElement(x, toElt) <- value
+  preproc(x)[[toElt]] <- match.call()
 
-  X
+  x
 })
 
-setGeneric("esTransform", signature = "_data",
-           function(`_data`, ...) standardGeneric("esTransform"))
-setMethod("esTransform", "NanoStringRccSet",
+setMethod("transform", "NanoStringRccSet",
 function(`_data`, ...)
 {
   exprs <- as.list(substitute(list(...))[-1L])
@@ -191,11 +192,4 @@ function(`_data`, ...)
     assayData(`_data`) <- aData
   }
   `_data`
-})
-
-setMethod("subset", "NanoStringRccSet",
-function(x, subset, select, ...)
-{
-  kvs <- c(pData(x), pData(protocolData(x)), fData(x))
-  eval(substitute(with(kvs, x[subset, select])))
 })

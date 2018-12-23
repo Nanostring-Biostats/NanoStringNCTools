@@ -32,20 +32,20 @@ export(NanoStringRccSet,
        endogenousSet, housekeepingSet,
        negativeControlSet, positiveControlSet,
        endogenousApply, housekeepingApply,
-       negativeControlApply, positiveControlApply,
-       esSummary, esSweep, esTransform)
+       negativeControlApply, positiveControlApply)
 
 ### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ### Export S4 methods
 
 exportMethods(NanoStringRccSet,
               sData, svarLabels,
+              summary, subset,
               controlSet, nonControlSet,
               endogenousSet, housekeepingSet,
               negativeControlSet, positiveControlSet,
-              endogenousApply, housekeepingApply,
+              esApply, endogenousApply, housekeepingApply,
               negativeControlApply, positiveControlApply,
-              esApply, esSummary, esSweep, esTransform, subset)
+              sweep, transform)
 
 ### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ### Export non-generic functions

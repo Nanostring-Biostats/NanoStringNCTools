@@ -39,6 +39,7 @@ rcc <-
                             NanoStringBase:::.rccMetadata[["protocolData"]],
                             dimLabels = c("sampleNames", "sampleColumns")))
 
+# Accessors
 test_NanoStringRccSet_utils_sData <- function() {
   checkIdentical(cbind(pData(rcc), pData(protocolData(rcc))), sData(rcc))
 }
@@ -47,6 +48,7 @@ test_NanoStringRccSet_utils_svarLabels <- function() {
   checkIdentical(c(varLabels(rcc), varLabels(protocolData(rcc))), svarLabels(rcc))
 }
 
+# Subsetting
 test_NanoStringRccSet_utils_controlSet <- function() {
   checkException(controlSet(rcc))
 
