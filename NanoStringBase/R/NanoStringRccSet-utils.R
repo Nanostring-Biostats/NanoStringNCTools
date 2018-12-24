@@ -1,3 +1,9 @@
+# Coercion
+setAs("NanoStringRccSet", "list",
+      function(from) c(as.list(assayData(from)), fData(from), sData(from)))
+setMethod("as.list", "NanoStringRccSet", function(x, ...) as(x, "list"))
+
+
 # Accessors
 setGeneric("sData", signature = "object",
            function(object) standardGeneric("sData"))
@@ -193,3 +199,9 @@ function(`_data`, ...)
   }
   `_data`
 })
+
+
+# Evaluating
+setMethod("with", "NanoStringRccSet",
+          function(data, expr, ...)
+            eval(substitute(expr), as(data, "list"), parent.frame()))

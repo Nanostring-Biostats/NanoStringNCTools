@@ -50,6 +50,9 @@
 \alias{sweep,NanoStringRccSet-method}
 \alias{transform,NanoStringRccSet-method}
 
+% evaluating
+\alias{with,NanoStringRccSet-method}
+
 \title{Class to Contain NanoString Expression Level Assays}
 
 \description{
@@ -87,7 +90,7 @@ NanoStringRccSet(assayData,
   \item{\ldots}{Additional arguments for \code{\link{ExpressionSet}}.}
 }
 
-\section{Accessors}{
+\section{Accessing}{
   In addition to the standard \code{\linkS4class{ExpressionSet}} accessor
   methods, NanoStringRccSet objects have the following:
   \describe{
@@ -102,7 +105,7 @@ NanoStringRccSet(assayData,
   }
 }
 
-\section{Summary}{
+\section{Summarizing}{
   \describe{
     \item{}{
       \code{summary(object, MARGIN, elt = "exprs")}: Marginal summaries
@@ -207,6 +210,16 @@ NanoStringRccSet(assayData,
       \code{\link[base]{transform}} generic in the \pkg{base} package, creates
       or modifies one or more assayData matrices based upon \code{name = value}
       pairs in \code{\ldots}.
+    }
+  }
+}
+
+\section{Evaluating}{
+  \describe{
+    \item{}{
+      \code{with(data, expr, \ldots)}: Evaluate expression \code{expr} with
+      respect to assay, feature, and sample data;
+      \code{c(as.list(assayData(data)), fData(data), sData(data))}.
     }
   }
 }

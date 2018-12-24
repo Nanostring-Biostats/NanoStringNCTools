@@ -14,7 +14,7 @@ importMethodsFrom(Biobase, AnnotatedDataFrame, annotatedDataFrameFrom,
 importFrom(Biobase, assayDataElement, "assayDataElement<-", assayDataNew,
            copyEnv, MIAME, multiassign)
 importFrom(Biostrings, BStringSet, DNAStringSet)
-importFrom(methods, callGeneric, is, validObject)
+importFrom(methods, as, callGeneric, is, validObject)
 importFrom(stats, quantile)
 importFrom(utils, read.csv, write.csv)
 
@@ -45,7 +45,7 @@ exportMethods(NanoStringRccSet,
               controlSet, nonControlSet,
               esApply, endogenousApply, housekeepingApply,
               negativeControlApply, positiveControlApply,
-              sweep, transform)
+              sweep, transform, with)
 
 ### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ### Export non-generic functions
