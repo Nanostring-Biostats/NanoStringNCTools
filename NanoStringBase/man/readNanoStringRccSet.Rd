@@ -38,6 +38,33 @@ readNanoStringRccSet(rccFiles, rlfFile = NULL,
 \seealso{\code{\link{NanoStringRccSet}}, \code{\link{writeNanoStringRccSet}}}
 
 \examples{
+# Data file paths
+datadir <- system.file("extdata", "3D_Bio_Example_Data",
+                       package = "NanoStringBase")
+rccs <- dir(datadir, pattern = "SKMEL.*\\\\.RCC$", full.names = TRUE)
+rlf <- file.path(datadir, "3D_SolidTumor_Sig.rlf")
+pheno <- file.path(datadir, "3D_SolidTumor_PhenoData.csv")
+
+# Just RCC data
+solidTumorNoRlfPheno <- readNanoStringRccSet(rccs)
+varLabels(solidTumorNoRlfPheno)
+fvarLabels(solidTumorNoRlfPheno)
+
+# RCC and RLF data
+solidTumorNoPheno <- readNanoStringRccSet(rccs, rlfFile = rlf)
+setdiff(fvarLabels(solidTumorNoPheno), fvarLabels(solidTumorNoRlfPheno))
+
+# All data
+solidTumor <-
+  readNanoStringRccSet(rccs, rlfFile = rlf, phenoDataFile = pheno)
+varLabels(solidTumor)
+
+# All data with phenoData prefix
+solidTumorPhenoPrefix <-
+  readNanoStringRccSet(rccs, rlfFile = rlf, phenoDataFile = pheno,
+                       phenoDataColPrefix = "PHENO_")
+varLabels(solidTumorPhenoPrefix)
 }
+
 \keyword{file}
 \keyword{manip}
