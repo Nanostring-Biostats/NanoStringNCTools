@@ -2,7 +2,8 @@ readNanoStringRccSet <-
 function(rccFiles,
          rlfFile = NULL,
          phenoDataFile = NULL,
-         phenoDataRccColName = "^RCC")
+         phenoDataRccColName = "^RCC",
+         phenoDataColPrefix = "")
 {
   # Read data rccFiles
   data <- structure(lapply(rccFiles, readRccFile), names = basename(rccFiles))
@@ -33,6 +34,9 @@ function(rccFiles,
       rownames(pheno) <- colnames(assay)
       warning(sprintf("Column `phenoDataRccColName` in `phenoDataFile` is missing %d of %d Samples",
                       missingPhenoCount, ncol(assay)))
+    }
+    if (phenoDataColPrefix != "") {
+      colnames(pheno) <- paste0(phenoDataColPrefix, colnames(pheno))
     }
     pheno <- AnnotatedDataFrame(pheno,
                                 dimLabels = c("sampleNames", "sampleColumns"))

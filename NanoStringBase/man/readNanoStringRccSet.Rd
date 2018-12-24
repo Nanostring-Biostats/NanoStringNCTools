@@ -10,8 +10,10 @@
 }
 
 \usage{
-readNanoStringRccSet(rccFiles, rlfFile = NULL, phenoDataFile = NULL,
-                     phenoDataRccColName = "^RCC")
+readNanoStringRccSet(rccFiles, rlfFile = NULL,
+                     phenoDataFile = NULL,
+                     phenoDataRccColName = "^RCC",
+                     phenoDataColPrefix = "")
 }
 
 \arguments{
@@ -22,6 +24,9 @@ readNanoStringRccSet(rccFiles, rlfFile = NULL, phenoDataFile = NULL,
     to the corresponding phenotypic csv data file.}
   \item{phenoDataRccColName}{The regular expression that specifies the RCC
     column in the \code{phenoDataFile}.}
+  \item{phenoDataColPrefix}{An optional prefix to add to the phenoData
+    column names to distinguish them from the names of assayData matrices,
+    featureData columns, and protocolData columns.}
 }
 
 \value{
