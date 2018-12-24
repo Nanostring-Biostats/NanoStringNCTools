@@ -4,7 +4,7 @@ setAs("NanoStringRccSet", "list",
 setMethod("as.list", "NanoStringRccSet", function(x, ...) as(x, "list"))
 
 
-# Accessors
+# Accessing
 setGeneric("sData", signature = "object",
            function(object) standardGeneric("sData"))
 setMethod("sData", "NanoStringRccSet",
@@ -16,7 +16,7 @@ setMethod("svarLabels", "NanoStringRccSet",
           function(object) c(varLabels(object), varLabels(protocolData(object))))
 
 
-# Summary
+# Summarizing
 setMethod("summary", "NanoStringRccSet",
 function(object, MARGIN, elt = "exprs")
 {
