@@ -33,6 +33,11 @@ readRccFile(file)
 \seealso{\code{\link{readNanoStringRccSet}}}
 
 \examples{
+datadir <- system.file("extdata", "3D_Bio_Example_Data",
+                       package = "NanoStringBase")
+rccs <- dir(datadir, pattern = "SKMEL.*\\\\.RCC$", full.names = TRUE)
+rccData <- sapply(rccs, readRccFile, simplify = FALSE)
 }
+
 \keyword{file}
 \keyword{manip}

@@ -28,6 +28,11 @@ readRlfFile(file)
 \seealso{\code{\link{readNanoStringRccSet}}}
 
 \examples{
+datadir <- system.file("extdata", "3D_Bio_Example_Data",
+                       package = "NanoStringBase")
+rlf <- file.path(datadir, "3D_SolidTumor_Sig.rlf")
+rlfData <- readRlfFile(rlf)
 }
+
 \keyword{file}
 \keyword{manip}
