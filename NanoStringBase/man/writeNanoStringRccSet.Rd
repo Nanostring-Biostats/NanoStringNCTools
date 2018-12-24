@@ -40,7 +40,7 @@ solidTumorNoRlfPheno <- readNanoStringRccSet(rccs)
 writeNanoStringRccSet(solidTumorNoRlfPheno, tempdir())
 for (i in seq_along(rccs)) {
   stopifnot(identical(readLines(rccs[i]),
-                      readLines(file.path(tempdir(), basepath(rccs[i])))))
+                      readLines(file.path(tempdir(), basename(rccs[i])))))
 }
 }
 
