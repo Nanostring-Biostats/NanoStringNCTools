@@ -63,6 +63,12 @@ function(file)
     names(output[[tag]])[names(output[[tag]]) == "ID"] <- sprintf("%sID", ptag)
   }
 
+  # Rename Sample Owner, Comments, and Date columns
+  for (col in c("Owner", "Comments", "Date")) {
+    names(output[["Sample_Attributes"]])[
+      names(output[["Sample_Attributes"]]) == col] <- sprintf("Sample%s", col)
+  }
+
   # For FileVersion 1.7, add SystemType to Header and AssayType to Sample Attrs
   if (fileVersion == numeric_version("1.7")) {
     output[["Header"]][["SystemType"]] <- "Gen2"

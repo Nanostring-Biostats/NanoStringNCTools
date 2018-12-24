@@ -85,6 +85,12 @@ function(object)
       msg <- c(msg, "'exprs' must be a non-negative integer matrix")
     }
   }
+  if (any(duplicated(c(fvarLabels(object), svarLabels(object),
+                       assayDataElementNames(object))))) {
+    msg <-
+      c(msg,
+        "'fvarLabels', 'svarLabels', and 'assayDataElementNames' must be unique")
+  }
   if (is.null(msg)) TRUE else msg
 })
 

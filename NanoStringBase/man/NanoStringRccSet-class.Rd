@@ -79,8 +79,8 @@ NanoStringRccSet(assayData,
   \item{annotation}{A character string for the \code{"GeneRLF"}.}
   \item{protocolData}{An \code{\link{AnnotatedDataFrame}} containing columns
     \code{"FileVersion"}, \code{"SoftwareVersion"}, \code{"SystemType"},
-    \code{"SampleID"}, \code{"Owner"}, \code{"Comments"}, \code{"Date"},
-    \code{"SystemAPF"}, \code{"AssayType"},
+    \code{"SampleID"}, \code{"SampleOwner"}, \code{"SampleComments"},
+    \code{"SampleDate"}, \code{"SystemAPF"}, \code{"AssayType"},
     \code{"LaneID"}, \code{"FovCount"}, \code{"FovCounted"}, \code{"ScannerID"},
     \code{"StagePosition"}, \code{"BindingDensity"}, \code{"CartridgeID"}, and
     \code{"CartridgeBarcode"}.}

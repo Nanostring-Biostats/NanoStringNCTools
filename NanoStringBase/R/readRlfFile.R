@@ -45,7 +45,7 @@ function(file)
     stop("Content section ColumnCount must be 8")
   if (sections[["Content"]][[1L]][1L] != "Classification,TargetSeq,BarCode,GeneName,ProbeID,Species,Accession,Comments")
     stop("Content section header is not \"Classification,TargetSeq,BarCode,GeneName,ProbeID,Species,Accession,Comments\"")
-  sections[["Content"]][[1L]][1L] <- "Classification,TargetSeq,Barcode,GeneName,ProbeID,Species,Accession,Comments"
+  sections[["Content"]][[1L]][1L] <- "Classification,TargetSeq,Barcode,GeneName,ProbeID,Species,Accession,BarcodeComments"
   rn <- names(sections[["Content"]])[-1L]
   output <-
     read.csv(textConnection(paste(sections[["Content"]], collapse = "\n")),
@@ -53,7 +53,8 @@ function(file)
              colClasses = c(Classification = "integer", TargetSeq = "character",
                             Barcode = "character", GeneName = "character",
                             ProbeID = "character", Species = "character",
-                            Accession = "character", Comments = "character"))
+                            Accession = "character",
+                            BarcodeComments = "character"))
 
   # Merge classes information with output
   output[["RowNames"]] <- rn
@@ -62,7 +63,7 @@ function(file)
   rownames(output) <- output[["RowNames"]]
   output[["Classification"]] <- output[["RowNames"]] <- NULL
   output <- output[rn, c("BarcodeClass", "GeneName", "Accession", "TargetSeq",
-                         "Barcode", "ProbeID", "Species",  "Comments",
+                         "Barcode", "ProbeID", "Species",  "BarcodeComments",
                          "BarcodeClassActive", "BarcodeClassDate",
                          "BarcodeClassSource", "BarcodeClassPreparer")]
 

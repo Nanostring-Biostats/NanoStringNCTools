@@ -60,6 +60,12 @@
 rownames(.rccMetadata[["protocolData"]])[
   rownames(.rccMetadata[["protocolData"]]) == "ID"] <- "SampleID"
 rownames(.rccMetadata[["protocolData"]])[
+  rownames(.rccMetadata[["protocolData"]]) == "Owner"] <- "SampleOwner"
+rownames(.rccMetadata[["protocolData"]])[
+  rownames(.rccMetadata[["protocolData"]]) == "Comments"] <- "SampleComments"
+rownames(.rccMetadata[["protocolData"]])[
+  rownames(.rccMetadata[["protocolData"]]) == "Date"] <- "SampleDate"
+rownames(.rccMetadata[["protocolData"]])[
   rownames(.rccMetadata[["protocolData"]]) == "ID1"] <- "LaneID"
 
 

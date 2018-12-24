@@ -19,9 +19,9 @@ rcc <-
                                        SoftwareVersion = numeric_version(rep("4.0.0.3", 3L)),
                                        SystemType = rep("Gen2", 3L),
                                        SampleID = letters[1:3],
-                                       Owner = rep("", 3L),
-                                       Comments = rep("DNA-RNA-Protein", 3L),
-                                       Date = as.Date(rep("1999-12-31", 3L)),
+                                       SampleOwner = rep("", 3L),
+                                       SampleComments = rep("DNA-RNA-Protein", 3L),
+                                       SampleDate = as.Date(rep("1999-12-31", 3L)),
                                        SystemAPF = rep("n6_vDV1", 3L),
                                        AssayType = rep(NA_character_, 3L),
                                        LaneID = 1:3,
@@ -146,4 +146,38 @@ test_NanoStringRccSet_exception_assayData <- function() {
                                               featureData = rcc$featureData,
                                               annotation = rcc$annotation,
                                               protocolData = rcc$protocolData)))
+}
+
+test_NanoStringRccSet_exception_duplicate_names <- function() {
+  x <- NanoStringRccSet(rcc$assayData,
+                        featureData = rcc$featureData,
+                        annotation = rcc$annotation,
+                        protocolData = rcc$protocolData)
+
+  # Duplicate fvarLabels
+  y <- x
+  fData(y)[["exprs"]] <- 1L
+  checkException(validObject(y))
+
+  y <- x
+  fData(y)[["SampleID"]] <- 1L
+  checkException(validObject(y))
+
+  # Duplicate pvarLabels
+  y <- x
+  pData(y)[["exprs"]] <- 1L
+  checkException(validObject(y))
+
+  y <- x
+  pData(y)[["BarcodeClass"]] <- 1L
+  checkException(validObject(y))
+
+  # Duplicate pvarLables(protocolData)
+  y <- x
+  pData(protocolData(y))[["exprs"]] <- 1L
+  checkException(validObject(y))
+
+  y <- x
+  pData(protocolData(y))[["BarcodeClass"]] <- 1L
+  checkException(validObject(y))
 }

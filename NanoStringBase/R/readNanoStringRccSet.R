@@ -71,7 +71,7 @@ function(rccFiles,
                                 dimLabels = c("featureNames", "featureColumns"))
 
   # Create experimentData
-  name <- sapply(data, function(x) x[["Sample_Attributes"]][["Owner"]])
+  name <- sapply(data, function(x) x[["Sample_Attributes"]][["SampleOwner"]])
   name <- unique(na.omit(name))
   experiment <- MIAME(name = name, other = rlfHeader)
 
