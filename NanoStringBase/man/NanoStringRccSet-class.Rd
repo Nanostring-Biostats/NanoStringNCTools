@@ -11,13 +11,13 @@
 \alias{NanoStringRccSet,missing-method}
 \alias{NanoStringRccSet,NanoStringRccSet-method}
 
-% accessors
+% accessing
 \alias{sData}
 \alias{sData,NanoStringRccSet-method}
 \alias{svarLabels}
 \alias{svarLabels,NanoStringRccSet-method}
 
-% summary
+% summarizing
 \alias{summary,NanoStringRccSet-method}
 
 % subsetting
@@ -233,6 +233,92 @@ NanoStringRccSet(assayData,
 }
 
 \examples{
+# Create NanoStringRccSet from data files
+datadir <- system.file("extdata", "3D_Bio_Example_Data",
+                       package = "NanoStringBase")
+rccs <- dir(datadir, pattern = "SKMEL.*\\\\.RCC$", full.names = TRUE)
+rlf <- file.path(datadir, "3D_SolidTumor_Sig.rlf")
+pheno <- file.path(datadir, "3D_SolidTumor_PhenoData.csv")
+solidTumor <-
+  readNanoStringRccSet(rccs, rlfFile = rlf, phenoDataFile = pheno)
+
+
+# Create a deep copy of a NanoStringRccSet object
+deepCopy <- NanoStringRccSet(solidTumor)
+all.equal(solidTumor, deepCopy)
+identical(solidTumor, deepCopy)
+
+
+# Accessing sample data and column names
+head(sData(solidTumor))
+svarLabels(solidTumor)
+
+
+# Marginal summarizing of NanoStringRccSet assayData matrices
+head(summary(solidTumor, 1)) # Marginal summaries along features
+head(summary(solidTumor, 2)) # Marginal summaries along samples
+
+
+# Subsetting NanoStringRccSet objects
+# Extract the positive controls for wildtype BRAF
+dim(solidTumor)
+dim(subset(solidTumor, BarcodeClass == "Positive", BRAFGenotype == "wt/wt"))
+
+# Extract by barcode class
+with(solidTumor, table(BarcodeClass))
+with(endogenousSet(solidTumor), table(BarcodeClass))
+with(housekeepingSet(solidTumor), table(BarcodeClass))
+with(negativeControlSet(solidTumor), table(BarcodeClass))
+with(positiveControlSet(solidTumor), table(BarcodeClass))
+with(controlSet(solidTumor), table(BarcodeClass))
+with(nonControlSet(solidTumor), table(BarcodeClass))
+
+
+# Looping over NanoStringRccSet assayData matrices
+log1pCoefVar <- function(x){
+  x <- log1p(x)
+  sd(x) / mean(x)
 }
+
+# Log1p Coefficient of Variation along Features
+head(esApply(solidTumor, 1, log1pCoefVar))
+head(endogenousApply(solidTumor, 1, log1pCoefVar))
+head(housekeepingApply(solidTumor, 1, log1pCoefVar))
+head(negativeControlApply(solidTumor, 1, log1pCoefVar))
+head(positiveControlApply(solidTumor, 1, log1pCoefVar))
+
+# Log1p Coefficient of Variation along Samples
+head(esApply(solidTumor, 2, log1pCoefVar))
+head(endogenousApply(solidTumor, 2, log1pCoefVar))
+head(housekeepingApply(solidTumor, 2, log1pCoefVar))
+head(negativeControlApply(solidTumor, 2, log1pCoefVar))
+head(positiveControlApply(solidTumor, 2, log1pCoefVar))
+
+
+# Transforming NanoSetRccSet assayData matrices
+# Subtract max count from each sample
+thresh <- negativeControlApply(solidTumor, 2, max)
+solidTumor2 <- sweep(solidTumor, 2, thresh, toElt = "negCtrlZeroed")
+assayDataElementNames(solidTumor2)
+
+# Create log1p transformation of adjusted counts
+solidTumor3 <-
+  transform(solidTumor2,
+            log1p_negCtrlZeroed = log1p(pmax(negCtrlZeroed, 0)))
+assayDataElementNames(solidTumor3)
+
+
+# Evaluating expression using NanoStringRccSet data
+meanLog1pExprs <-
+  with(solidTumor,
+       {
+         means <- split(apply(exprs, 1, function(x) mean(log1p(x))),
+                        BarcodeClass)
+         means <- means[order(sapply(means, median))]
+         boxplot(means, horizontal = TRUE)
+         means
+       })
+}
+
 \keyword{classes}
 \keyword{methods}
