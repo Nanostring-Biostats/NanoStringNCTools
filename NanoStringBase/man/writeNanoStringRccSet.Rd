@@ -33,6 +33,16 @@ writeNanoStringRccSet(x, dir = getwd())
 \seealso{\code{\link{NanoStringRccSet}}, \code{\link{readNanoStringRccSet}}}
 
 \examples{
+datadir <- system.file("extdata", "3D_Bio_Example_Data",
+                       package = "NanoStringBase")
+rccs <- dir(datadir, pattern = "SKMEL.*\\\\.RCC$", full.names = TRUE)
+solidTumorNoRlfPheno <- readNanoStringRccSet(rccs)
+writeNanoStringRccSet(solidTumorNoRlfPheno, tempdir())
+for (i in seq_along(rccs)) {
+  stopifnot(identical(readLines(rccs[i]),
+                      readLines(file.path(tempdir(), basepath(rccs[i])))))
 }
+}
+
 \keyword{file}
 \keyword{manip}
