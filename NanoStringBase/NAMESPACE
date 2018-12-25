@@ -45,7 +45,7 @@ exportMethods(NanoStringRccSet,
               controlSet, nonControlSet,
               esApply, endogenousApply, housekeepingApply,
               negativeControlApply, positiveControlApply,
-              sweep, transform, with)
+              transform, with)
 
 ### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ### Export non-generic functions

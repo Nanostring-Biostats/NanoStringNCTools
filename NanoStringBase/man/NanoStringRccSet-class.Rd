@@ -47,7 +47,6 @@
 \alias{positiveControlApply,NanoStringRccSet-method}
 
 % transforming
-\alias{sweep,NanoStringRccSet-method}
 \alias{transform,NanoStringRccSet-method}
 
 % evaluating
@@ -92,7 +91,7 @@ NanoStringRccSet(assayData,
 
 \section{Accessing}{
   In addition to the standard \code{\linkS4class{ExpressionSet}} accessor
-  methods, NanoStringRccSet objects have the following:
+  methods, \code{NanoStringRccSet} objects have the following:
   \describe{
     \item{}{
       \code{sData(object)}: extracts the \code{data.frame} containing the
@@ -111,22 +110,24 @@ NanoStringRccSet(assayData,
       \code{summary(object, MARGIN, elt = "exprs")}: Marginal summaries
       (Mean, Standard Deviation, Skewness, Excess Kurtosis, Minimum,
       First Quartile, Median, Third Quartile, Maximum, Count, Non-Missing
-      Count) of the \code{elt} assayData matrix along either the feature
-      (\code{MARGIN = 1}) or sample (\code{MARGIN = 2}) dimension.
+      Count) of the \code{elt} \code{\link[Biobase]{assayData}} matrix
+      along either the feature (\code{MARGIN = 1}) or sample
+      (\code{MARGIN = 2}) dimension.
     }
   }
 }
 
 \section{Subsetting}{
   In addition to the standard \code{\linkS4class{ExpressionSet}} subsetting
-  methods, NanoStringRccSet objects have the following:
+  methods, \code{NanoStringRccSet} objects have the following:
   \describe{
     \item{}{
       \code{subset(x, subset, select, \ldots)}: Subset the feature and sample
       dimensions using the \code{subset} and \code{select} arguments
       respectively. The \code{subset} argument will be evaluated with
-      respect to the feature data set, while the \code{select} argument
-      will be evaluated with respect to the sample data set.
+      respect to the \code{\link[Biobase]{featureData}}, while the
+      \code{select} argument will be evaluated with respect to the
+      \code{\link[Biobase]{phenoData}} and \code{\link[Biobase]{protocolData}}.
     }
     \item{}{
       \code{endogenousSet(object)}: Extracts the endogenous barcode class
@@ -194,22 +195,15 @@ NanoStringRccSet(assayData,
 }
 
 \section{Transforming}{
-  Each of the following transformation methods adds or modifies
-  \code{assayData} matrices:
   \describe{
-    \item{}{
-      \code{sweep(x, MARGIN, STATS, FUN = "-", check.margin = TRUE, \ldots,
-         fromElt = "exprs", toElt)}: Similar to the \code{\link[base]{sweep}}
-         function in the \pkg{base} package, creates a \code{toElt} assayData
-         matrix by sweeping out a summary statistic from the \code{fromElt}
-         assayData matrix along the feature (\code{MARGIN = 1}) or sample
-         (\code{MARGIN = 2}) dimension.
-    }
     \item{}{
       \code{transform(`_data`, \ldots)}: Similar to the
       \code{\link[base]{transform}} generic in the \pkg{base} package, creates
-      or modifies one or more assayData matrices based upon \code{name = value}
-      pairs in \code{\ldots}.
+      or modifies one or more \code{\link[Biobase]{assayData}} matrices based
+      upon \code{name = value} pairs in \code{\ldots}. The transforms specified
+      in \code{\ldots} are appended to the preprocessing list in
+      \code{\link{experimentData}}, which can be extracted using the
+      \code{\link{preproc}} method.
     }
   }
 }
@@ -218,7 +212,9 @@ NanoStringRccSet(assayData,
   \describe{
     \item{}{
       \code{with(data, expr, \ldots)}: Evaluate expression \code{expr} with
-      respect to assay, feature, and sample data;
+      respect to \code{\link[Biobase]{assayData}},
+      \code{\link[Biobase]{featureData}}, \code{\link[Biobase]{phenoData}},
+      and \code{\link[Biobase]{protocolData}};
       \code{c(as.list(assayData(data)), fData(data), sData(data))}.
     }
   }
@@ -297,15 +293,13 @@ head(positiveControlApply(solidTumor, 2, log1pCoefVar))
 
 # Transforming NanoSetRccSet assayData matrices
 # Subtract max count from each sample
-thresh <- negativeControlApply(solidTumor, 2, max)
-solidTumor2 <- sweep(solidTumor, 2, thresh, toElt = "negCtrlZeroed")
-assayDataElementNames(solidTumor2)
-
 # Create log1p transformation of adjusted counts
-solidTumor3 <-
-  transform(solidTumor2,
+thresh <- negativeControlApply(solidTumor, 2, max)
+solidTumor2 <-
+  transform(solidTumor,
+            negCtrlZeroed = sweep(exprs, 2, thresh),
             log1p_negCtrlZeroed = log1p(pmax(negCtrlZeroed, 0)))
-assayDataElementNames(solidTumor3)
+assayDataElementNames(solidTumor2)
 
 
 # Evaluating expression using NanoStringRccSet data

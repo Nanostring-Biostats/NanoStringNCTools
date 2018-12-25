@@ -142,42 +142,6 @@ setMethod("positiveControlApply", "NanoStringRccSet",
 
 
 # Transforming
-setMethod("sweep", "NanoStringRccSet",
-function(x, MARGIN, STATS, FUN = "-", check.margin = TRUE, ...,
-         fromElt = "exprs", toElt)
-{
-  if (missing(toElt))
-    stop("argument \"toElt\" is missing, with no default")
-
-  stopifnot(MARGIN %in% c(1L, 2L))
-  if (MARGIN == 1L)
-    kvs <- fData(x)
-  else
-    kvs <- sData(x)
-
-  # Evaluate STATS argument
-  STATS <- eval(substitute(STATS), kvs, parent.frame())
-
-  # Prepare FUN argument
-  FUN <- match.fun(FUN)
-  parent <- environment(FUN)
-  if (is.null(parent))
-    parent <- emptyenv()
-  e1 <- new.env(parent = parent)
-  multiassign(names(kvs), kvs, envir = e1)
-  environment(FUN) <- e1
-
-  # Calculate matrix
-  value <- sweep(assayDataElement(x, fromElt), MARGIN = MARGIN, STATS = STATS,
-                 FUN = FUN, check.margin = check.margin, ...)
-
-  # Modify return value
-  assayDataElement(x, toElt) <- value
-  preproc(x)[[toElt]] <- match.call()
-
-  x
-})
-
 setMethod("transform", "NanoStringRccSet",
 function(`_data`, ...)
 {
@@ -197,6 +161,7 @@ function(`_data`, ...)
     lockEnvironment(aData)
     assayData(`_data`) <- aData
   }
+  preproc(`_data`)[names(exprs)] <- exprs
   `_data`
 })
 

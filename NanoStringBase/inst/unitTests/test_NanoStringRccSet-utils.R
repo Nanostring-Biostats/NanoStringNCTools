@@ -224,26 +224,6 @@ test_NanoStringRccSet_utils_positiveControlApply <- function() {
 }
 
 # transforming
-test_NanoStringRccSet_utils_sweep <- function() {
-  # scale across Features
-  rcc2 <- sweep(rcc, 1L, rowMeans(exprs(rcc)), toElt = "centered")
-  rcc2 <- sweep(rcc2, 1L, apply(exprs(rcc2), 1L, sd), FUN = "/",
-                fromElt = "centered", toElt = "scaled")
-  target <- t(scale(t(exprs(rcc))))
-  attr(target, "scaled:center") <- attr(target, "scaled:scale") <- NULL
-  checkTrue(validObject(rcc2))
-  checkIdentical(target, assayDataElement(rcc2, "scaled"))
-
-  # scale across Samples
-  rcc2 <- sweep(rcc, 2L, colMeans(exprs(rcc)), toElt = "centered")
-  rcc2 <- sweep(rcc2, 2L, apply(exprs(rcc2), 2L, sd), FUN = "/",
-                fromElt = "centered", toElt = "scaled")
-  target <- scale(exprs(rcc))
-  attr(target, "scaled:center") <- attr(target, "scaled:scale") <- NULL
-  checkTrue(validObject(rcc2))
-  checkIdentical(target, assayDataElement(rcc2, "scaled"))
-}
-
 test_NanoStringRccSet_utils_transform <- function() {
   rcc2 <- transform(rcc,
                     exprs_thresh = pmax(exprs - 2, 0),
@@ -253,6 +233,9 @@ test_NanoStringRccSet_utils_transform <- function() {
                  assayDataElement(rcc2, "exprs_thresh"))
   checkIdentical(log1p(pmax(exprs(rcc) - 2, 0)),
                  assayDataElement(rcc2, "log1p_exprs_thresh"))
+  checkIdentical(list(exprs_thresh = substitute(pmax(exprs - 2, 0)),
+                      log1p_exprs_thresh = substitute(log1p(exprs_thresh))),
+                 preproc(rcc2))
 }
 
 # evaluating
