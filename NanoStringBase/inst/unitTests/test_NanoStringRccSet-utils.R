@@ -50,6 +50,8 @@ test_NanoStringRccSet_utils_svarLabels <- function() {
 
 # Sumarizing
 test_NanoStringRccSet_utils_summary <- function() {
+  rcc2 <- transform(rcc, exprsp1 = exprs + 1L)
+
   # Marginal summaries by Feature
   checkIdentical(cbind(Mean = structure(4:7, names = letters[1:4]),
                        SD = 4,
@@ -62,7 +64,19 @@ test_NanoStringRccSet_utils_summary <- function() {
                        Max = 8:11,
                        N = 3,
                        NMiss = 0),
-                 summary(rcc, 1L))
+                 summary(rcc2, 1L))
+  checkIdentical(cbind(Mean = structure(5:8, names = letters[1:4]),
+                       SD = 4,
+                       Skewness = 0,
+                       Kurtosis = NaN,
+                       Min = 1:4,
+                       Q1 = 3:6,
+                       Median = 5:8,
+                       Q3 = 7:10,
+                       Max = 9:12,
+                       N = 3,
+                       NMiss = 0),
+                 summary(rcc2, 1L, elt = "exprsp1"))
 
   # Marginal summaries by Sample
   checkEquals(cbind(Mean = structure(c(1.5, 5.5, 9.5), names = sampleNames(rcc)),
@@ -76,7 +90,19 @@ test_NanoStringRccSet_utils_summary <- function() {
                     Max = c(3, 7, 11),
                     N = 4,
                     NMiss = 0),
-              summary(rcc, 2L))
+              summary(rcc2, 2L))
+  checkEquals(cbind(Mean = structure(c(2.5, 6.5, 10.5), names = sampleNames(rcc)),
+                    SD = sqrt(15/9),
+                    Skewness = 0,
+                    Kurtosis = -1.2,
+                    Min = c(1, 5, 9),
+                    Q1 = c(1.75, 5.75, 9.75),
+                    Median = c(2.5, 6.5, 10.5),
+                    Q3 = c(3.25, 7.25, 11.25),
+                    Max = c(4, 8, 12),
+                    N = 4,
+                    NMiss = 0),
+              summary(rcc2, 2L, elt = "exprsp1"))
 }
 
 # Subsetting
