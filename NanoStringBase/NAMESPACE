@@ -5,14 +5,13 @@ import(BiocGenerics)
 import(S4Vectors)
 importClassesFrom(Biobase, AnnotatedDataFrame, AssayData, ExpressionSet, MIAME,
                   Versions)
-importClassesFrom(methods, character, environment, matrix, missing)
+importClassesFrom(methods, character, environment, list, matrix, missing)
 importMethodsFrom(Biobase, AnnotatedDataFrame, annotatedDataFrameFrom,
-                  annotation, assayData, "assayData<-", esApply, exprs,
-                  fData, featureData, fvarLabels, pData, phenoData,
-                  preproc, "preproc<-", protocolData, sampleNames,
-                  varLabels)
-importFrom(Biobase, assayDataElement, "assayDataElement<-", assayDataNew,
-           copyEnv, MIAME, multiassign)
+                  assayData, "assayData<-", esApply, exprs, fData, featureData,
+                  fvarLabels, pData, preproc, "preproc<-", protocolData,
+                  sampleNames, varLabels)
+importFrom(Biobase, assayDataElement, assayDataNew, copyEnv, MIAME,
+           multiassign)
 importFrom(Biostrings, BStringSet, DNAStringSet)
 importFrom(methods, as, callGeneric, is, validObject)
 importFrom(stats, quantile)
