@@ -32,13 +32,20 @@ setMethod("svarLabels", "NanoStringRccSet",
 }
 
 setMethod("summary", "NanoStringRccSet",
-function(object, MARGIN, elt = "exprs")
+function(object, MARGIN, GROUP = NULL, elt = "exprs", ...)
 {
   stopifnot(MARGIN %in% c(1L, 2L))
-  mp <- medpolish(assayDataElement(object, elt), eps = 1e-6, maxiter = 100L,
-                  trace.iter = FALSE, na.rm = TRUE)
-  cbind(t(esApply(object, MARGIN = MARGIN, FUN = .marginal.summary, elt = elt)),
-        MedPolEff = mp[[ifelse(MARGIN == 1L, "row", "col")]])
+  FUN <- function(x) {
+    mp <- medpolish(assayDataElement(x, elt), eps = 1e-6, maxiter = 100L,
+                    trace.iter = FALSE, na.rm = TRUE)
+    cbind(t(esApply(x, MARGIN = MARGIN, FUN = .marginal.summary, elt = elt)),
+          MedPolEff = mp[[ifelse(MARGIN == 1L, "row", "col")]])
+  }
+  if (is.null(GROUP)) {
+    FUN(object)
+  } else {
+    esBy(object, GROUP = GROUP, FUN = FUN, simplify = FALSE)
+  }
 })
 
 
@@ -144,6 +151,33 @@ setMethod("positiveControlApply", "NanoStringRccSet",
           function(X, MARGIN, FUN, ..., elt = "exprs")
             esApply(positiveControlSet(X), MARGIN = MARGIN, FUN = FUN, ...,
                     elt = elt))
+
+setGeneric("esBy", signature = "X",
+           function(X, GROUP, FUN, ...) standardGeneric("esBy"))
+setMethod("esBy", "NanoStringRccSet",
+function(X, GROUP, FUN, ..., simplify = TRUE)
+{
+  featureNames <- fvarLabels(X)
+  phenoNames <- varLabels(X)
+  protocolNames <- varLabels(protocolData(X))
+  choices <- c(structure(rep.int("featureData", length(featureNames)),
+                         names = featureNames),
+               structure(rep.int("phenoData", length(phenoNames)),
+                         names = phenoNames),
+               structure(rep.int("protocolData", length(protocolNames)),
+                         names = protocolNames))
+  GROUP <- choices[match.arg(GROUP, names(choices))]
+  values <- do.call(GROUP, list(X))[[names(GROUP)]]
+  keys <- sort(unique(values))
+  names(keys) <- as.character(keys)
+  if (GROUP == "featureData") {
+    sapply(keys, function(k) FUN(X[values == k, ], ...),
+           simplify = simplify)
+  } else {
+    sapply(keys, function(k) FUN(X[, values == k], ...),
+           simplify = simplify)
+  }
+})
 
 
 # Transforming

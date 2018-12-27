@@ -31,7 +31,8 @@ export(NanoStringRccSet,
        negativeControlSet, positiveControlSet,
        controlSet, nonControlSet,
        endogenousApply, housekeepingApply,
-       negativeControlApply, positiveControlApply)
+       negativeControlApply, positiveControlApply,
+       esBy)
 
 ### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ### Export S4 methods
@@ -44,7 +45,7 @@ exportMethods(NanoStringRccSet,
               controlSet, nonControlSet,
               esApply, endogenousApply, housekeepingApply,
               negativeControlApply, positiveControlApply,
-              transform, with)
+              esBy, transform, with)
 
 ### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ### Export non-generic functions

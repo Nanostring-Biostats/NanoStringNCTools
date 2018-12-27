@@ -45,6 +45,8 @@
 \alias{negativeControlApply,NanoStringRccSet-method}
 \alias{positiveControlApply}
 \alias{positiveControlApply,NanoStringRccSet-method}
+\alias{esBy}
+\alias{esBy,NanoStringRccSet-method}
 
 % transforming
 \alias{transform,NanoStringRccSet-method}
@@ -107,8 +109,8 @@ NanoStringRccSet(assayData,
 \section{Summarizing}{
   \describe{
     \item{}{
-      \code{summary(object, MARGIN, elt = "exprs")}: Marginal summaries
-      (Count, Non-Missing Count, Mean, Standard Deviation, Skewness,
+      \code{summary(object, MARGIN, GROUP = NULL, elt = "exprs")}: Marginal
+      summaries (Count, Non-Missing Count, Mean, Standard Deviation, Skewness,
       Excess Kurtosis, Minimum, First Quartile, Median, Third Quartile,
       Maximum, Median Absolute Deviation, Median Polish Row / Column Effect)
       of the \code{elt} \code{\link[Biobase]{assayData}} matrix along either
@@ -190,6 +192,12 @@ NanoStringRccSet(assayData,
       over the feature (\code{MARGIN = 1}) or sample (\code{MARGIN = 2})
       dimension for the positive control barcode class feature subset of
       \code{X}.
+    }
+    \item{}{
+      \code{esBy(X, GROUP, FUN, \ldots, simplify = TRUE)}: Split
+      \code{X} by \code{GROUP} column within \code{featureData},
+      \code{phenoData}, or \code{protocolData} and apply \code{FUN}
+      to each partition.
     }
   }
 }
