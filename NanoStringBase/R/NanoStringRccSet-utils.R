@@ -38,7 +38,7 @@ function(object, MARGIN, elt = "exprs")
   mp <- medpolish(assayDataElement(object, elt), eps = 1e-6, maxiter = 100L,
                   trace.iter = FALSE, na.rm = TRUE)
   cbind(t(esApply(object, MARGIN = MARGIN, FUN = .marginal.summary, elt = elt)),
-        MedPolEffect = mp[[ifelse(MARGIN == 1L, "row", "col")]])
+        MedPolEff = mp[[ifelse(MARGIN == 1L, "row", "col")]])
 })
 
 

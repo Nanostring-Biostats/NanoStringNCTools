@@ -65,7 +65,7 @@ test_NanoStringRccSet_utils_summary <- function() {
                        Q3 = 6:9,
                        Max = 8:11,
                        MAD = 5.9304,
-                       MedPolEffect = c(-1.5, -0.5, 0.5, 1.5)),
+                       MedPolEff = c(-1.5, -0.5, 0.5, 1.5)),
                  summary(rcc2, 1L))
   checkIdentical(cbind(N = 3,
                        NMiss = 0,
@@ -79,7 +79,7 @@ test_NanoStringRccSet_utils_summary <- function() {
                        Q3 = 7:10,
                        Max = 9:12,
                        MAD = 5.9304,
-                       MedPolEffect = c(-1.5, -0.5, 0.5, 1.5)),
+                       MedPolEff = c(-1.5, -0.5, 0.5, 1.5)),
                  summary(rcc2, 1L, elt = "exprsp1"))
 
   # Marginal summaries by Sample
@@ -95,7 +95,7 @@ test_NanoStringRccSet_utils_summary <- function() {
                     Q3 = c(2.25, 6.25, 10.25),
                     Max = c(3, 7, 11),
                     MAD = 1.4826,
-                    MedPolEffect = c(-4, 0, 4)),
+                    MedPolEff = c(-4, 0, 4)),
               summary(rcc2, 2L))
   checkEquals(cbind(N = 4,
                     NMiss = 0,
@@ -109,7 +109,7 @@ test_NanoStringRccSet_utils_summary <- function() {
                     Q3 = c(3.25, 7.25, 11.25),
                     Max = c(4, 8, 12),
                     MAD = 1.4826,
-                    MedPolEffect = c(-4, 0, 4)),
+                    MedPolEff = c(-4, 0, 4)),
               summary(rcc2, 2L, elt = "exprsp1"))
 }
 
