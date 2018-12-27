@@ -17,23 +17,28 @@ setMethod("svarLabels", "NanoStringRccSet",
 
 
 # Summarizing
+.marginal.summary <- function(x)
+{
+  quartiles <- quantile(x, probs = c(0, 0.25, 0.5, 0.75, 1), na.rm = TRUE)
+  names(quartiles) <- c("Min", "Q1", "Median", "Q3", "Max")
+  c("N"        = length(x),
+    "NMiss"    = sum(is.na(x)),
+    "Mean"     = mean(x, na.rm = TRUE),
+    "SD"       = sd(x, na.rm = TRUE),
+    "Skewness" = skewness(x, na.rm = TRUE),
+    "Kurtosis" = kurtosis(x, na.rm = TRUE),
+    quartiles,
+    "MAD"      = mad(x, na.rm = TRUE))
+}
+
 setMethod("summary", "NanoStringRccSet",
 function(object, MARGIN, elt = "exprs")
 {
   stopifnot(MARGIN %in% c(1L, 2L))
-  FUN <- function(x)
-  {
-    quartiles <- quantile(x, probs = c(0, 0.25, 0.5, 0.75, 1), na.rm = TRUE)
-    names(quartiles) <- c("Min", "Q1", "Median", "Q3", "Max")
-    c("Mean"     = mean(x, na.rm = TRUE),
-      "SD"       = sd(x, na.rm = TRUE),
-      "Skewness" = skewness(x, na.rm = TRUE),
-      "Kurtosis" = kurtosis(x, na.rm = TRUE),
-      quartiles,
-      "N"        = length(x),
-      "NMiss"    = sum(is.na(x)))
-  }
-  t(esApply(object, MARGIN = MARGIN, FUN = FUN, elt = elt))
+  mp <- medpolish(assayDataElement(object, elt), eps = 1e-6, maxiter = 100L,
+                  trace.iter = FALSE, na.rm = TRUE)
+  cbind(t(esApply(object, MARGIN = MARGIN, FUN = .marginal.summary, elt = elt)),
+        MedPolEffect = mp[[ifelse(MARGIN == 1L, "row", "col")]])
 })
 
 

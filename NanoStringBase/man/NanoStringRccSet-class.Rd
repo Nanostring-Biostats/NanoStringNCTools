@@ -108,11 +108,11 @@ NanoStringRccSet(assayData,
   \describe{
     \item{}{
       \code{summary(object, MARGIN, elt = "exprs")}: Marginal summaries
-      (Mean, Standard Deviation, Skewness, Excess Kurtosis, Minimum,
-      First Quartile, Median, Third Quartile, Maximum, Count, Non-Missing
-      Count) of the \code{elt} \code{\link[Biobase]{assayData}} matrix
-      along either the feature (\code{MARGIN = 1}) or sample
-      (\code{MARGIN = 2}) dimension.
+      (Count, Non-Missing Count, Mean, Standard Deviation, Skewness,
+      Excess Kurtosis, Minimum, First Quartile, Median, Third Quartile,
+      Maximum, Median Absolute Deviation, Median Polish Row / Column Effect)
+      of the \code{elt} \code{\link[Biobase]{assayData}} matrix along either
+      the feature (\code{MARGIN = 1}) or sample (\code{MARGIN = 2}) dimension.
     }
   }
 }

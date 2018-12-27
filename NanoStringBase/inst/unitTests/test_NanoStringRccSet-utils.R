@@ -53,7 +53,9 @@ test_NanoStringRccSet_utils_summary <- function() {
   rcc2 <- transform(rcc, exprsp1 = exprs + 1L)
 
   # Marginal summaries by Feature
-  checkIdentical(cbind(Mean = structure(4:7, names = letters[1:4]),
+  checkIdentical(cbind(N = 3,
+                       NMiss = 0,
+                       Mean = structure(4:7, names = letters[1:4]),
                        SD = 4,
                        Skewness = 0,
                        Kurtosis = NaN,
@@ -62,10 +64,12 @@ test_NanoStringRccSet_utils_summary <- function() {
                        Median = 4:7,
                        Q3 = 6:9,
                        Max = 8:11,
-                       N = 3,
-                       NMiss = 0),
+                       MAD = 5.9304,
+                       MedPolEffect = c(-1.5, -0.5, 0.5, 1.5)),
                  summary(rcc2, 1L))
-  checkIdentical(cbind(Mean = structure(5:8, names = letters[1:4]),
+  checkIdentical(cbind(N = 3,
+                       NMiss = 0,
+                       Mean = structure(5:8, names = letters[1:4]),
                        SD = 4,
                        Skewness = 0,
                        Kurtosis = NaN,
@@ -74,12 +78,14 @@ test_NanoStringRccSet_utils_summary <- function() {
                        Median = 5:8,
                        Q3 = 7:10,
                        Max = 9:12,
-                       N = 3,
-                       NMiss = 0),
+                       MAD = 5.9304,
+                       MedPolEffect = c(-1.5, -0.5, 0.5, 1.5)),
                  summary(rcc2, 1L, elt = "exprsp1"))
 
   # Marginal summaries by Sample
-  checkEquals(cbind(Mean = structure(c(1.5, 5.5, 9.5), names = sampleNames(rcc)),
+  checkEquals(cbind(N = 4,
+                    NMiss = 0,
+                    Mean = structure(c(1.5, 5.5, 9.5), names = sampleNames(rcc)),
                     SD = sqrt(15/9),
                     Skewness = 0,
                     Kurtosis = -1.2,
@@ -88,10 +94,12 @@ test_NanoStringRccSet_utils_summary <- function() {
                     Median = c(1.5, 5.5, 9.5),
                     Q3 = c(2.25, 6.25, 10.25),
                     Max = c(3, 7, 11),
-                    N = 4,
-                    NMiss = 0),
+                    MAD = 1.4826,
+                    MedPolEffect = c(-4, 0, 4)),
               summary(rcc2, 2L))
-  checkEquals(cbind(Mean = structure(c(2.5, 6.5, 10.5), names = sampleNames(rcc)),
+  checkEquals(cbind(N = 4,
+                    NMiss = 0,
+                    Mean = structure(c(2.5, 6.5, 10.5), names = sampleNames(rcc)),
                     SD = sqrt(15/9),
                     Skewness = 0,
                     Kurtosis = -1.2,
@@ -100,8 +108,8 @@ test_NanoStringRccSet_utils_summary <- function() {
                     Median = c(2.5, 6.5, 10.5),
                     Q3 = c(3.25, 7.25, 11.25),
                     Max = c(4, 8, 12),
-                    N = 4,
-                    NMiss = 0),
+                    MAD = 1.4826,
+                    MedPolEffect = c(-4, 0, 4)),
               summary(rcc2, 2L, elt = "exprsp1"))
 }
 
