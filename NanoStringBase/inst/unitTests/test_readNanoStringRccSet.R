@@ -11,6 +11,8 @@ test_readNanoStringRccSet_onearg <- function() {
                               c("TP53",
                                 "PIK3CA Ref (exon 10)|hg19|+|chr3:178936060-178936141"),
                             Accession = c("NM_000546.2", "nRef_00032.1"),
+                            IsControl = c(FALSE, NA),
+                            ControlConc = c(NA_real_, NA_real_),
                             row.names =
                               c("Endogenous_TP53_NM_000546.2",
                                 "SNV_REF_PIK3CA Ref (exon 10)|hg19|+|chr3:178936060-178936141_nRef_00032.1"),
@@ -54,19 +56,21 @@ test_readNanoStringRccSet_rlf <- function() {
                               c("TP53",
                                 "PIK3CA Ref (exon 10)|hg19|+|chr3:178936060-178936141"),
                             Accession = c("NM_000546.2", "nRef_00032.1"),
+                            IsControl = c(FALSE, FALSE),
+                            ControlConc = c(NA_real_, NA_real_),
                             Barcode = c("BGBGYR", "YRGRYR"),
                             ProbeID = c("NM_000546.2:1330", "nRef_00032:1"),
                             Species = c("Hs", "Hs"),
                             BarcodeComments = c("ENDOGENOUS", "SNV_REF"),
-                            IsControl = c(FALSE, FALSE),
                             row.names =
                               c("Endogenous_TP53_NM_000546.2",
                                 "SNV_REF_PIK3CA Ref (exon 10)|hg19|+|chr3:178936060-178936141_nRef_00032.1"),
                             stringsAsFactors = FALSE),
                  fData(rcc)[c(1L, nrow(rcc)),
                             c("BarcodeClass", "GeneName", "Accession",
+                              "IsControl", "ControlConc",
                               "Barcode", "ProbeID", "Species",
-                              "BarcodeComments", "IsControl")])
+                              "BarcodeComments")])
   checkIdentical(data.frame(FileVersion = numeric_version(c("1.7", "1.7")),
                             SoftwareVersion = numeric_version(c("4.0.0.3", "4.0.0.3")),
                             SystemType = c("Gen2", "Gen2"),

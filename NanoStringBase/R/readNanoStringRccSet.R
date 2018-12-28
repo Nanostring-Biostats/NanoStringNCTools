@@ -48,6 +48,17 @@ function(rccFiles,
   })
   stopifnot(all(sapply(feature, function(x) identical(feature[[1L]], x))))
   feature <- feature[[1L]]
+  feature[["IsControl"]] <- NA
+  feature[["IsControl"]][feature[["BarcodeClass"]] %in%
+                           c("Negative", "Positive")] <- TRUE
+  feature[["IsControl"]][feature[["BarcodeClass"]] %in%
+                           c("Endogenous", "Housekeeping")] <- FALSE
+  feature[["ControlConc"]] <- NA_real_
+  feature[["ControlConc"]][feature[["BarcodeClass"]] == "Negative"] <- 0
+  feature[["ControlConc"]][feature[["BarcodeClass"]] == "Positive"] <-
+    as.numeric(sub("POS_\\w\\((.*)\\)", "\\1",
+                   feature[["GeneName"]][feature[["BarcodeClass"]] ==
+                                           "Positive"]))
   if (is.null(rlfFile)) {
     rlfHeader <- list()
   } else if (!is.null(rlfFile)) {
@@ -59,16 +70,19 @@ function(rccFiles,
     rlfData <- as.data.frame(rlfData)
     rlfData <- rlfData[rlfData[["BarcodeClassActive"]] %in% c(2L, 3L), ,
                        drop = FALSE]
-    rlfData[["IsControl"]] <- rlfData[["BarcodeClassActive"]] == 3L
     rownames(rlfData) <-
       sprintf("%s_%s_%s", rlfData[["BarcodeClass"]], rlfData[["GeneName"]],
               rlfData[["Accession"]])
+
     if (!identical(sort(rownames(feature)), sort(rownames(rlfData))))
       stop("featureData mismatch between RLF and RCC files")
+
+    rlfData <- rlfData[rownames(feature), , drop = FALSE]
+    feature[["IsControl"]] <- rlfData[["BarcodeClassActive"]] == 3L
+
     for (j in c("BarcodeClass", "GeneName", "Accession", "BarcodeClassActive")) {
       rlfData[[j]] <- NULL
     }
-    rlfData <- rlfData[rownames(feature), , drop = FALSE]
     feature <- cbind(feature, rlfData)
   }
   feature <- AnnotatedDataFrame(feature,
