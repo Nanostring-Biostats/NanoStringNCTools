@@ -1,6 +1,7 @@
 skewness <-
 function(x, na.rm = FALSE)
 {
+  # Handle missing values
   if (anyNA(x)) {
     if (na.rm)
       x <- x[!is.na(x)]
@@ -8,7 +9,12 @@ function(x, na.rm = FALSE)
       return(NA_real_)
   }
 
+  # Handle small sample sizes
   n <- length(x)
+  if (n < 3L)
+    return(NA_real_)
+
+  # Calculate skewness
   x <- x - mean(x)
   ((sqrt(n * (n - 1L)) / (n - 2L)) * (sum(x^3) / n)) / ((sum(x^2) / n)^1.5)
 }
@@ -16,14 +22,20 @@ function(x, na.rm = FALSE)
 kurtosis <-
 function(x, na.rm = FALSE)
 {
+  # Handle missing values
   if (anyNA(x)) {
     if (na.rm)
       x <- x[!is.na(x)]
     else
       return(NA_real_)
   }
-  
+
+  # Handle small sample sizes
   n <- length(x)
+  if (n < 4L)
+    return(NA_real_)
+
+  # Calculate excess kurtosis
   x <- x - mean(x)
   ((n + 1L) * (n - 1L) *
       ((sum(x^4) / n) / (sum(x^2) / n)^2 - (3 * (n - 1L)) / (n + 1L))) /
