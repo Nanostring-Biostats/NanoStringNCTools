@@ -33,6 +33,7 @@ setMethod("svarLabels", "NanoStringRccSet",
     "SD"       = sd(x),
     "Skewness" = skewness(x),
     "Kurtosis" = kurtosis(x),
+    geomMean(x),
     quartiles,
     "MAD"      = mad(x))
 }

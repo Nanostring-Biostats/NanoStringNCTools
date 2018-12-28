@@ -112,10 +112,12 @@ NanoStringRccSet(assayData,
     \item{}{
       \code{summary(object, MARGIN, GROUP = NULL, elt = "exprs")}: Marginal
       summaries (Count, Non-Missing Count, Mean, Standard Deviation, Skewness,
-      Excess Kurtosis, Minimum, First Quartile, Median, Third Quartile,
-      Maximum, Median Absolute Deviation, Median Polish Row / Column Effect)
-      of the \code{elt} \code{\link[Biobase]{assayData}} matrix along either
-      the feature (\code{MARGIN = 1}) or sample (\code{MARGIN = 2}) dimension.
+      Excess Kurtosis, Geometric Mean 95\% Lower Confidence Limit, Geometric
+      Mean, Geometric Mean 95\% Upper Confidence Limit, Minimum, First Quartile,
+      Median, Third Quartile, Maximum, Median Absolute Deviation, Median Polish
+      Row / Column Effect) of the \code{elt} \code{\link[Biobase]{assayData}}
+      matrix along either the feature (\code{MARGIN = 1}) or sample
+      (\code{MARGIN = 2}) dimension.
     }
   }
 }

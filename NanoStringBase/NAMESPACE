@@ -14,7 +14,7 @@ importFrom(Biobase, assayDataElement, assayDataNew, copyEnv, MIAME,
            multiassign)
 importFrom(Biostrings, BStringSet, DNAStringSet)
 importFrom(methods, as, callGeneric, is, validObject)
-importFrom(stats, medpolish, quantile)
+importFrom(stats, medpolish, quantile, t.test)
 importFrom(utils, read.csv, write.csv)
 
 ### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
