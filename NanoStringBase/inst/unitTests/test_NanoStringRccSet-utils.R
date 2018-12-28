@@ -12,6 +12,8 @@ rcc <-
          AnnotatedDataFrame(data.frame(BarcodeClass = c("Endogenous", "Positive", "Negative", "Housekeeping"),
                                        GeneName = letters[1:4],
                                        Accession = letters[1:4],
+                                       IsControl = c(FALSE, TRUE, TRUE, FALSE),
+                                       ControlConc = c(NA_real_, 0.125, 0, NA_real_),
                                        row.names = letters[1:4],
                                        stringsAsFactors = FALSE),
                             dimLabels = c("featureNames", "featureColumns")),
@@ -284,19 +286,11 @@ test_NanoStringRccSet_utils_positiveControlSet <- function() {
 }
 
 test_NanoStringRccSet_utils_controlSet <- function() {
-  checkException(controlSet(rcc))
-
-  x <- rcc
-  featureData(x)[["IsControl"]] <- c(TRUE, FALSE, TRUE, FALSE)
-  checkEquals(x[featureData(x)[["IsControl"]], ], controlSet(x))
+  checkEquals(rcc[featureData(rcc)[["IsControl"]], ], controlSet(rcc))
 }
 
 test_NanoStringRccSet_utils_nonControlSet <- function() {
-  checkException(nonControlSet(rcc))
-
-  x <- rcc
-  featureData(x)[["IsControl"]] <- c(TRUE, FALSE, TRUE, FALSE)
-  checkEquals(x[!featureData(x)[["IsControl"]], ], nonControlSet(x))
+  checkEquals(rcc[!featureData(rcc)[["IsControl"]], ], nonControlSet(rcc))
 }
 
 # looping

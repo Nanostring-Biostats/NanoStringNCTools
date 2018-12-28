@@ -61,32 +61,32 @@ setGeneric("endogenousSet", signature = "object",
            function(object) standardGeneric("endogenousSet"))
 setMethod("endogenousSet", "NanoStringRccSet",
           function(object)
-            object[featureData(object)[["BarcodeClass"]] == "Endogenous", ])
+            object[which(featureData(object)[["BarcodeClass"]] == "Endogenous"), ])
 
 setGeneric("housekeepingSet", signature = "object",
            function(object) standardGeneric("housekeepingSet"))
 setMethod("housekeepingSet", "NanoStringRccSet",
           function(object)
-            object[featureData(object)[["BarcodeClass"]] == "Housekeeping", ])
+            object[which(featureData(object)[["BarcodeClass"]] == "Housekeeping"), ])
 
 setGeneric("negativeControlSet", signature = "object",
            function(object) standardGeneric("negativeControlSet"))
 setMethod("negativeControlSet", "NanoStringRccSet",
           function(object)
-            object[featureData(object)[["BarcodeClass"]] == "Negative", ])
+            object[which(featureData(object)[["BarcodeClass"]] == "Negative"), ])
 
 setGeneric("positiveControlSet", signature = "object",
            function(object) standardGeneric("positiveControlSet"))
 setMethod("positiveControlSet", "NanoStringRccSet",
           function(object)
-            object[featureData(object)[["BarcodeClass"]] == "Positive", ])
+            object[which(featureData(object)[["BarcodeClass"]] == "Positive"), ])
 
 setGeneric("controlSet", signature = "object",
            function(object) standardGeneric("controlSet"))
 setMethod("controlSet", "NanoStringRccSet",
           function(object)
             if ("IsControl" %in% fvarLabels(object))
-              object[featureData(object)[["IsControl"]], ]
+              object[which(featureData(object)[["IsControl"]]), ]
           else
             stop("Missing \"IsControl\" column in featureData"))
 
@@ -95,7 +95,7 @@ setGeneric("nonControlSet", signature = "object",
 setMethod("nonControlSet", "NanoStringRccSet",
           function(object)
             if ("IsControl" %in% fvarLabels(object))
-              object[!featureData(object)[["IsControl"]], ]
+              object[which(!featureData(object)[["IsControl"]]), ]
           else
             stop("Missing \"IsControl\" column in featureData"))
 

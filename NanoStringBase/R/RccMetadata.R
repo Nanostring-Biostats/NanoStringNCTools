@@ -84,10 +84,31 @@ function(x, fileVersion,
             paste0("\"", expectedNames, "\"", collapse = ", "))
 }
 
+
+.allNA <- function(x) {
+  all(is.na(x))
+}
+
+.allTRUE <- function(x) {
+  is.logical(x) && !anyNA(x) && all(x)
+}
+
+.allFALSE <- function(x) {
+  is.logical(x) && !anyNA(x) && !any(x)
+}
+
+.allZero <- function(x) {
+  is.numeric(x) && !anyNA(x) && identical(range(x), c(0, 0))
+}
+
 .validNonNegativeInteger <- function(x) {
   is.integer(x) && !anyNA(x) && min(x) >= 0L
 }
 
 .validNonNegativeNumber <- function(x) {
   is.numeric(x) && !anyNA(x) && min(x) >= 0
+}
+
+.validPositiveNumber <- function(x) {
+  is.numeric(x) && !anyNA(x) && min(x) > 0
 }
