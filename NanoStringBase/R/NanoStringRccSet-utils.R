@@ -19,16 +19,22 @@ setMethod("svarLabels", "NanoStringRccSet",
 # Summarizing
 .marginal.summary <- function(x)
 {
-  quartiles <- quantile(x, probs = c(0, 0.25, 0.5, 0.75, 1), na.rm = TRUE)
+  # Handle missing data
+  nmiss <- sum(is.na(x))
+  if (nmiss > 0L)
+    x <- x[!is.na(x)]
+
+  # Calculate statistics
+  quartiles <- quantile(x, probs = c(0, 0.25, 0.5, 0.75, 1))
   names(quartiles) <- c("Min", "Q1", "Median", "Q3", "Max")
   c("N"        = length(x),
-    "NMiss"    = sum(is.na(x)),
-    "Mean"     = mean(x, na.rm = TRUE),
-    "SD"       = sd(x, na.rm = TRUE),
-    "Skewness" = skewness(x, na.rm = TRUE),
-    "Kurtosis" = kurtosis(x, na.rm = TRUE),
+    "NMiss"    = nmiss,
+    "Mean"     = mean(x),
+    "SD"       = sd(x),
+    "Skewness" = skewness(x),
+    "Kurtosis" = kurtosis(x),
     quartiles,
-    "MAD"      = mad(x, na.rm = TRUE))
+    "MAD"      = mad(x))
 }
 
 setMethod("summary", "NanoStringRccSet",
