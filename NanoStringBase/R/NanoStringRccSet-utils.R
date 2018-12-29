@@ -49,7 +49,7 @@ function(object, MARGIN, GROUP = NULL, elt = "exprs", ...)
 {
   stopifnot(MARGIN %in% c(1L, 2L))
   FUN <- function(x) {
-    mp <- medpolish(assayDataElement2(x, elt), eps = 1e-6, maxiter = 100L,
+    mp <- medpolish(assayDataElement2(x, elt), eps = 1e-8, maxiter = 100L,
                     trace.iter = FALSE, na.rm = TRUE)
     cbind(t(esApply(x, MARGIN = MARGIN, FUN = .marginal.summary, elt = elt)),
           MedPolEff = mp[[ifelse(MARGIN == 1L, "row", "col")]])
