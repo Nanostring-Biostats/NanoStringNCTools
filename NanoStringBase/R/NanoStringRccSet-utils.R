@@ -15,6 +15,14 @@ setGeneric("svarLabels", signature = "object",
 setMethod("svarLabels", "NanoStringRccSet",
           function(object) c(varLabels(object), varLabels(protocolData(object))))
 
+assayDataElement2 <- function(object, elt)
+{
+  if (elt %in% assayDataElementNames(object))
+    assayDataElement(object, elt)
+  else
+    stop("'elt' not present in assayData(object)")
+}
+
 
 # Summarizing
 .marginal.summary <- function(x)
@@ -41,7 +49,7 @@ function(object, MARGIN, GROUP = NULL, elt = "exprs", ...)
 {
   stopifnot(MARGIN %in% c(1L, 2L))
   FUN <- function(x) {
-    mp <- medpolish(assayDataElement(x, elt), eps = 1e-6, maxiter = 100L,
+    mp <- medpolish(assayDataElement2(x, elt), eps = 1e-6, maxiter = 100L,
                     trace.iter = FALSE, na.rm = TRUE)
     cbind(t(esApply(x, MARGIN = MARGIN, FUN = .marginal.summary, elt = elt)),
           MedPolEff = mp[[ifelse(MARGIN == 1L, "row", "col")]])
@@ -122,7 +130,7 @@ function(X, MARGIN, FUN, ..., elt = "exprs")
   multiassign(names(kvs), kvs, envir = e1)
   environment(FUN) <- e1
 
-  apply(assayDataElement(X, elt), MARGIN, FUN, ...)
+  apply(assayDataElement2(X, elt), MARGIN, FUN, ...)
 })
 
 setGeneric("endogenousApply", signature = "X",
