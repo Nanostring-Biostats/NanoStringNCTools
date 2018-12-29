@@ -70,47 +70,65 @@ function(x, subset, select, ...)
   eval(substitute(with(kvs, x[subset, select])))
 })
 
-setGeneric("endogenousSet", signature = "object",
-           function(object) standardGeneric("endogenousSet"))
-setMethod("endogenousSet", "NanoStringRccSet",
-          function(object)
-            object[which(featureData(object)[["BarcodeClass"]] == "Endogenous"), ])
+setGeneric("endogenousSubset", signature = "x",
+           function(x, subset, select) standardGeneric("endogenousSubset"))
+setMethod("endogenousSubset", "NanoStringRccSet",
+          function(x, subset, select) {
+            call <- match.call()
+            call$x <- x[which(featureData(x)[["BarcodeClass"]] == "Endogenous"), ]
+            call[[1L]] <- as.name("subset")
+            eval(call, parent.frame())
+          })
 
-setGeneric("housekeepingSet", signature = "object",
-           function(object) standardGeneric("housekeepingSet"))
-setMethod("housekeepingSet", "NanoStringRccSet",
-          function(object)
-            object[which(featureData(object)[["BarcodeClass"]] == "Housekeeping"), ])
+setGeneric("housekeepingSubset", signature = "x",
+           function(x, subset, select) standardGeneric("housekeepingSubset"))
+setMethod("housekeepingSubset", "NanoStringRccSet",
+          function(x, subset, select) {
+            call <- match.call()
+            call$x <- x[which(featureData(x)[["BarcodeClass"]] == "Housekeeping"), ]
+            call[[1L]] <- as.name("subset")
+            eval(call, parent.frame())
+          })
 
-setGeneric("negativeControlSet", signature = "object",
-           function(object) standardGeneric("negativeControlSet"))
-setMethod("negativeControlSet", "NanoStringRccSet",
-          function(object)
-            object[which(featureData(object)[["BarcodeClass"]] == "Negative"), ])
+setGeneric("negativeControlSubset", signature = "x",
+           function(x, subset, select) standardGeneric("negativeControlSubset"))
+setMethod("negativeControlSubset", "NanoStringRccSet",
+          function(x, subset, select) {
+            call <- match.call()
+            call$x <- x[which(featureData(x)[["BarcodeClass"]] == "Negative"), ]
+            call[[1L]] <- as.name("subset")
+            eval(call, parent.frame())
+          })
 
-setGeneric("positiveControlSet", signature = "object",
-           function(object) standardGeneric("positiveControlSet"))
-setMethod("positiveControlSet", "NanoStringRccSet",
-          function(object)
-            object[which(featureData(object)[["BarcodeClass"]] == "Positive"), ])
+setGeneric("positiveControlSubset", signature = "x",
+           function(x, subset, select) standardGeneric("positiveControlSubset"))
+setMethod("positiveControlSubset", "NanoStringRccSet",
+          function(x, subset, select) {
+            call <- match.call()
+            call$x <- x[which(featureData(x)[["BarcodeClass"]] == "Positive"), ]
+            call[[1L]] <- as.name("subset")
+            eval(call, parent.frame())
+          })
 
-setGeneric("controlSet", signature = "object",
-           function(object) standardGeneric("controlSet"))
-setMethod("controlSet", "NanoStringRccSet",
-          function(object)
-            if ("IsControl" %in% fvarLabels(object))
-              object[which(featureData(object)[["IsControl"]]), ]
-          else
-            stop("Missing \"IsControl\" column in featureData"))
+setGeneric("controlSubset", signature = "x",
+           function(x, subset, select) standardGeneric("controlSubset"))
+setMethod("controlSubset", "NanoStringRccSet",
+          function(x, subset, select) {
+            call <- match.call()
+            call$x <- x[which(featureData(x)[["IsControl"]]), ]
+            call[[1L]] <- as.name("subset")
+            eval(call, parent.frame())
+          })
 
-setGeneric("nonControlSet", signature = "object",
-           function(object) standardGeneric("nonControlSet"))
-setMethod("nonControlSet", "NanoStringRccSet",
-          function(object)
-            if ("IsControl" %in% fvarLabels(object))
-              object[which(!featureData(object)[["IsControl"]]), ]
-          else
-            stop("Missing \"IsControl\" column in featureData"))
+setGeneric("nonControlSubset", signature = "x",
+           function(x, subset, select) standardGeneric("nonControlSubset"))
+setMethod("nonControlSubset", "NanoStringRccSet",
+          function(x, subset, select) {
+            call <- match.call()
+            call$x <- x[which(!featureData(x)[["IsControl"]]), ]
+            call[[1L]] <- as.name("subset")
+            eval(call, parent.frame())
+          })
 
 
 # Looping
@@ -138,7 +156,7 @@ setGeneric("endogenousApply", signature = "X",
              standardGeneric("endogenousApply"))
 setMethod("endogenousApply", "NanoStringRccSet",
           function(X, MARGIN, FUN, ..., elt = "exprs")
-            esApply(endogenousSet(X), MARGIN = MARGIN, FUN = FUN, ...,
+            esApply(endogenousSubset(X), MARGIN = MARGIN, FUN = FUN, ...,
                     elt = elt))
 
 setGeneric("housekeepingApply", signature = "X",
@@ -146,7 +164,7 @@ setGeneric("housekeepingApply", signature = "X",
              standardGeneric("housekeepingApply"))
 setMethod("housekeepingApply", "NanoStringRccSet",
           function(X, MARGIN, FUN, ..., elt = "exprs")
-            esApply(housekeepingSet(X), MARGIN = MARGIN, FUN = FUN, ...,
+            esApply(housekeepingSubset(X), MARGIN = MARGIN, FUN = FUN, ...,
                     elt = elt))
 
 setGeneric("negativeControlApply", signature = "X",
@@ -154,7 +172,7 @@ setGeneric("negativeControlApply", signature = "X",
              standardGeneric("negativeControlApply"))
 setMethod("negativeControlApply", "NanoStringRccSet",
           function(X, MARGIN, FUN, ..., elt = "exprs")
-            esApply(negativeControlSet(X), MARGIN = MARGIN, FUN = FUN, ...,
+            esApply(negativeControlSubset(X), MARGIN = MARGIN, FUN = FUN, ...,
                     elt = elt))
 
 setGeneric("positiveControlApply", signature = "X",
@@ -162,7 +180,7 @@ setGeneric("positiveControlApply", signature = "X",
              standardGeneric("positiveControlApply"))
 setMethod("positiveControlApply", "NanoStringRccSet",
           function(X, MARGIN, FUN, ..., elt = "exprs")
-            esApply(positiveControlSet(X), MARGIN = MARGIN, FUN = FUN, ...,
+            esApply(positiveControlSubset(X), MARGIN = MARGIN, FUN = FUN, ...,
                     elt = elt))
 
 setGeneric("esBy", signature = "X",

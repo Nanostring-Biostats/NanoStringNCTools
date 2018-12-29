@@ -22,18 +22,18 @@
 
 % subsetting
 \alias{subset,NanoStringRccSet-method}
-\alias{endogenousSet}
-\alias{endogenousSet,NanoStringRccSet-method}
-\alias{housekeepingSet}
-\alias{housekeepingSet,NanoStringRccSet-method}
-\alias{negativeControlSet}
-\alias{negativeControlSet,NanoStringRccSet-method}
-\alias{positiveControlSet}
-\alias{positiveControlSet,NanoStringRccSet-method}
-\alias{controlSet}
-\alias{controlSet,NanoStringRccSet-method}
-\alias{nonControlSet}
-\alias{nonControlSet,NanoStringRccSet-method}
+\alias{endogenousSubset}
+\alias{endogenousSubset,NanoStringRccSet-method}
+\alias{housekeepingSubset}
+\alias{housekeepingSubset,NanoStringRccSet-method}
+\alias{negativeControlSubset}
+\alias{negativeControlSubset,NanoStringRccSet-method}
+\alias{positiveControlSubset}
+\alias{positiveControlSubset,NanoStringRccSet-method}
+\alias{controlSubset}
+\alias{controlSubset,NanoStringRccSet-method}
+\alias{nonControlSubset}
+\alias{nonControlSubset,NanoStringRccSet-method}
 
 % looping
 \alias{esApply,NanoStringRccSet-method}
@@ -135,30 +135,34 @@ NanoStringRccSet(assayData,
       \code{\link[Biobase]{phenoData}} and \code{\link[Biobase]{protocolData}}.
     }
     \item{}{
-      \code{endogenousSet(object)}: Extracts the endogenous barcode class
-      feature subset of \code{object}.
+      \code{endogenousSubset(x, subset, select)}: Extracts the endogenous
+      barcode class feature subset of \code{x} with optional additional
+      subsetting using \code{subset} and \code{select}.
     }
     \item{}{
-      \code{housekeepingSet(object)}: Extracts the housekeeping barcode class
-      feature subset of \code{object}.
+      \code{housekeepingSubset(x, subset, select)}: Extracts the housekeeping
+      barcode class feature subset of \code{x} with optional additional
+      subsetting using \code{subset} and \code{select}.
     }
     \item{}{
-      \code{negativeControlSet(object)}: Extracts the negative control barcode
-      class feature subset of \code{object}.
+      \code{negativeControlSubset(x, subset, select)}: Extracts the negative
+      control barcode class feature subset of \code{x} with optional additional
+      subsetting using \code{subset} and \code{select}.
     }
     \item{}{
-      \code{positiveControlSet(object)}: Extracts the positive control barcode
-      class feature subset of \code{object}.
+      \code{positiveControlSubset(x, subset, select)}: Extracts the positive
+      control barcode class feature subset of \code{x} with optional additional
+      subsetting using \code{subset} and \code{select}.
     }
     \item{}{
-      \code{controlSet(object)}: If the \code{"IsControl"} indicator column is
-      present in the feature data, extracts the feature subset representing the
-      controls of \code{object}.
+      \code{controlSubset(x, subset, select)}: Extracts the feature subset
+      representing the controls of \code{x} with optional additional
+      subsetting using \code{subset} and \code{select}.
     }
     \item{}{
-      \code{nonControlSet(object)}: If the \code{"IsControl"} indicator column
-      is present in the feature data, extracts the feature subset representing
-      the non-controls of \code{object}.
+      \code{nonControlSubset(x, subset, select)}: Extracts the feature subset
+      representing the non-controls of \code{x} with optional additional
+      subsetting using \code{subset} and \code{select}.
     }
   }
 }
@@ -273,12 +277,12 @@ dim(subset(solidTumor, BarcodeClass == "Positive", BRAFGenotype == "wt/wt"))
 
 # Extract by barcode class
 with(solidTumor, table(BarcodeClass))
-with(endogenousSet(solidTumor), table(BarcodeClass))
-with(housekeepingSet(solidTumor), table(BarcodeClass))
-with(negativeControlSet(solidTumor), table(BarcodeClass))
-with(positiveControlSet(solidTumor), table(BarcodeClass))
-with(controlSet(solidTumor), table(BarcodeClass))
-with(nonControlSet(solidTumor), table(BarcodeClass))
+with(endogenousSubset(solidTumor), table(BarcodeClass))
+with(housekeepingSubset(solidTumor), table(BarcodeClass))
+with(negativeControlSubset(solidTumor), table(BarcodeClass))
+with(positiveControlSubset(solidTumor), table(BarcodeClass))
+with(controlSubset(solidTumor), table(BarcodeClass))
+with(nonControlSubset(solidTumor), table(BarcodeClass))
 
 
 # Looping over NanoStringRccSet assayData matrices

@@ -10,8 +10,8 @@ importMethodsFrom(Biobase, AnnotatedDataFrame, annotatedDataFrameFrom,
                   assayData, "assayData<-", esApply, exprs, fData, featureData,
                   fvarLabels, pData, preproc, "preproc<-", protocolData,
                   sampleNames, varLabels)
-importFrom(Biobase, assayDataElement, assayDataNew, copyEnv, MIAME,
-           multiassign)
+importFrom(Biobase, assayDataElement, assayDataElementNames, assayDataNew,
+           copyEnv, MIAME, multiassign)
 importFrom(Biostrings, BStringSet, DNAStringSet)
 importFrom(methods, as, callGeneric, is, validObject)
 importFrom(stats, medpolish, quantile, t.test)
@@ -27,9 +27,9 @@ exportClasses(NanoStringRccSet)
 
 export(NanoStringRccSet,
        sData, svarLabels,
-       endogenousSet, housekeepingSet,
-       negativeControlSet, positiveControlSet,
-       controlSet, nonControlSet,
+       endogenousSubset, housekeepingSubset,
+       negativeControlSubset, positiveControlSubset,
+       controlSubset, nonControlSubset,
        endogenousApply, housekeepingApply,
        negativeControlApply, positiveControlApply,
        esBy)
@@ -40,9 +40,9 @@ export(NanoStringRccSet,
 exportMethods(NanoStringRccSet,
               sData, svarLabels,
               summary, subset,
-              endogenousSet, housekeepingSet,
-              negativeControlSet, positiveControlSet,
-              controlSet, nonControlSet,
+              endogenousSubset, housekeepingSubset,
+              negativeControlSubset, positiveControlSubset,
+              controlSubset, nonControlSubset,
               esApply, endogenousApply, housekeepingApply,
               negativeControlApply, positiveControlApply,
               esBy, transform, with)
