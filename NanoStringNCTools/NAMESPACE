@@ -1,0 +1,25 @@
+### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+### Imports
+
+import(BiocGenerics)
+import(NanoStringBase)
+importMethodsFrom(Biobase, exprs, featureData, preproc, "preproc<-",
+                  protocolData, "protocolData<-")
+importFrom(stats, cor)
+
+### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+### Export S4 classes
+
+### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+### Export S4 generics
+
+export(setQCFlags)
+
+### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+### Export S4 methods
+
+exportMethods(setQCFlags)
+
+### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+### Export non-generic functions
+
