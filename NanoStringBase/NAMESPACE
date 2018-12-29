@@ -53,4 +53,5 @@ exportMethods(NanoStringRccSet,
 export(readNanoStringRccSet,
        readRccFile,
        readRlfFile,
-       writeNanoStringRccSet)
+       writeNanoStringRccSet,
+       log2c0)

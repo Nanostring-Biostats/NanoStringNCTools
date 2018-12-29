@@ -16,5 +16,6 @@ Collate: RccMetadata.R
          readRlfFile.R
          readNanoStringRccSet.R
          writeNanoStringRccSet.R
+         Math.R
          Summary.R
          zzz.R
