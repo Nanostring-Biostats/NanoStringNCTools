@@ -20,15 +20,13 @@ setMethod("svarLabels", "NanoStringRccSet",
 .marginal.summary <- function(x)
 {
   # Handle missing data
-  nmiss <- sum(is.na(x))
-  if (nmiss > 0L)
+  if (anyNA(x))
     x <- x[!is.na(x)]
 
   # Calculate statistics
   quartiles <- quantile(x, probs = c(0, 0.25, 0.5, 0.75, 1))
   names(quartiles) <- c("Min", "Q1", "Median", "Q3", "Max")
   c("N"        = length(x),
-    "NMiss"    = nmiss,
     "Mean"     = mean(x),
     "SD"       = sd(x),
     "Skewness" = skewness(x),

@@ -56,7 +56,6 @@ test_NanoStringRccSet_utils_summary <- function() {
 
   # Marginal summaries by Feature
   checkEquals(cbind(N = 3,
-                    NMiss = 0,
                     Mean = structure(4:7, names = letters[1:4]),
                     SD = 4,
                     Skewness = 0,
@@ -73,7 +72,6 @@ test_NanoStringRccSet_utils_summary <- function() {
                     MedPolEff = c(-1.5, -0.5, 0.5, 1.5)),
               summary(rcc2, 1L))
   checkEquals(cbind(N = 3,
-                    NMiss = 0,
                     Mean = structure(5:8, names = letters[1:4]),
                     SD = 4,
                     Skewness = 0,
@@ -92,7 +90,6 @@ test_NanoStringRccSet_utils_summary <- function() {
 
   # Marginal summaries by Sample
   checkEquals(cbind(N = 4,
-                    NMiss = 0,
                     Mean = structure(c(1.5, 5.5, 9.5), names = sampleNames(rcc)),
                     SD = sqrt(15/9),
                     Skewness = 0,
@@ -109,7 +106,6 @@ test_NanoStringRccSet_utils_summary <- function() {
                     MedPolEff = c(-4, 0, 4)),
               summary(rcc2, 2L))
   checkEquals(cbind(N = 4,
-                    NMiss = 0,
                     Mean = structure(c(2.5, 6.5, 10.5), names = sampleNames(rcc)),
                     SD = sqrt(15/9),
                     Skewness = 0,
@@ -133,7 +129,6 @@ test_NanoStringRccSet_utils_summary_GROUP <- function() {
   # Marginal summaries by Feature
   checkEquals(list(A =
                      cbind(N = 2,
-                           NMiss = 0,
                            Mean = structure(2:5, names = letters[1:4]),
                            SD = sqrt(8),
                            Skewness = NA_real_,
@@ -150,7 +145,6 @@ test_NanoStringRccSet_utils_summary_GROUP <- function() {
                            MedPolEff = c(-1.5, -0.5, 0.5, 1.5)),
                    B =
                      cbind(N = 1,
-                           NMiss = 0,
                            Mean = structure(8:11, names = letters[1:4]),
                            SD = NA_real_,
                            Skewness = NA_real_,
@@ -168,7 +162,6 @@ test_NanoStringRccSet_utils_summary_GROUP <- function() {
               summary(rcc2, 1L, "Treatment"))
   checkEquals(list("1" =
                      cbind(N = 1,
-                           NMiss = 0,
                            Mean = structure(1:4, names = letters[1:4]),
                            SD = NA_real_,
                            Skewness = NA_real_,
@@ -185,7 +178,6 @@ test_NanoStringRccSet_utils_summary_GROUP <- function() {
                            MedPolEff = c(-1.5, -0.5, 0.5, 1.5)),
                    "2" =
                      cbind(N = 1,
-                           NMiss = 0,
                            Mean = structure(5:8, names = letters[1:4]),
                            SD = NA_real_,
                            Skewness = NA_real_,
@@ -202,7 +194,6 @@ test_NanoStringRccSet_utils_summary_GROUP <- function() {
                            MedPolEff = c(-1.5, -0.5, 0.5, 1.5)),
                    "3" =
                      cbind(N = 1,
-                           NMiss = 0,
                            Mean = structure(9:12, names = letters[1:4]),
                            SD = NA_real_,
                            Skewness = NA_real_,
@@ -222,7 +213,6 @@ test_NanoStringRccSet_utils_summary_GROUP <- function() {
   # Marginal summaries by Sample
   checkEquals(list(Endogenous =
                      cbind(N = 1,
-                           NMiss = 0,
                            Mean = structure(c(1, 5, 9), names = sampleNames(rcc)),
                            SD = NA_real_,
                            Skewness = NA_real_,
@@ -239,7 +229,6 @@ test_NanoStringRccSet_utils_summary_GROUP <- function() {
                            MedPolEff = c(-4, 0, 4)),
                    Housekeeping =
                      cbind(N = 1,
-                           NMiss = 0,
                            Mean = structure(c(4, 8, 12), names = sampleNames(rcc)),
                            SD = NA_real_,
                            Skewness = NA_real_,
@@ -256,7 +245,6 @@ test_NanoStringRccSet_utils_summary_GROUP <- function() {
                            MedPolEff = c(-4, 0, 4)),
                    Negative =
                      cbind(N = 1,
-                           NMiss = 0,
                            Mean = structure(c(3, 7, 11), names = sampleNames(rcc)),
                            SD = NA_real_,
                            Skewness = NA_real_,
@@ -273,7 +261,6 @@ test_NanoStringRccSet_utils_summary_GROUP <- function() {
                            MedPolEff = c(-4, 0, 4)),
                    Positive =
                      cbind(N = 1,
-                           NMiss = 0,
                            Mean = structure(c(2, 6, 10), names = sampleNames(rcc)),
                            SD = NA_real_,
                            Skewness = NA_real_,
