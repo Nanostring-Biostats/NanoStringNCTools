@@ -54,5 +54,5 @@ export(readNanoStringRccSet,
        readRccFile,
        readRlfFile,
        writeNanoStringRccSet,
-       bgThresh, bgSubtr,
+       bgThresh, bgSubtr, fgScale,
        log2c0)

@@ -1,26 +1,29 @@
 \name{bgThresh}
 \alias{bgThresh}
 \alias{bgSubtr}
+\alias{fgScale}
 
-\title{Background Correction Helper Functions}
+\title{Background and Foreground Correction Helper Functions}
 
 \description{
-  Helper functions for Background Thresholding and Subtraction.
+  Helper functions for Background Thresholding and Subtraction,
+  and Foreground Scaling.
 }
 
 \usage{
 bgThresh(x, STATS)
 bgSubtr(x, STATS)
+fgScale(x, STATS)
 }
 
 \arguments{
   \item{x}{a numeric array.}
-  \item{STATS}{the summary statistic for thresholding or subtraction.}
+  \item{STATS}{the summary statistic for thresholding, subtraction, or scaling.}
 }
 
 \value{
   An array with the same shape as \code{x} that has been modified by
-  thresholding or subtraction.
+  thresholding, subtraction, or scaling.
 }
 
 \details{
@@ -28,6 +31,7 @@ bgSubtr(x, STATS)
   \describe{
     \item{\code{bgThresh}:}{\code{sweep(x, 2L, STATS, FUN = "pmax")}}
     \item{\code{bgSubtr}:}{\code{sweep(x, 2L, STATS, FUN = "-")}}
+    \item{\code{fgScale}:}{\code{sweep(x, 2L, STATS / mean(STATS), FUN = "/")}}
   }
 }
 
@@ -46,6 +50,11 @@ identical(bgThresh(stack.x, thresh),
 # Substract column values
 identical(bgSubtr(stack.x, thresh),
           sweep(stack.x, 2L, thresh))
+
+# Scale to common mean
+identical(fgScale(stack.x, colMeans(stack.x)),
+          sweep(stack.x, 2L, colMeans(stack.x) / mean(colMeans(stack.x)),
+                FUN = "/"))
 }
 
 \keyword{array}
