@@ -92,6 +92,21 @@ function(object, MARGIN, GROUP = NULL, elt = "exprs", ...)
 
 
 # Subsetting
+setMethod("[", "NanoStringRccSet",
+function(x, i, j, ..., drop = FALSE)
+{
+  x <- callNextMethod()
+  weights <- signatureWeights(x)
+  if (length(weights) > 0L) {
+    genes <- featureData(x)[["GeneName"]]
+    keep <- unlist(lapply(weights, function(y) all(names(y) %in% genes)))
+    if (!all(keep)) {
+      signatureWeights(x) <- weights[keep]
+    }
+  }
+  x
+})
+
 setMethod("subset", "NanoStringRccSet",
 function(x, subset, select, ...)
 {

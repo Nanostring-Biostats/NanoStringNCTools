@@ -29,6 +29,7 @@
 \alias{summary,NanoStringRccSet-method}
 
 % subsetting
+\alias{[,NanoStringRccSet-method}
 \alias{subset,NanoStringRccSet-method}
 \alias{endogenousSubset}
 \alias{endogenousSubset,NanoStringRccSet-method}

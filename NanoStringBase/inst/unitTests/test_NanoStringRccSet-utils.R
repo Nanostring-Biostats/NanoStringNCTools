@@ -39,7 +39,9 @@ rcc <-
                                        row.names = sprintf("%s.RCC", LETTERS[1:3]),
                                        stringsAsFactors = FALSE),
                             NanoStringBase:::.rccMetadata[["protocolData"]],
-                            dimLabels = c("sampleNames", "sampleColumns")))
+                            dimLabels = c("sampleNames", "sampleColumns")),
+       signatureWeights =
+         list(x = c(a = 1), y = c(b = 1/3, d = 2/3), z = c(a = 2, c = 4)))
 
 # Accessing
 test_NanoStringRccSet_utils_sData <- function() {
@@ -282,13 +284,20 @@ test_NanoStringRccSet_utils_summary_GROUP <- function() {
 test_NanoStringRccSet_utils_subset <- function() {
   checkEquals(rcc[featureData(rcc)[["BarcodeClass"]] == "Endogenous", ],
               subset(rcc, BarcodeClass == "Endogenous"))
+  checkEquals(NumericList(x = c(a = 1), compress = FALSE),
+              signatureWeights(subset(rcc, BarcodeClass == "Endogenous")))
 
   checkEquals(rcc[, phenoData(rcc)[["Treatment"]] == "A"],
               subset(rcc, select = Treatment == "A"))
+  checkEquals(signatureWeights(rcc),
+              signatureWeights(subset(rcc, select = Treatment == "A")))
 
   checkEquals(rcc[featureData(rcc)[["BarcodeClass"]] == "Endogenous",
                   phenoData(rcc)[["Treatment"]] == "A"],
               subset(rcc, BarcodeClass == "Endogenous", Treatment == "A"))
+  checkEquals(NumericList(x = c(a = 1), compress = FALSE),
+              signatureWeights(subset(rcc, BarcodeClass == "Endogenous",
+                                      Treatment == "A")))
 }
 
 test_NanoStringRccSet_utils_endogenousSubset <- function() {
