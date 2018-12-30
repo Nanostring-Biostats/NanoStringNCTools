@@ -35,7 +35,7 @@ function(object,
 
   x <- log2(controlConc)
   prData[["LinFlag"]] <-
-    esApply(posCtrl, 2L, function(y) cor(x, log2c0(y))^2 < posCtrlRsqLB)
+    esApply(posCtrl, 2L, function(y) cor(x, log2t(y, 0.5))^2 < posCtrlRsqLB)
 
   prData[["LoDFlag"]] <-
     apply(exprs(posCtrl[controlConc == 0.5, ]), 2L, max) <=

@@ -1,8 +1,8 @@
-log2c0 <-
-function(x)
+log2t <-
+function(x, thresh = 0.5)
 {
-  if (min(x, na.rm = TRUE) < 0.5) {
-    x[!is.na(x) & x >= 0 & x < 0.5] <- 0.5
+  if (min(x, na.rm = TRUE) < thresh) {
+    x[!is.na(x) & x >= 0 & x < thresh] <- thresh
   }
   log2(x)
 }
