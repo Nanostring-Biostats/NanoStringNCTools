@@ -229,3 +229,42 @@ test_NanoStringRccSet_exception_duplicate_names <- function() {
   pData(protocolData(y))[["BarcodeClass"]] <- 1L
   checkException(validObject(y))
 }
+
+test_NanoStringRccSet_valid_signatureWeights <- function() {
+  weights <- list(a = c(b = 1, d = 3), b = c(a = 2, c = 4))
+  x <- NanoStringRccSet(rcc$assayData,
+                        featureData = rcc$featureData,
+                        annotation = rcc$annotation,
+                        protocolData = rcc$protocolData,
+                        signatureWeights = weights)
+  checkTrue(validObject(x))
+  checkIdentical(signatureWeights(x), as(weights, "NumericList"))
+
+  signatureWeights(x) <- weights[[1L]]
+  checkTrue(validObject(x))
+  checkIdentical(signatureWeights(x), as(weights[[1L]], "NumericList"))
+}
+
+test_NanoStringRccSet_exception_signatureWeights_unnamed <- function() {
+  checkException(NanoStringRccSet(rcc$assayData,
+                                  featureData = rcc$featureData,
+                                  annotation = rcc$annotation,
+                                  protocolData = rcc$protocolData,
+                                  signatureWeights = list(c(b = 1, d = 3))))
+}
+
+test_NanoStringRccSet_exception_signatureWeights_empty <- function() {
+  checkException(NanoStringRccSet(rcc$assayData,
+                                  featureData = rcc$featureData,
+                                  annotation = rcc$annotation,
+                                  protocolData = rcc$protocolData,
+                                  signatureWeights = list(a = numeric())))
+}
+
+test_NanoStringRccSet_exception_signatureWeights_GeneName <- function() {
+  checkException(NanoStringRccSet(rcc$assayData,
+                                  featureData = rcc$featureData,
+                                  annotation = rcc$annotation,
+                                  protocolData = rcc$protocolData,
+                                  signatureWeights = list(a = c(x = 1, y = 3))))
+}

@@ -1,3 +1,14 @@
+# Show
+setMethod("show", signature = "NanoStringRccSet",
+          function(object) {
+            callNextMethod(object)
+            cat("signatureWeights: ")
+            if (length(signatureWeights(object)) == 0L)
+              cat("none\n")
+            else
+              cat("use 'signatureWeights(object)'")
+          })
+
 # Coercion
 setAs("NanoStringRccSet", "list",
       function(from) c(as.list(assayData(from)), fData(from), sData(from)))
@@ -22,6 +33,24 @@ assayDataElement2 <- function(object, elt)
   else
     stop("'elt' not present in assayData(object)")
 }
+
+setGeneric("signatureWeights", signature = "object",
+           function(object) standardGeneric("signatureWeights"))
+setMethod("signatureWeights", "NanoStringRccSet",
+          function(object) object@signatureWeights)
+
+setGeneric("signatureWeights<-", signature = c("object", "value"),
+           function(object, value) standardGeneric("signatureWeights<-"))
+setReplaceMethod("signatureWeights", c("NanoStringRccSet", "NumericList"),
+                 function(object, value) {
+                   object@signatureWeights <- value
+                   object
+                 })
+setReplaceMethod("signatureWeights", c("NanoStringRccSet", "ANY"),
+                 function(object, value) {
+                   object@signatureWeights <- as(value, "NumericList")
+                   object
+                 })
 
 
 # Summarizing

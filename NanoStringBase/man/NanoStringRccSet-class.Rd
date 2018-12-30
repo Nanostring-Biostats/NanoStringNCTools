@@ -11,11 +11,19 @@
 \alias{NanoStringRccSet,missing-method}
 \alias{NanoStringRccSet,NanoStringRccSet-method}
 
+% show
+\alias{show,NanoStringRccSet-method}
+
 % accessing
 \alias{sData}
 \alias{sData,NanoStringRccSet-method}
 \alias{svarLabels}
 \alias{svarLabels,NanoStringRccSet-method}
+\alias{signatureWeights}
+\alias{signatureWeights,NanoStringRccSet-method}
+\alias{signatureWeights<-}
+\alias{signatureWeights<-,NanoStringRccSet,ANY-method}
+\alias{signatureWeights<-,NanoStringRccSet,NumericList-method}
 
 % summarizing
 \alias{summary,NanoStringRccSet-method}
@@ -69,6 +77,7 @@ NanoStringRccSet(assayData,
                  experimentData = MIAME(),
                  annotation = character(),
                  protocolData = annotatedDataFrameFrom(assayData, byrow = FALSE),
+                 signatureWeights = NumericList(),
                  \ldots)
 }
 
@@ -89,6 +98,8 @@ NanoStringRccSet(assayData,
     \code{"LaneID"}, \code{"FovCount"}, \code{"FovCounted"}, \code{"ScannerID"},
     \code{"StagePosition"}, \code{"BindingDensity"}, \code{"CartridgeID"}, and
     \code{"CartridgeBarcode"}.}
+  \item{signatureWeights}{An optional named Numeric List containing named gene
+    signature weights.}
   \item{\ldots}{Additional arguments for \code{\link{ExpressionSet}}.}
 }
 
@@ -103,6 +114,14 @@ NanoStringRccSet(assayData,
     \item{}{
       \code{svarLabels(object)}: extracts the sample data column names,
       \code{c(varLabels(object), varLabels(protocolData(object)))}
+    }
+    \item{}{
+      \code{signatureWeights(object)}: extracts the list of gene signature
+      weights.
+    }
+    \item{}{
+      \code{signatureWeights(object) <- value}: replaces the list of gene
+      signature weights.
     }
   }
 }

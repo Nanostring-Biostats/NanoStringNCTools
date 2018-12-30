@@ -1,9 +1,19 @@
 setClass("NanoStringRccSet",
          contains = "ExpressionSet",
+         slots = c(signatureWeights = "NumericList"),
          prototype = prototype(
            new("VersionedBiobase",
                versions = c(classVersion("ExpressionSet"),
-                            NanoStringRccSet = "1.0.0"))))
+                            NanoStringRccSet = "1.0.0")),
+           signatureWeights = NumericList()))
+
+setMethod("initialize", "NanoStringRccSet",
+function(.Object, signatureWeights = NumericList(), ...)
+{
+  callNextMethod(.Object,
+                 signatureWeights = as(signatureWeights, "NumericList"),
+                 ...)
+})
 
 setValidity2("NanoStringRccSet",
 function(object)
@@ -148,6 +158,24 @@ function(object)
       c(msg,
         "'fvarLabels', 'svarLabels', and 'assayDataElementNames' must be unique")
   }
+  if (length(signatureWeights(object)) > 0L) {
+    numGenes <- lengths(signatureWeights(object))
+    if (is.null(names(numGenes)) || any(nchar(names(numGenes)) == 0L)) {
+      msg <- c(msg, "'signatureWeights' must be a named NumericList")
+    }
+    if (any(numGenes == 0L)) {
+      msg <- c(msg, "'signatureWeights' vectors must be non-empty")
+    } else {
+      genes <- names(unlist(unname(signatureWeights(object))))
+      if (is.null(genes) || any(nchar(genes) == 0L)) {
+        msg <- c(msg, "'signatureWeights' vectors must be named")
+      } else if(!all(unique(genes) %in% featureData(object)[["GeneName"]])) {
+        msg <-
+          c(msg,
+            "'signatureWeights' vectors must be named with values from 'featureData' \"GeneName\"")
+      }
+    }
+  }
   if (is.null(msg)) TRUE else msg
 })
 
@@ -158,10 +186,10 @@ function(assayData,
          experimentData = MIAME(),
          annotation = character(),
          protocolData = annotatedDataFrameFrom(assayData, byrow = FALSE),
+         signatureWeights = NumericList(),
          ...)
   standardGeneric("NanoStringRccSet"),
 signature = "assayData")
-
 
 setMethod("NanoStringRccSet", "missing",
 function(assayData,
@@ -170,12 +198,14 @@ function(assayData,
          experimentData = MIAME(),
          annotation = character(),
          protocolData = annotatedDataFrameFrom(assayData, byrow = FALSE),
+         signatureWeights = NumericList(),
          ...)
 {
   assayData <- assayDataNew(exprs = matrix(integer(), nrow = 0L, ncol = 0L))
   callGeneric(assayData = assayData, phenoData = phenoData,
               featureData = featureData, experimentData = experimentData,
-              annotation = annotation, protocolData = protocolData, ...)
+              annotation = annotation, protocolData = protocolData,
+              signatureWeights = signatureWeights, ...)
 })
 
 setMethod("NanoStringRccSet", "environment",
@@ -185,6 +215,7 @@ function(assayData,
          experimentData = MIAME(),
          annotation = character(),
          protocolData = annotatedDataFrameFrom(assayData, byrow = FALSE),
+         signatureWeights = NumericList(),
          ...)
 {
   new2("NanoStringRccSet",
@@ -194,6 +225,7 @@ function(assayData,
        experimentData = experimentData,
        annotation = annotation,
        protocolData = protocolData,
+       signatureWeights = signatureWeights,
        ...)
 })
 
@@ -204,12 +236,14 @@ function(assayData,
          experimentData = MIAME(),
          annotation = character(),
          protocolData = annotatedDataFrameFrom(assayData, byrow = FALSE),
+         signatureWeights = NumericList(),
          ...)
 {
   assayData <- assayDataNew(exprs = assayData)
   callGeneric(assayData = assayData, phenoData = phenoData,
               featureData = featureData, experimentData = experimentData,
-              annotation = annotation, protocolData = protocolData, ...)
+              annotation = annotation, protocolData = protocolData,
+              signatureWeights = signatureWeights, ...)
 })
 
 setMethod("NanoStringRccSet", "NanoStringRccSet",
@@ -219,6 +253,7 @@ function(assayData,
          experimentData = MIAME(),
          annotation = character(),
          protocolData = annotatedDataFrameFrom(assayData, byrow = FALSE),
+         signatureWeights = NumericList(),
          ...)
 {
   callGeneric(assayData = copyEnv(assayData(assayData)),
@@ -226,5 +261,7 @@ function(assayData,
               featureData = Biobase::featureData(assayData),
               experimentData = Biobase::experimentData(assayData),
               annotation = Biobase::annotation(assayData),
-              protocolData = Biobase::protocolData(assayData), ...)
+              protocolData = Biobase::protocolData(assayData),
+              signatureWeights = signatureWeights,
+              ...)
 })

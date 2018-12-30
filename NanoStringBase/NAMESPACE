@@ -5,15 +5,18 @@ import(BiocGenerics)
 import(S4Vectors)
 importClassesFrom(Biobase, AnnotatedDataFrame, AssayData, ExpressionSet, MIAME,
                   Versions)
+importClassesFrom(IRanges, NumericList)
 importClassesFrom(methods, character, environment, list, matrix, missing)
 importMethodsFrom(Biobase, AnnotatedDataFrame, annotatedDataFrameFrom,
                   assayData, "assayData<-", esApply, exprs, fData, featureData,
                   fvarLabels, pData, preproc, "preproc<-", protocolData,
                   sampleNames, varLabels)
+importMethodsFrom(methods, initialize, show)
 importFrom(Biobase, assayDataElement, assayDataElementNames, assayDataNew,
            copyEnv, MIAME, multiassign)
 importFrom(Biostrings, BStringSet, DNAStringSet)
-importFrom(methods, as, callGeneric, is, validObject)
+importFrom(IRanges, NumericList)
+importFrom(methods, as, callGeneric, callNextMethod, is, validObject)
 importFrom(stats, medpolish, quantile, t.test)
 importFrom(utils, read.csv, write.csv)
 
@@ -27,6 +30,7 @@ exportClasses(NanoStringRccSet)
 
 export(NanoStringRccSet,
        sData, svarLabels,
+       signatureWeights, "signatureWeights<-",
        endogenousSubset, housekeepingSubset,
        negativeControlSubset, positiveControlSubset,
        controlSubset, nonControlSubset,
@@ -39,6 +43,7 @@ export(NanoStringRccSet,
 
 exportMethods(NanoStringRccSet,
               sData, svarLabels,
+              signatureWeights, "signatureWeights<-",
               summary, subset,
               endogenousSubset, housekeepingSubset,
               negativeControlSubset, positiveControlSubset,
