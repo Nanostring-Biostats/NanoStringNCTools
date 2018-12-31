@@ -23,7 +23,12 @@
 \alias{signatureWeights,NanoStringRccSet-method}
 \alias{signatureWeights<-}
 \alias{signatureWeights<-,NanoStringRccSet,ANY-method}
+\alias{signatureWeights<-,NanoStringRccSet,NULL-method}
 \alias{signatureWeights<-,NanoStringRccSet,NumericList-method}
+\alias{design,NanoStringRccSet-method}
+\alias{design<-,NanoStringRccSet,ANY-method}
+\alias{design<-,NanoStringRccSet,NULL-method}
+\alias{design<-,NanoStringRccSet,formula-method}
 
 % summarizing
 \alias{summary,NanoStringRccSet-method}
@@ -79,6 +84,7 @@ NanoStringRccSet(assayData,
                  annotation = character(),
                  protocolData = annotatedDataFrameFrom(assayData, byrow = FALSE),
                  signatureWeights = NumericList(),
+                 design = NULL,
                  \ldots)
 }
 
@@ -99,8 +105,10 @@ NanoStringRccSet(assayData,
     \code{"LaneID"}, \code{"FovCount"}, \code{"FovCounted"}, \code{"ScannerID"},
     \code{"StagePosition"}, \code{"BindingDensity"}, \code{"CartridgeID"}, and
     \code{"CartridgeBarcode"}.}
-  \item{signatureWeights}{An optional named Numeric List containing named gene
-    signature weights.}
+  \item{signatureWeights}{An optional named \code{\link[IRanges]{NumericList}}
+    containing named gene signature weights.}
+  \item{design}{An optional one-sided formula representing the experimental
+    design based on columns from \code{\link[Biobase]{phenoData}}}
   \item{\ldots}{Additional arguments for \code{\link{ExpressionSet}}.}
 }
 
@@ -123,6 +131,16 @@ NanoStringRccSet(assayData,
     \item{}{
       \code{signatureWeights(object) <- value}: replaces the list of gene
       signature weights.
+    }
+    \item{}{
+      \code{design(object)}: extracts the one-sided formula representing
+      the experimental design based on columns from
+      \code{\link[Biobase]{phenoData}}.
+    }
+    \item{}{
+      \code{design(object) <- value}: replaces the one-sided formula
+      representing the experimental design based on columns from
+      \code{\link[Biobase]{phenoData}}.
     }
   }
 }
@@ -283,6 +301,11 @@ identical(solidTumor, deepCopy)
 # Accessing sample data and column names
 head(sData(solidTumor))
 svarLabels(solidTumor)
+
+
+# Set experimental design
+design(solidTumor) <- ~ BRAFGenotype + Treatment
+design(solidTumor)
 
 
 # Marginal summarizing of NanoStringRccSet assayData matrices

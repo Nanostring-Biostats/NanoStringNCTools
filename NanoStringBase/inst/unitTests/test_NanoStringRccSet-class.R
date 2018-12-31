@@ -6,6 +6,12 @@ rcc <-
   list(assayData =
          matrix(0:11, 4L, 3L,
                 dimnames = list(letters[1:4], sprintf("%s.RCC", LETTERS[1:3]))),
+       phenoData =
+         AnnotatedDataFrame(data.frame(Treatment = c("A", "A", "B"),
+                                       Age = c(58L, 42L, 27L),
+                                       row.names = sprintf("%s.RCC", LETTERS[1:3]),
+                                       stringsAsFactors = FALSE),
+                            dimLabels = c("sampleNames", "sampleColumns")),
        featureData =
          AnnotatedDataFrame(data.frame(BarcodeClass = c("Endogenous", "Positive", "Negative", "Housekeeping"),
                                        GeneName = letters[1:4],
@@ -41,6 +47,7 @@ rcc <-
 
 test_NanoStringRccSet_constructor_simple <- function() {
   checkTrue(validObject(NanoStringRccSet(rcc$assayData,
+                                         phenoData = rcc$phenoData,
                                          featureData = rcc$featureData,
                                          annotation = rcc$annotation,
                                          protocolData = rcc$protocolData)))
@@ -59,6 +66,7 @@ test_NanoStringRccSet_exception_sample_name <- function() {
 
 test_NanoStringRccSet_exception_featureData <- function() {
   checkException(validObject(NanoStringRccSet(rcc$assayData,
+                                              phenoData = rcc$phenoData,
                                               featureData = rcc$featureData[,1:2],
                                               annotation = rcc$annotation,
                                               protocolData = rcc$protocolData)))
@@ -68,6 +76,7 @@ test_NanoStringRccSet_exception_featureData_IsControl <- function() {
   x <- rcc$featureData
   x[["IsControl"]] <- TRUE
   checkException(validObject(NanoStringRccSet(rcc$assayData,
+                                              phenoData = rcc$phenoData,
                                               featureData = x,
                                               annotation = rcc$annotation,
                                               protocolData = rcc$protocolData)))
@@ -75,6 +84,7 @@ test_NanoStringRccSet_exception_featureData_IsControl <- function() {
   x <- rcc$featureData
   x[["IsControl"]] <- FALSE
   checkException(validObject(NanoStringRccSet(rcc$assayData,
+                                              phenoData = rcc$phenoData,
                                               featureData = x,
                                               annotation = rcc$annotation,
                                               protocolData = rcc$protocolData)))
@@ -82,6 +92,7 @@ test_NanoStringRccSet_exception_featureData_IsControl <- function() {
   x <- rcc$featureData
   x[["IsControl"]] <- NA
   checkException(validObject(NanoStringRccSet(rcc$assayData,
+                                              phenoData = rcc$phenoData,
                                               featureData = x,
                                               annotation = rcc$annotation,
                                               protocolData = rcc$protocolData)))
@@ -91,6 +102,7 @@ test_NanoStringRccSet_exception_featureData_ControlConc <- function() {
   x <- rcc$featureData
   x[["ControlConc"]] <- 0.125
   checkException(validObject(NanoStringRccSet(rcc$assayData,
+                                              phenoData = rcc$phenoData,
                                               featureData = x,
                                               annotation = rcc$annotation,
                                               protocolData = rcc$protocolData)))
@@ -98,6 +110,7 @@ test_NanoStringRccSet_exception_featureData_ControlConc <- function() {
   x <- rcc$featureData
   x[["ControlConc"]] <- 0
   checkException(validObject(NanoStringRccSet(rcc$assayData,
+                                              phenoData = rcc$phenoData,
                                               featureData = x,
                                               annotation = rcc$annotation,
                                               protocolData = rcc$protocolData)))
@@ -105,6 +118,7 @@ test_NanoStringRccSet_exception_featureData_ControlConc <- function() {
   x <- rcc$featureData
   x[["ControlConc"]] <- NA_real_
   checkException(validObject(NanoStringRccSet(rcc$assayData,
+                                              phenoData = rcc$phenoData,
                                               featureData = x,
                                               annotation = rcc$annotation,
                                               protocolData = rcc$protocolData)))
@@ -112,6 +126,7 @@ test_NanoStringRccSet_exception_featureData_ControlConc <- function() {
 
 test_NanoStringRccSet_exception_annotation <- function() {
   checkException(validObject(NanoStringRccSet(rcc$assayData,
+                                              phenoData = rcc$phenoData,
                                               featureData = rcc$featureData,
                                               protocolData = rcc$protocolData)))
 }
@@ -191,6 +206,7 @@ test_NanoStringRccSet_exception_assayData <- function() {
   x <- rcc$assayData
   x[] <- -1L
   checkException(validObject(NanoStringRccSet(x,
+                                              phenoData = rcc$phenoData,
                                               featureData = rcc$featureData,
                                               annotation = rcc$annotation,
                                               protocolData = rcc$protocolData)))
@@ -198,6 +214,7 @@ test_NanoStringRccSet_exception_assayData <- function() {
 
 test_NanoStringRccSet_exception_duplicate_names <- function() {
   x <- NanoStringRccSet(rcc$assayData,
+                        phenoData = rcc$phenoData,
                         featureData = rcc$featureData,
                         annotation = rcc$annotation,
                         protocolData = rcc$protocolData)
@@ -233,6 +250,7 @@ test_NanoStringRccSet_exception_duplicate_names <- function() {
 test_NanoStringRccSet_valid_signatureWeights <- function() {
   weights <- list(a = c(b = 1, d = 3), b = c(a = 2, c = 4))
   x <- NanoStringRccSet(rcc$assayData,
+                        phenoData = rcc$phenoData,
                         featureData = rcc$featureData,
                         annotation = rcc$annotation,
                         protocolData = rcc$protocolData,
@@ -247,6 +265,7 @@ test_NanoStringRccSet_valid_signatureWeights <- function() {
 
 test_NanoStringRccSet_exception_signatureWeights_unnamed <- function() {
   checkException(NanoStringRccSet(rcc$assayData,
+                                  phenoData = rcc$phenoData,
                                   featureData = rcc$featureData,
                                   annotation = rcc$annotation,
                                   protocolData = rcc$protocolData,
@@ -255,6 +274,7 @@ test_NanoStringRccSet_exception_signatureWeights_unnamed <- function() {
 
 test_NanoStringRccSet_exception_signatureWeights_empty <- function() {
   checkException(NanoStringRccSet(rcc$assayData,
+                                  phenoData = rcc$phenoData,
                                   featureData = rcc$featureData,
                                   annotation = rcc$annotation,
                                   protocolData = rcc$protocolData,
@@ -263,8 +283,40 @@ test_NanoStringRccSet_exception_signatureWeights_empty <- function() {
 
 test_NanoStringRccSet_exception_signatureWeights_GeneName <- function() {
   checkException(NanoStringRccSet(rcc$assayData,
+                                  phenoData = rcc$phenoData,
                                   featureData = rcc$featureData,
                                   annotation = rcc$annotation,
                                   protocolData = rcc$protocolData,
                                   signatureWeights = list(a = c(x = 1, y = 3))))
+}
+
+test_NanoStringRccSet_valid_design <- function() {
+  x <- NanoStringRccSet(rcc$assayData,
+                        phenoData = rcc$phenoData,
+                        featureData = rcc$featureData,
+                        annotation = rcc$annotation,
+                        protocolData = rcc$protocolData,
+                        design = ~ Treatment)
+  checkTrue(validObject(x))
+  checkIdentical(design(x), ~ Treatment)
+
+  design(x) <- ~ Age + Treatment
+  checkTrue(validObject(x))
+  checkIdentical(design(x), ~ Age + Treatment)
+}
+
+test_NanoStringRccSet_exception_design <- function() {
+  checkException(NanoStringRccSet(rcc$assayData,
+                                  phenoData = rcc$phenoData,
+                                  featureData = rcc$featureData,
+                                  annotation = rcc$annotation,
+                                  protocolData = rcc$protocolData,
+                                  design = Age ~ Treatment))
+
+  checkException(NanoStringRccSet(rcc$assayData,
+                                  phenoData = rcc$phenoData,
+                                  featureData = rcc$featureData,
+                                  annotation = rcc$annotation,
+                                  protocolData = rcc$protocolData,
+                                  design = ~ BarcodeClass))
 }

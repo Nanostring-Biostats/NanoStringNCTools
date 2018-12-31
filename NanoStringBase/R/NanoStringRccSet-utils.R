@@ -51,6 +51,28 @@ setReplaceMethod("signatureWeights", c("NanoStringRccSet", "ANY"),
                    object@signatureWeights <- as(value, "NumericList")
                    object
                  })
+setReplaceMethod("signatureWeights", c("NanoStringRccSet", "NULL"),
+                 function(object, value) {
+                   object@signatureWeights <- NumericList()
+                   object
+                 })
+
+setMethod("design", "NanoStringRccSet", function(object) object@design)
+setReplaceMethod("design", c("NanoStringRccSet", "formula"),
+                 function(object, value) {
+                   object@design <- value
+                   object
+                 })
+setReplaceMethod("design", c("NanoStringRccSet", "ANY"),
+                 function(object, value) {
+                   object@design <- as.formula(value)
+                   object
+                 })
+setReplaceMethod("design", c("NanoStringRccSet", "NULL"),
+                 function(object, value) {
+                   object@design <- NULL
+                   object
+                 })
 
 
 # Summarizing

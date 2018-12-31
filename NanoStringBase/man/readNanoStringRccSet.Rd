@@ -58,12 +58,14 @@ setdiff(fvarLabels(solidTumorNoPheno), fvarLabels(solidTumorNoRlfPheno))
 solidTumor <-
   readNanoStringRccSet(rccs, rlfFile = rlf, phenoDataFile = pheno)
 varLabels(solidTumor)
+design(solidTumor) <- ~ BRAFGenotype + Treatment
 
 # All data with phenoData prefix
 solidTumorPhenoPrefix <-
   readNanoStringRccSet(rccs, rlfFile = rlf, phenoDataFile = pheno,
                        phenoDataColPrefix = "PHENO_")
 varLabels(solidTumorPhenoPrefix)
+design(solidTumorPhenoPrefix) <- ~ PHENO_BRAFGenotype + PHENO_Treatment
 }
 
 \keyword{file}
