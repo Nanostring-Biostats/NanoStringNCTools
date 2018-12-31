@@ -48,34 +48,21 @@ function(x, na.rm = FALSE)
 
 # Geometric mean
 geomMean <-
-function(x, level = 0.95, na.rm = FALSE)
+function(x, na.rm = FALSE)
 {
-  stats <-
-    structure(rep.int(NA_real_, 3L),
-              names =
-                sprintf(c("GM_LCL%g", "GeomMean","GM_UCL%g"), 100 * level))
-
   # Handle missing values
   if (anyNA(x)) {
     if (na.rm)
       x <- x[!is.na(x)]
     else
-      return(stats)
+      return(NA_real_)
   }
 
   # Handle negative values
-  if (any(x < 0)) {
-    return(stats)
+  if (min(x) < 0) {
+    return(NA_real_)
   }
 
   # Calculate geometric mean
-  if (length(x) < 2L) {
-    stats[2L] <- exp(mean(logt(x, thresh = 0.5)))
-  } else {
-    test <- t.test(logt(x, thresh = 0.5), conf.level = level)
-    stats[2L] <- exp(test[["estimate"]])
-    stats[c(1L, 3L)] <- exp(test[["conf.int"]])
-  }
-
-  stats
+  exp(mean(logt(x, thresh = 0.5)))
 }

@@ -92,7 +92,7 @@ setReplaceMethod("design", c("NanoStringRccSet", "NULL"),
     "SD"       = sd(x),
     "Skewness" = skewness(x),
     "Kurtosis" = kurtosis(x),
-    geomMean(x),
+    "GeomMean" = geomMean(x),
     quartiles,
     "MAD"      = mad(x))
 }
