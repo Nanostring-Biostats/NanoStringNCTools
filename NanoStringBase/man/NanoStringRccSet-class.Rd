@@ -53,14 +53,6 @@
 
 % looping
 \alias{esApply,NanoStringRccSet-method}
-\alias{endogenousApply}
-\alias{endogenousApply,NanoStringRccSet-method}
-\alias{housekeepingApply}
-\alias{housekeepingApply,NanoStringRccSet-method}
-\alias{negativeControlApply}
-\alias{negativeControlApply,NanoStringRccSet-method}
-\alias{positiveControlApply}
-\alias{positiveControlApply,NanoStringRccSet-method}
 \alias{esBy}
 \alias{esBy,NanoStringRccSet-method}
 
@@ -224,28 +216,6 @@ NanoStringRccSet(assayData,
       for all of \code{X}.
     }
     \item{}{
-      \code{endogenousApply(X, MARGIN, FUN, \ldots, elt = "exprs")}: Loop
-      over the feature (\code{MARGIN = 1}) or sample (\code{MARGIN = 2})
-      dimension for the endogenous barcode class feature subset of \code{X}.
-    }
-    \item{}{
-      \code{housekeepingApply(X, MARGIN, FUN, \ldots, elt = "exprs")}: Loop
-      over the feature (\code{MARGIN = 1}) or sample (\code{MARGIN = 2})
-      dimension for the housekeeping barcode class feature subset of \code{X}.
-    }
-    \item{}{
-      \code{negativeControlApply(X, MARGIN, FUN, \ldots, elt = "exprs")}: Loop
-      over the feature (\code{MARGIN = 1}) or sample (\code{MARGIN = 2})
-      dimension for the negative control barcode class feature subset of
-      \code{X}.
-    }
-    \item{}{
-      \code{positiveControlApply(X, MARGIN, FUN, \ldots, elt = "exprs")}: Loop
-      over the feature (\code{MARGIN = 1}) or sample (\code{MARGIN = 2})
-      dimension for the positive control barcode class feature subset of
-      \code{X}.
-    }
-    \item{}{
       \code{esBy(X, GROUP, FUN, \ldots, simplify = TRUE)}: Split
       \code{X} by \code{GROUP} column within \code{featureData},
       \code{phenoData}, or \code{protocolData} and apply \code{FUN}
@@ -343,23 +313,15 @@ log1pCoefVar <- function(x){
 
 # Log1p Coefficient of Variation along Features
 head(esApply(solidTumor, 1, log1pCoefVar))
-head(endogenousApply(solidTumor, 1, log1pCoefVar))
-head(housekeepingApply(solidTumor, 1, log1pCoefVar))
-head(negativeControlApply(solidTumor, 1, log1pCoefVar))
-head(positiveControlApply(solidTumor, 1, log1pCoefVar))
 
 # Log1p Coefficient of Variation along Samples
 head(esApply(solidTumor, 2, log1pCoefVar))
-head(endogenousApply(solidTumor, 2, log1pCoefVar))
-head(housekeepingApply(solidTumor, 2, log1pCoefVar))
-head(negativeControlApply(solidTumor, 2, log1pCoefVar))
-head(positiveControlApply(solidTumor, 2, log1pCoefVar))
 
 
 # Transforming NanoSetRccSet assayData matrices
 # Subtract max count from each sample
 # Create log1p transformation of adjusted counts
-thresh <- negativeControlApply(solidTumor, 2, max)
+thresh <- esApply(negativeControlSubset(solidTumor), 2, max)
 solidTumor2 <-
   transform(solidTumor,
             negCtrlZeroed = sweep(exprs, 2, thresh),

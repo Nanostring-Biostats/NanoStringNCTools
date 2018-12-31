@@ -35,8 +35,6 @@ export(NanoStringRccSet,
        endogenousSubset, housekeepingSubset,
        negativeControlSubset, positiveControlSubset,
        controlSubset, nonControlSubset, signatureSubset,
-       endogenousApply, housekeepingApply,
-       negativeControlApply, positiveControlApply,
        esBy)
 
 ### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -50,9 +48,7 @@ exportMethods(NanoStringRccSet,
               endogenousSubset, housekeepingSubset,
               negativeControlSubset, positiveControlSubset,
               controlSubset, nonControlSubset, signatureSubset,
-              esApply, endogenousApply, housekeepingApply,
-              negativeControlApply, positiveControlApply,
-              esBy, transform, with)
+              esApply, esBy, transform, with)
 
 ### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ### Export non-generic functions

@@ -352,62 +352,6 @@ test_NanoStringRccSet_utils_esApply <- function() {
                  esApply(rcc2, 2L, mean, elt = "log1p_exprs"))
 }
 
-test_NanoStringRccSet_utils_endogenousApply <- function() {
-  rcc2 <- transform(rcc, log1p_exprs = log1p(exprs))
-
-  checkIdentical(apply(exprs(endogenousSubset(rcc2)), 1L, mean),
-                 endogenousApply(rcc2, 1L, mean))
-  checkIdentical(apply(exprs(endogenousSubset(rcc2)), 2L, mean),
-                 endogenousApply(rcc2, 2L, mean))
-
-  checkIdentical(apply(assayDataElement(endogenousSubset(rcc2), "log1p_exprs"), 1L, mean),
-                 endogenousApply(rcc2, 1L, mean, elt = "log1p_exprs"))
-  checkIdentical(apply(assayDataElement(endogenousSubset(rcc2), "log1p_exprs"), 2L, mean),
-                 endogenousApply(rcc2, 2L, mean, elt = "log1p_exprs"))
-}
-
-test_NanoStringRccSet_utils_housekeepingApply <- function() {
-  rcc2 <- transform(rcc, log1p_exprs = log1p(exprs))
-
-  checkIdentical(apply(exprs(housekeepingSubset(rcc2)), 1L, mean),
-                 housekeepingApply(rcc2, 1L, mean))
-  checkIdentical(apply(exprs(housekeepingSubset(rcc2)), 2L, mean),
-                 housekeepingApply(rcc2, 2L, mean))
-
-  checkIdentical(apply(assayDataElement(housekeepingSubset(rcc2), "log1p_exprs"), 1L, mean),
-                 housekeepingApply(rcc2, 1L, mean, elt = "log1p_exprs"))
-  checkIdentical(apply(assayDataElement(housekeepingSubset(rcc2), "log1p_exprs"), 2L, mean),
-                 housekeepingApply(rcc2, 2L, mean, elt = "log1p_exprs"))
-}
-
-test_NanoStringRccSet_utils_negativeControlApply <- function() {
-  rcc2 <- transform(rcc, log1p_exprs = log1p(exprs))
-
-  checkIdentical(apply(exprs(negativeControlSubset(rcc2)), 1L, mean),
-                 negativeControlApply(rcc2, 1L, mean))
-  checkIdentical(apply(exprs(negativeControlSubset(rcc2)), 2L, mean),
-                 negativeControlApply(rcc2, 2L, mean))
-
-  checkIdentical(apply(assayDataElement(negativeControlSubset(rcc2), "log1p_exprs"), 1L, mean),
-                 negativeControlApply(rcc2, 1L, mean, elt = "log1p_exprs"))
-  checkIdentical(apply(assayDataElement(negativeControlSubset(rcc2), "log1p_exprs"), 2L, mean),
-                 negativeControlApply(rcc2, 2L, mean, elt = "log1p_exprs"))
-}
-
-test_NanoStringRccSet_utils_positiveControlApply <- function() {
-  rcc2 <- transform(rcc, log1p_exprs = log1p(exprs))
-
-  checkIdentical(apply(exprs(positiveControlSubset(rcc2)), 1L, mean),
-                 positiveControlApply(rcc2, 1L, mean))
-  checkIdentical(apply(exprs(positiveControlSubset(rcc2)), 2L, mean),
-                 positiveControlApply(rcc2, 2L, mean))
-
-  checkIdentical(apply(assayDataElement(positiveControlSubset(rcc2), "log1p_exprs"), 1L, mean),
-                 positiveControlApply(rcc2, 1L, mean, elt = "log1p_exprs"))
-  checkIdentical(apply(assayDataElement(positiveControlSubset(rcc2), "log1p_exprs"), 2L, mean),
-                 positiveControlApply(rcc2, 2L, mean, elt = "log1p_exprs"))
-}
-
 # transforming
 test_NanoStringRccSet_utils_transform <- function() {
   rcc2 <- transform(rcc,
