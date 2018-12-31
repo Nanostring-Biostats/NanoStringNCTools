@@ -157,10 +157,11 @@ function(object)
     }
   }
   if (any(duplicated(c(fvarLabels(object), svarLabels(object),
-                       assayDataElementNames(object))))) {
+                       assayDataElementNames(object),
+                       "signatureWeights", "design")))) {
     msg <-
       c(msg,
-        "'fvarLabels', 'svarLabels', and 'assayDataElementNames' must be unique")
+        "'fvarLabels', 'svarLabels', 'assayDataElementNames', \"signatureWeights\", and \"design\" must be unique")
   }
   if (length(signatureWeights(object)) > 0L) {
     numGenes <- lengths(signatureWeights(object))

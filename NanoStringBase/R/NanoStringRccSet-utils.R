@@ -11,7 +11,9 @@ setMethod("show", signature = "NanoStringRccSet",
 
 # Coercion
 setAs("NanoStringRccSet", "list",
-      function(from) c(as.list(assayData(from)), fData(from), sData(from)))
+      function(from) c(as.list(assayData(from)), fData(from), sData(from),
+                       list(signatureWeights = signatureWeights(from),
+                            design = design(from))))
 setMethod("as.list", "NanoStringRccSet", function(x, ...) as(x, "list"))
 
 
@@ -203,9 +205,9 @@ function(X, MARGIN, FUN, ..., elt = "exprs")
 {
   stopifnot(MARGIN %in% c(1L, 2L))
   if (MARGIN == 1L)
-    kvs <- sData(X)
+    kvs <- c(sData(X), list(design = design(X)))
   else
-    kvs <- fData(X)
+    kvs <- c(fData(X), list(signatureWeights = signatureWeights(X)))
 
   parent <- environment(FUN)
   if (is.null(parent))

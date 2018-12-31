@@ -418,7 +418,8 @@ test_NanoStringRccSet_utils_transform <- function() {
 
 # evaluating
 test_NanoStringRccSet_utils_with <- function() {
-  nms <- sort(c(assayDataElementNames(rcc), fvarLabels(rcc), svarLabels(rcc)))
+  nms <- sort(c(assayDataElementNames(rcc), fvarLabels(rcc), svarLabels(rcc),
+                "signatureWeights", "design"))
   checkIdentical(nms, with(rcc, ls()))
 
   # calculate means across Features

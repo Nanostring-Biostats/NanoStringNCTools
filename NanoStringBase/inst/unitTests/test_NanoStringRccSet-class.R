@@ -228,6 +228,14 @@ test_NanoStringRccSet_exception_duplicate_names <- function() {
   fData(y)[["SampleID"]] <- 1L
   checkException(validObject(y))
 
+  y <- x
+  fData(y)[["signatureWeights"]] <- 1L
+  checkException(validObject(y))
+
+  y <- x
+  fData(y)[["design"]] <- 1L
+  checkException(validObject(y))
+
   # Duplicate pvarLabels
   y <- x
   pData(y)[["exprs"]] <- 1L
@@ -237,6 +245,14 @@ test_NanoStringRccSet_exception_duplicate_names <- function() {
   pData(y)[["BarcodeClass"]] <- 1L
   checkException(validObject(y))
 
+  y <- x
+  pData(y)[["signatureWeights"]] <- 1L
+  checkException(validObject(y))
+
+  y <- x
+  pData(y)[["design"]] <- 1L
+  checkException(validObject(y))
+
   # Duplicate pvarLables(protocolData)
   y <- x
   pData(protocolData(y))[["exprs"]] <- 1L
@@ -244,6 +260,14 @@ test_NanoStringRccSet_exception_duplicate_names <- function() {
 
   y <- x
   pData(protocolData(y))[["BarcodeClass"]] <- 1L
+  checkException(validObject(y))
+
+  y <- x
+  pData(protocolData(y))[["signatureWeights"]] <- 1L
+  checkException(validObject(y))
+
+  y <- x
+  pData(protocolData(y))[["design"]] <- 1L
   checkException(validObject(y))
 }
 
