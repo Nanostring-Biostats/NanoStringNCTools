@@ -230,38 +230,6 @@ function(X, MARGIN, FUN, ..., elt = "exprs")
   apply(assayDataElement2(X, elt), MARGIN, FUN, ...)
 })
 
-setGeneric("endogenousApply", signature = "X",
-           function(X, MARGIN, FUN, ..., elt = "exprs")
-             standardGeneric("endogenousApply"))
-setMethod("endogenousApply", "NanoStringRccSet",
-          function(X, MARGIN, FUN, ..., elt = "exprs")
-            esApply(endogenousSubset(X), MARGIN = MARGIN, FUN = FUN, ...,
-                    elt = elt))
-
-setGeneric("housekeepingApply", signature = "X",
-           function(X, MARGIN, FUN, ..., elt = "exprs")
-             standardGeneric("housekeepingApply"))
-setMethod("housekeepingApply", "NanoStringRccSet",
-          function(X, MARGIN, FUN, ..., elt = "exprs")
-            esApply(housekeepingSubset(X), MARGIN = MARGIN, FUN = FUN, ...,
-                    elt = elt))
-
-setGeneric("negativeControlApply", signature = "X",
-           function(X, MARGIN, FUN, ..., elt = "exprs")
-             standardGeneric("negativeControlApply"))
-setMethod("negativeControlApply", "NanoStringRccSet",
-          function(X, MARGIN, FUN, ..., elt = "exprs")
-            esApply(negativeControlSubset(X), MARGIN = MARGIN, FUN = FUN, ...,
-                    elt = elt))
-
-setGeneric("positiveControlApply", signature = "X",
-           function(X, MARGIN, FUN, ..., elt = "exprs")
-             standardGeneric("positiveControlApply"))
-setMethod("positiveControlApply", "NanoStringRccSet",
-          function(X, MARGIN, FUN, ..., elt = "exprs")
-            esApply(positiveControlSubset(X), MARGIN = MARGIN, FUN = FUN, ...,
-                    elt = elt))
-
 setGeneric("esBy", signature = "X",
            function(X, GROUP, FUN, ...) standardGeneric("esBy"))
 setMethod("esBy", "NanoStringRccSet",
