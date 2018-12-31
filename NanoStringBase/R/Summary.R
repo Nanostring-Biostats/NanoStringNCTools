@@ -63,16 +63,16 @@ function(x, level = 0.95, na.rm = FALSE)
       return(stats)
   }
 
-  # Handle non-positive values
-  if (any(x <= 0)) {
+  # Handle negative values
+  if (any(x < 0)) {
     return(stats)
   }
 
   # Calculate geometric mean
   if (length(x) < 2L) {
-    stats[2L] <- exp(mean(log(x)))
+    stats[2L] <- exp(mean(logt(x, thresh = 0.5)))
   } else {
-    test <- t.test(log(x), conf.level = level)
+    test <- t.test(logt(x, thresh = 0.5), conf.level = level)
     stats[2L] <- exp(test[["estimate"]])
     stats[c(1L, 3L)] <- exp(test[["conf.int"]])
   }
