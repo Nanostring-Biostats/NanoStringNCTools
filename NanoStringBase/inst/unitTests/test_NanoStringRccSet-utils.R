@@ -332,6 +332,13 @@ test_NanoStringRccSet_utils_nonControlSubset <- function() {
   checkEquals(rcc[!featureData(rcc)[["IsControl"]], ], nonControlSubset(rcc))
 }
 
+test_NanoStringRccSet_utils_signatureSubset <- function() {
+  x <- rcc
+  signatureWeights(x) <- signatureWeights(x)[1L]
+  checkEquals(rcc[featureData(rcc)[["GeneName"]] == "a", ],
+              signatureSubset(x))
+}
+
 # looping
 test_NanoStringRccSet_utils_esApply <- function() {
   rcc2 <- transform(rcc, log1p_exprs = log1p(exprs))

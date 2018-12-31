@@ -48,6 +48,8 @@
 \alias{controlSubset,NanoStringRccSet-method}
 \alias{nonControlSubset}
 \alias{nonControlSubset,NanoStringRccSet-method}
+\alias{signatureSubset}
+\alias{signatureSubset,NanoStringRccSet-method}
 
 % looping
 \alias{esApply,NanoStringRccSet-method}
@@ -201,6 +203,11 @@ NanoStringRccSet(assayData,
       \code{nonControlSubset(x, subset, select)}: Extracts the feature subset
       representing the non-controls of \code{x} with optional additional
       subsetting using \code{subset} and \code{select}.
+    }
+    \item{}{
+      \code{signatureSubset(x, subset, select)}: Extracts the feature subset
+      representing the genes in the \code{signatureWeights} of \code{x} with
+      optional additional subsetting using \code{subset} and \code{select}.
     }
   }
 }

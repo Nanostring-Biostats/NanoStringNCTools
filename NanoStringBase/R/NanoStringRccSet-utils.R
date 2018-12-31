@@ -198,6 +198,17 @@ setMethod("nonControlSubset", "NanoStringRccSet",
             eval(call, parent.frame())
           })
 
+setGeneric("signatureSubset", signature = "x",
+           function(x, subset, select) standardGeneric("signatureSubset"))
+setMethod("signatureSubset", "NanoStringRccSet",
+          function(x, subset, select) {
+            genes <- unique(names(unlist(unname(signatureWeights(x)))))
+            call <- match.call()
+            call$x <- x[which(featureData(x)[["GeneName"]] %in% genes), ]
+            call[[1L]] <- as.name("subset")
+            eval(call, parent.frame())
+          })
+
 
 # Looping
 setMethod("esApply", "NanoStringRccSet",
