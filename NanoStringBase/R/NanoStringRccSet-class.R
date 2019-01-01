@@ -155,6 +155,12 @@ function(object)
     if (!.validNonNegativeInteger(exprs(object))) {
       msg <- c(msg, "'exprs' must be a non-negative integer matrix")
     }
+    for (elt in setdiff(assayDataElementNames(object), "exprs")) {
+      if (!.validNonNegativeNumber(assayDataElement(object, elt))) {
+        msg <- c(msg, "all 'assayData' elements must be a non-negative matrices")
+        break
+      }
+    }
   }
   if (any(duplicated(c(fvarLabels(object), svarLabels(object),
                        assayDataElementNames(object),

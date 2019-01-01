@@ -203,6 +203,7 @@ test_NanoStringRccSet_exception_protocolData_BindingDensity <- function() {
 }
 
 test_NanoStringRccSet_exception_assayData <- function() {
+  # exprs matrix
   x <- rcc$assayData
   x[] <- -1L
   checkException(validObject(NanoStringRccSet(x,
@@ -210,6 +211,16 @@ test_NanoStringRccSet_exception_assayData <- function() {
                                               featureData = rcc$featureData,
                                               annotation = rcc$annotation,
                                               protocolData = rcc$protocolData)))
+
+  # additional assayData matrices
+  x <- NanoStringRccSet(rcc$assayData,
+                        phenoData = rcc$phenoData,
+                        featureData = rcc$featureData,
+                        annotation = rcc$annotation,
+                        protocolData = rcc$protocolData)
+  checkTrue(validObject(x))
+  assayDataElement(x, "bad") <- rcc$assayData - 1L
+  checkException(validObject(x))
 }
 
 test_NanoStringRccSet_exception_duplicate_names <- function() {
