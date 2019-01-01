@@ -87,12 +87,12 @@ setReplaceMethod("design", c("NanoStringRccSet", "NULL"),
   # Calculate statistics
   quartiles <- quantile(x, probs = c(0, 0.25, 0.5, 0.75, 1))
   names(quartiles) <- c("Min", "Q1", "Median", "Q3", "Max")
-  c("N"        = length(x),
+  c("GeomMean" = geomMean(x),
+    "MedPolSF" = NA_real_,
     "Mean"     = mean(x),
     "SD"       = sd(x),
     "Skewness" = skewness(x),
     "Kurtosis" = kurtosis(x),
-    "GeomMean" = geomMean(x),
     quartiles,
     "MAD"      = mad(x))
 }
@@ -102,10 +102,11 @@ function(object, MARGIN, GROUP = NULL, elt = "exprs", ...)
 {
   stopifnot(MARGIN %in% c(1L, 2L))
   FUN <- function(x) {
-    mp <- medpolish(assayDataElement2(x, elt), eps = 1e-8, maxiter = 100L,
-                    trace.iter = FALSE, na.rm = TRUE)
-    cbind(t(esApply(x, MARGIN = MARGIN, FUN = .marginal.summary, elt = elt)),
-          MedPolEff = mp[[ifelse(MARGIN == 1L, "row", "col")]])
+    mp <- medpolish(logt(assayDataElement2(x, elt), thresh = 0.5), eps = 1e-8,
+                    maxiter = 100L, trace.iter = FALSE, na.rm = TRUE)
+    stats <- t(esApply(x, MARGIN = MARGIN, FUN = .marginal.summary, elt = elt))
+    stats[,"MedPolSF"] <- exp(mp[[ifelse(MARGIN == 1L, "row", "col")]])
+    stats
   }
   if (is.null(GROUP)) {
     FUN(object)
