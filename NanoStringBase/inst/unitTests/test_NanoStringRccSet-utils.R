@@ -58,6 +58,7 @@ test_NanoStringRccSet_utils_summary <- function() {
 
   # Marginal summaries by Feature
   checkEquals(cbind(GeomMean = c(2.519842100, 3.556893304, 4.932424149, 6.135792440),
+                    SizeFactor = c(0.74300232, 0.92875290, 1.11450348, 1.30025406),
                     MedPolSF = c(0.7302967433, 0.9128709292, 1.0954451150, 1.2780193008),
                     Mean = structure(4:7, names = letters[1:4]),
                     SD = 4,
@@ -71,6 +72,7 @@ test_NanoStringRccSet_utils_summary <- function() {
                     MAD = 5.9304),
               summary(rcc2, 1L))
   checkEquals(cbind(GeomMean = c(3.556893304, 4.932424149, 6.135792440, 7.268482371),
+                    SizeFactor = c(0.7809849842, 0.9371819811, 1.0933789779, 1.2495759748),
                     MedPolSF = c(0.7715167498, 0.9258200998, 1.0801234497, 1.2344267997),
                     Mean = structure(5:8, names = letters[1:4]),
                     SD = 4,
@@ -86,6 +88,7 @@ test_NanoStringRccSet_utils_summary <- function() {
 
   # Marginal summaries by Sample
   checkEquals(cbind(GeomMean = c(1.316074013, 5.383563271, 9.433683366),
+                    SizeFactor = c(0.3376364857, 1.3076604860, 2.2649344008),
                     MedPolSF = c(0.2581988897, 1, 1.7320508076),
                     Mean = structure(c(1.5, 5.5, 9.5), names = sampleNames(rcc)),
                     SD = sqrt(15/9),
@@ -99,6 +102,7 @@ test_NanoStringRccSet_utils_summary <- function() {
                     MAD = 1.4826),
               summary(rcc2, 2L))
   checkEquals(cbind(GeomMean = c(2.213363839, 6.402171746, 10.440086817),
+                    SizeFactor = c(0.4452563148, 1.1780374787, 1.9064736403),
                     MedPolSF = c(0.377964473, 1, 1.618347187),
                     Mean = structure(c(2.5, 6.5, 10.5), names = sampleNames(rcc)),
                     SD = sqrt(15/9),
@@ -119,6 +123,7 @@ test_NanoStringRccSet_utils_summary_GROUP <- function() {
   # Marginal summaries by Feature
   checkEquals(list(A =
                      cbind(GeomMean = c(1.414213562, 2.236067977, 3.464101615, 4.582575695),
+                           SizeFactor = c(0.5313001399, 0.8400592816, 1.3014142429, 1.7216092197),
                            MedPolSF = c(0.5081327482, 0.8034284189, 1.2446659546, 1.6465382906),
                            Mean = structure(2:5, names = letters[1:4]),
                            SD = sqrt(8),
@@ -132,6 +137,7 @@ test_NanoStringRccSet_utils_summary_GROUP <- function() {
                            MAD = 2.9652),
                    B =
                      cbind(GeomMean = 8:11,
+                           SizeFactor = c(0.8480250704, 0.9540282042, 1.0600313380, 1.1660344717),
                            MedPolSF = c(0.8432740427, 0.9486832981, 1.0540925534, 1.1595018087),
                            Mean = structure(8:11, names = letters[1:4]),
                            SD = NA_real_,
@@ -146,6 +152,7 @@ test_NanoStringRccSet_utils_summary_GROUP <- function() {
               summary(rcc2, 1L, "Treatment"))
   checkEquals(list("1" =
                      cbind(GeomMean = 1:4,
+                           SizeFactor = c(0.4518010018, 0.9036020036, 1.3554030054, 1.8072040072),
                            MedPolSF = c(0.4082482905, 0.8164965809, 1.2247448714, 1.6329931619),
                            Mean = structure(1:4, names = letters[1:4]),
                            SD = NA_real_,
@@ -159,6 +166,7 @@ test_NanoStringRccSet_utils_summary_GROUP <- function() {
                            MAD = 0),
                    "2" =
                      cbind(GeomMean = 5:8,
+                           SizeFactor = c(0.7809849842, 0.9371819811, 1.0933789779, 1.2495759748),
                            MedPolSF = c(0.7715167498, 0.9258200998, 1.0801234497, 1.2344267997),
                            Mean = structure(5:8, names = letters[1:4]),
                            SD = NA_real_,
@@ -172,6 +180,7 @@ test_NanoStringRccSet_utils_summary_GROUP <- function() {
                            MAD = 0),
                    "3" =
                      cbind(GeomMean = 9:12,
+                           SizeFactor = c(0.8620617968, 0.9578464409, 1.0536310849, 1.1494157290),
                            MedPolSF = c(0.8581163303, 0.9534625892, 1.0488088482, 1.1441551071),
                            Mean = structure(9:12, names = letters[1:4]),
                            SD = NA_real_,
@@ -188,6 +197,7 @@ test_NanoStringRccSet_utils_summary_GROUP <- function() {
   # Marginal summaries by Sample
   checkEquals(list(Endogenous =
                      cbind(GeomMean = c(1, 5, 9),
+                           SizeFactor = c(0.2811442218, 1.4057211088, 2.5302979959),
                            MedPolSF = c(0.2, 1, 1.8),
                            Mean = structure(c(1, 5, 9), names = sampleNames(rcc)),
                            SD = NA_real_,
@@ -201,6 +211,7 @@ test_NanoStringRccSet_utils_summary_GROUP <- function() {
                            MAD = 0),
                    Housekeeping =
                      cbind(GeomMean = c(4, 8, 12),
+                           SizeFactor = c(0.5503212081, 1.1006424163, 1.6509636244),
                            MedPolSF = c(0.5, 1.0, 1.5),
                            Mean = structure(c(4, 8, 12), names = sampleNames(rcc)),
                            SD = NA_real_,
@@ -214,6 +225,7 @@ test_NanoStringRccSet_utils_summary_GROUP <- function() {
                            MAD = 0),
                    Negative =
                      cbind(GeomMean = c(3, 7, 11),
+                           SizeFactor = c(0.4889344008, 1.1408469352, 1.7927594696),
                            MedPolSF = c(0.4285714286, 1, 1.5714285714),
                            Mean = structure(c(3, 7, 11), names = sampleNames(rcc)),
                            SD = NA_real_,
@@ -227,6 +239,7 @@ test_NanoStringRccSet_utils_summary_GROUP <- function() {
                            MAD = 0),
                    Positive =
                      cbind(GeomMean = c(2, 6, 10),
+                           SizeFactor = c(0.405480133, 1.216440399, 2.027400665),
                            MedPolSF = c(1/3, 1, 5/3),
                            Mean = structure(c(2, 6, 10), names = sampleNames(rcc)),
                            SD = NA_real_,

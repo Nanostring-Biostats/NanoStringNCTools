@@ -18,7 +18,7 @@ importFrom(Biobase, assayDataElement, assayDataElementNames, assayDataNew,
 importFrom(Biostrings, BStringSet, DNAStringSet)
 importFrom(IRanges, NumericList)
 importFrom(methods, as, callGeneric, callNextMethod, is, validObject)
-importFrom(stats, as.formula, medpolish, quantile, t.test)
+importFrom(stats, as.formula, median, medpolish, quantile)
 importFrom(utils, read.csv, write.csv)
 
 ### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

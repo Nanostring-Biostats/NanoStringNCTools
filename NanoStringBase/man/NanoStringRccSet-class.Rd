@@ -143,12 +143,12 @@ NanoStringRccSet(assayData,
   \describe{
     \item{}{
       \code{summary(object, MARGIN, GROUP = NULL, elt = "exprs")}: Marginal
-      summaries (Geometric Mean with thresholding at 0.5, Median Polish-based
-      Size Factor (see below), Mean, Standard Deviation, Skewness, Excess
-      Kurtosis, Minimum, First Quartile, Median, Third Quartile, Maximum,
-      and Median Absolute Deviation) of the \code{elt}
-      \code{\link[Biobase]{assayData}} matrix along either the feature
-      (\code{MARGIN = 1}) or sample (\code{MARGIN = 2}) dimension.
+      summaries (Geometric Mean with thresholding at 0.5, Robust Regression
+      Size Factor, Median Polish-based Size Factor (see below), Mean,
+      Standard Deviation, Skewness, Excess Kurtosis, Minimum, First Quartile,
+      Median, Third Quartile, Maximum, and Median Absolute Deviation) of the
+      \code{elt} \code{\link[Biobase]{assayData}} matrix along either the
+      feature (\code{MARGIN = 1}) or sample (\code{MARGIN = 2}) dimension.
 
       The Median Polish-based Size Factor is calculated using three steps:
       \enumerate{
