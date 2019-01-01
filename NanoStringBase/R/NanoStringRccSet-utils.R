@@ -85,6 +85,7 @@ setReplaceMethod("design", c("NanoStringRccSet", "NULL"),
     x <- x[!is.na(x)]
 
   # Calculate statistics
+  logX <- logt(x, thresh = 0.5)
   quartiles <- quantile(x, probs = c(0, 0.25, 0.5, 0.75, 1))
   names(quartiles) <- c("Min", "Q1", "Median", "Q3", "Max")
   c("GeomMean" = geomMean(x),
@@ -92,14 +93,13 @@ setReplaceMethod("design", c("NanoStringRccSet", "NULL"),
     "MedPolSF" = NA_real_,
     "Mean"     = mean(x),
     "SD"       = sd(x),
-    "Skewness" = skewness(x),
-    "Kurtosis" = kurtosis(x),
-    quartiles,
-    "MAD"      = mad(x))
+    "MeanLog"  = mean(logX),
+    "SDLog"    = sd(logX),
+    quartiles)
 }
 
 setMethod("summary", "NanoStringRccSet",
-function(object, MARGIN, GROUP = NULL, elt = "exprs", ...)
+function(object, MARGIN = 2L, GROUP = NULL, elt = "exprs", ...)
 {
   stopifnot(MARGIN %in% c(1L, 2L))
   FUN <- function(x) {
