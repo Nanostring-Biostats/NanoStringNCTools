@@ -78,7 +78,7 @@ setReplaceMethod("design", c("NanoStringRccSet", "NULL"),
 
 
 # Summarizing
-.marginal.summary <- function(x)
+.marginal.summary <- function(x, ordstats = FALSE)
 {
   # Handle missing data
   if (anyNA(x))
@@ -89,38 +89,36 @@ setReplaceMethod("design", c("NanoStringRccSet", "NULL"),
   logX <- logt(x, thresh = 0.5)
   quartiles <- quantile(x, probs = c(0, 0.25, 0.5, 0.75, 1))
   names(quartiles) <- c("Min", "Q1", "Median", "Q3", "Max")
-  if (n < 3L)
-    ordstats <- structure(c(NA_integer_, NA_integer_),
+  stats <- c("GeomMean" = geomMean(x),
+             "SizeFactor" = NA_real_,
+             "MeanLog"  = mean(logX),
+             "SDLog"    = sd(logX),
+             quartiles)
+  if (ordstats) {
+    if (n < 3L)
+      extra <- structure(c(NA_integer_, NA_integer_),
                           names = c("OrdStat2", "OrdStatp"))
-  else
-    ordstats <- structure(x[order(x)[c(2L, n - 1L)]],
+    else
+      extra <- structure(x[order(x)[c(2L, n - 1L)]],
                           names = c("OrdStat2", "OrdStatp"))
-  c("GeomMean" = geomMean(x),
-    "SizeFactor" = NA_real_,
-    "MedPolSF" = NA_real_,
-    "MeanLog"  = mean(logX),
-    "SDLog"    = sd(logX),
-    quartiles,
-    ordstats)
+    stats <- c(stats, extra)
+  }
+  stats
 }
 
 setMethod("summary", "NanoStringRccSet",
-function(object, MARGIN = 2L, GROUP = NULL, elt = "exprs", ...)
+function(object, MARGIN = 2L, GROUP = NULL, ordstats = FALSE, elt = "exprs", ...)
 {
   stopifnot(MARGIN %in% c(1L, 2L))
   FUN <- function(x) {
-    stats <- t(esApply(x, MARGIN = MARGIN, FUN = .marginal.summary, elt = elt))
+    stats <- t(esApply(x, MARGIN = MARGIN, FUN = .marginal.summary,
+                       ordstats = ordstats, elt = elt))
 
     # Size Factor
     logElt <- logt(assayDataElement2(x, elt), thresh = 0.5)
     means <- apply(logElt, 3L - MARGIN, mean)
     stats[,"SizeFactor"] <-
       apply(logElt, MARGIN, function(y) exp(median(y - means)))
-
-    # Median Polish Size Factor
-    mp <- medpolish(logElt, eps = 1e-8, maxiter = 100L, trace.iter = FALSE,
-                    na.rm = TRUE)
-    stats[,"MedPolSF"] <- exp(mp[[ifelse(MARGIN == 1L, "row", "col")]])
 
     stats
   }

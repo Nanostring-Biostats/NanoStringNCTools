@@ -59,7 +59,16 @@ test_NanoStringRccSet_utils_summary <- function() {
   # Marginal summaries by Feature
   checkEquals(cbind(GeomMean = c(2.519842100, 3.556893304, 4.932424149, 6.135792440),
                     SizeFactor = c(0.74300232, 0.92875290, 1.11450348, 1.30025406),
-                    MedPolSF = c(0.7302967433, 0.9128709292, 1.0954451150, 1.2780193008),
+                    MeanLog = c(0.9241962407, 1.2688874966, 1.5958305809, 1.8141392368),
+                    SDLog = c(1.4429009184, 1.1375103956, 0.8224133361, 0.6595883172),
+                    Min = structure(0:3, names = letters[1:4]),
+                    Q1 = 2:5,
+                    Median = 4:7,
+                    Q3 = 6:9,
+                    Max = 8:11),
+              summary(rcc2, 1L))
+  checkEquals(cbind(GeomMean = c(2.519842100, 3.556893304, 4.932424149, 6.135792440),
+                    SizeFactor = c(0.74300232, 0.92875290, 1.11450348, 1.30025406),
                     MeanLog = c(0.9241962407, 1.2688874966, 1.5958305809, 1.8141392368),
                     SDLog = c(1.4429009184, 1.1375103956, 0.8224133361, 0.6595883172),
                     Min = structure(0:3, names = letters[1:4]),
@@ -69,10 +78,19 @@ test_NanoStringRccSet_utils_summary <- function() {
                     Max = 8:11,
                     OrdStat2= 4:7,
                     OrdStatp = 4:7),
-              summary(rcc2, 1L))
+              summary(rcc2, 1L, ordstats = TRUE))
   checkEquals(cbind(GeomMean = c(3.556893304, 4.932424149, 6.135792440, 7.268482371),
                     SizeFactor = c(0.7809849842, 0.9371819811, 1.0933789779, 1.2495759748),
-                    MedPolSF = c(0.7715167498, 0.9258200998, 1.0801234497, 1.2344267997),
+                    MeanLog = c(1.268887497, 1.595830581, 1.814139237, 1.983547518),
+                    SDLog = c(1.1375103956, 0.8224133361, 0.6595883172, 0.5555483670),
+                    Min = structure(1:4, names = letters[1:4]),
+                    Q1 = 3:6,
+                    Median = 5:8,
+                    Q3 = 7:10,
+                    Max = 9:12),
+              summary(rcc2, 1L, elt = "exprsp1"))
+  checkEquals(cbind(GeomMean = c(3.556893304, 4.932424149, 6.135792440, 7.268482371),
+                    SizeFactor = c(0.7809849842, 0.9371819811, 1.0933789779, 1.2495759748),
                     MeanLog = c(1.268887497, 1.595830581, 1.814139237, 1.983547518),
                     SDLog = c(1.1375103956, 0.8224133361, 0.6595883172, 0.5555483670),
                     Min = structure(1:4, names = letters[1:4]),
@@ -82,12 +100,21 @@ test_NanoStringRccSet_utils_summary <- function() {
                     Max = 9:12,
                     OrdStat2 = 5:8,
                     OrdStatp = 5:8),
-              summary(rcc2, 1L, elt = "exprsp1"))
+              summary(rcc2, 1L, elt = "exprsp1", ordstats = TRUE))
 
   # Marginal summaries by Sample
   checkEquals(cbind(GeomMean = c(1.316074013, 5.383563271, 9.433683366),
                     SizeFactor = c(0.3376364857, 1.3076604860, 2.2649344008),
-                    MedPolSF = c(0.2581988897, 1, 1.7320508076),
+                    MeanLog = c(0.2746530722, 1.6833504730, 2.2442866212),
+                    SDLog = c(0.7886946491, 0.2411054363, 0.1370925063),
+                    Min = structure(c(0, 4, 8), names = sampleNames(rcc)),
+                    Q1 = c(0.75, 4.75, 8.75),
+                    Median = c(1.5, 5.5, 9.5),
+                    Q3 = c(2.25, 6.25, 10.25),
+                    Max = c(3, 7, 11)),
+              summary(rcc2, 2L))
+  checkEquals(cbind(GeomMean = c(1.316074013, 5.383563271, 9.433683366),
+                    SizeFactor = c(0.3376364857, 1.3076604860, 2.2649344008),
                     MeanLog = c(0.2746530722, 1.6833504730, 2.2442866212),
                     SDLog = c(0.7886946491, 0.2411054363, 0.1370925063),
                     Min = structure(c(0, 4, 8), names = sampleNames(rcc)),
@@ -97,10 +124,19 @@ test_NanoStringRccSet_utils_summary <- function() {
                     Max = c(3, 7, 11),
                     OrdStat2 = c(1, 5, 9),
                     OrdStatp = c(2, 6, 10)),
-              summary(rcc2, 2L))
+              summary(rcc2, 2L, ordstats = TRUE))
   checkEquals(cbind(GeomMean = c(2.213363839, 6.402171746, 10.440086817),
                     SizeFactor = c(0.4452563148, 1.1780374787, 1.9064736403),
-                    MedPolSF = c(0.377964473, 1, 1.618347187),
+                    MeanLog = c(0.7945134576, 1.8566372681, 2.3456528982),
+                    SDLog = c(0.6011676120, 0.2024253293, 0.1238368218),
+                    Min = structure(c(1, 5, 9), names = sampleNames(rcc)),
+                    Q1 = c(1.75, 5.75, 9.75),
+                    Median = c(2.5, 6.5, 10.5),
+                    Q3 = c(3.25, 7.25, 11.25),
+                    Max = c(4, 8, 12)),
+              summary(rcc2, 2L, elt = "exprsp1"))
+  checkEquals(cbind(GeomMean = c(2.213363839, 6.402171746, 10.440086817),
+                    SizeFactor = c(0.4452563148, 1.1780374787, 1.9064736403),
                     MeanLog = c(0.7945134576, 1.8566372681, 2.3456528982),
                     SDLog = c(0.6011676120, 0.2024253293, 0.1238368218),
                     Min = structure(c(1, 5, 9), names = sampleNames(rcc)),
@@ -110,7 +146,7 @@ test_NanoStringRccSet_utils_summary <- function() {
                     Max = c(4, 8, 12),
                     OrdStat2 = c(2, 6, 10),
                     OrdStatp = c(3, 7, 11)),
-              summary(rcc2, 2L, elt = "exprsp1"))
+              summary(rcc2, 2L, elt = "exprsp1", ordstats = TRUE))
 }
 
 test_NanoStringRccSet_utils_summary_GROUP <- function() {
@@ -120,7 +156,6 @@ test_NanoStringRccSet_utils_summary_GROUP <- function() {
   checkEquals(list(A =
                      cbind(GeomMean = c(1.414213562, 2.236067977, 3.464101615, 4.582575695),
                            SizeFactor = c(0.5313001399, 0.8400592816, 1.3014142429, 1.7216092197),
-                           MedPolSF = c(0.5081327482, 0.8034284189, 1.2446659546, 1.6465382906),
                            MeanLog = c(0.3465735903, 0.8047189562, 1.2424533249, 1.5222612189),
                            SDLog = c(1.4703872152, 1.1380444618, 0.7768361992, 0.5991300628),
                            Min = structure(0:3, names = letters[1:4]),
@@ -133,7 +168,6 @@ test_NanoStringRccSet_utils_summary_GROUP <- function() {
                    B =
                      cbind(GeomMean = 8:11,
                            SizeFactor = c(0.8480250704, 0.9540282042, 1.0600313380, 1.1660344717),
-                           MedPolSF = c(0.8432740427, 0.9486832981, 1.0540925534, 1.1595018087),
                            MeanLog = c(2.079441542, 2.197224577, 2.302585093, 2.397895273),
                            SDLog = NA_real_,
                            Min = structure(8:11, names = letters[1:4]),
@@ -143,11 +177,10 @@ test_NanoStringRccSet_utils_summary_GROUP <- function() {
                            Max = 8:11,
                            OrdStat2 = NA_integer_,
                            OrdStatp = NA_integer_)),
-              summary(rcc2, 1L, "Treatment"))
+              summary(rcc2, 1L, "Treatment", ordstats = TRUE))
   checkEquals(list("1" =
                      cbind(GeomMean = 1:4,
                            SizeFactor = c(0.4518010018, 0.9036020036, 1.3554030054, 1.8072040072),
-                           MedPolSF = c(0.4082482905, 0.8164965809, 1.2247448714, 1.6329931619),
                            MeanLog = c(0, 0.6931471806, 1.0986122887, 1.3862943611),
                            SDLog = NA_real_,
                            Min = structure(1:4, names = letters[1:4]),
@@ -160,7 +193,6 @@ test_NanoStringRccSet_utils_summary_GROUP <- function() {
                    "2" =
                      cbind(GeomMean = 5:8,
                            SizeFactor = c(0.7809849842, 0.9371819811, 1.0933789779, 1.2495759748),
-                           MedPolSF = c(0.7715167498, 0.9258200998, 1.0801234497, 1.2344267997),
                            MeanLog = c(1.609437912, 1.791759469, 1.945910149, 2.079441542),
                            SDLog = NA_real_,
                            Min = structure(5:8, names = letters[1:4]),
@@ -173,7 +205,6 @@ test_NanoStringRccSet_utils_summary_GROUP <- function() {
                    "3" =
                      cbind(GeomMean = 9:12,
                            SizeFactor = c(0.8620617968, 0.9578464409, 1.0536310849, 1.1494157290),
-                           MedPolSF = c(0.8581163303, 0.9534625892, 1.0488088482, 1.1441551071),
                            MeanLog = c(2.197224577, 2.302585093, 2.397895273, 2.484906650),
                            SDLog = NA_real_,
                            Min = structure(9:12, names = letters[1:4]),
@@ -183,13 +214,12 @@ test_NanoStringRccSet_utils_summary_GROUP <- function() {
                            Max = 9:12,
                            OrdStat2 = NA_integer_,
                            OrdStatp = NA_integer_)),
-              summary(rcc2, 1L, "LaneID", elt = "exprsp1"))
+              summary(rcc2, 1L, "LaneID", elt = "exprsp1", ordstats = TRUE))
 
   # Marginal summaries by Sample
   checkEquals(list(Endogenous =
                      cbind(GeomMean = c(1, 5, 9),
                            SizeFactor = c(0.2811442218, 1.4057211088, 2.5302979959),
-                           MedPolSF = c(0.2, 1, 1.8),
                            MeanLog = c(0, 1.609437912, 2.197224577),
                            SDLog = NA_real_,
                            Min = structure(c(1, 5, 9), names = sampleNames(rcc)),
@@ -202,7 +232,6 @@ test_NanoStringRccSet_utils_summary_GROUP <- function() {
                    Housekeeping =
                      cbind(GeomMean = c(4, 8, 12),
                            SizeFactor = c(0.5503212081, 1.1006424163, 1.6509636244),
-                           MedPolSF = c(0.5, 1.0, 1.5),
                            MeanLog = c(1.386294361, 2.079441542, 2.484906650),
                            SDLog = NA_real_,
                            Min = structure(c(4, 8, 12), names = sampleNames(rcc)),
@@ -215,7 +244,6 @@ test_NanoStringRccSet_utils_summary_GROUP <- function() {
                    Negative =
                      cbind(GeomMean = c(3, 7, 11),
                            SizeFactor = c(0.4889344008, 1.1408469352, 1.7927594696),
-                           MedPolSF = c(0.4285714286, 1, 1.5714285714),
                            MeanLog = c(1.098612289, 1.945910149, 2.397895273),
                            SDLog = NA_real_,
                            Min = structure(c(3, 7, 11), names = sampleNames(rcc)),
@@ -228,7 +256,6 @@ test_NanoStringRccSet_utils_summary_GROUP <- function() {
                    Positive =
                      cbind(GeomMean = c(2, 6, 10),
                            SizeFactor = c(0.405480133, 1.216440399, 2.027400665),
-                           MedPolSF = c(1/3, 1, 5/3),
                            MeanLog = c(0.6931471806, 1.7917594692, 2.3025850930),
                            SDLog = NA_real_,
                            Min = structure(c(2, 6, 10), names = sampleNames(rcc)),
@@ -238,7 +265,7 @@ test_NanoStringRccSet_utils_summary_GROUP <- function() {
                            Max = c(2, 6, 10),
                            OrdStat2 = NA_integer_,
                            OrdStatp = NA_integer_)),
-              summary(rcc2, 2L, "BarcodeClass", elt = "exprsp1"))
+              summary(rcc2, 2L, "BarcodeClass", elt = "exprsp1", ordstats = TRUE))
 }
 
 # Subsetting

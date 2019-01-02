@@ -142,20 +142,22 @@ NanoStringRccSet(assayData,
 \section{Summarizing}{
   \describe{
     \item{}{
-      \code{summary(object, MARGIN = 2L, GROUP = NULL, elt = "exprs")}:
+      \code{summary(object, MARGIN = 2L, GROUP = NULL, ordstats = FALSE, elt = "exprs")}:
       Marginal summaries (Geometric Mean with thresholding at 0.5, Robust
-      Regression Size Factor, Median Polish-based Size Factor (see below),
-      Mean of Log with thresholding at 0.5, Standard Deviation of Log with
-      thresholding at 0.5, Minimum, First Quartile, Median, Third Quartile,
-      Maximum, 2nd Order Statistic, and Penultimate Order Statistic) of the
-      \code{elt} \code{\link[Biobase]{assayData}} matrix along either the
-      feature (\code{MARGIN = 1}) or sample (\code{MARGIN = 2}) dimension.
+      Regression Size Factor (see below), Mean of Log with thresholding at 0.5,
+      Standard Deviation of Log with thresholding at 0.5, Minimum, First
+      Quartile, Median, Third Quartile, Maximum, and optionally 2nd Order and
+      Penultimate Order Statistic) of the \code{elt}
+      \code{\link[Biobase]{assayData}} matrix along either the feature
+      (\code{MARGIN = 1}) or sample (\code{MARGIN = 2}) dimension.
 
-      The Median Polish-based Size Factor is calculated using three steps:
+      The Size Factor is calculated using three steps:
       \enumerate{
-        \item Log transform expressions with thresholding at 0.5
-        \item Calculate median polish row / column effects
-        \item Exponentiate these effects
+        \item Log transform element with thresholding at 0.5
+        \item Calculate mean of log transformed values
+        \item Subtract means from log transformed values
+        \item Calculate median of the differences
+        \item Exponentiate the median difference
       }
     }
   }
