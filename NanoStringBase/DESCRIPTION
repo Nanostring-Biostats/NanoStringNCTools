@@ -18,5 +18,4 @@ Collate: RccMetadata.R
          writeNanoStringRccSet.R
          Math.R
          Summary.R
-         background.R
          zzz.R

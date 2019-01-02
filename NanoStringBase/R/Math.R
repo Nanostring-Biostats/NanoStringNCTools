@@ -1,3 +1,4 @@
+# Zero-corrected logarithm functions
 logt <-
 function(x, thresh = 0.5)
 {
@@ -15,3 +16,9 @@ function(x, thresh = 0.5)
   }
   log2(x)
 }
+
+
+# Convenience wrappers around sweep function
+colThresh <- function(x, STATS) sweep(x, 2L, STATS, FUN = "pmax")
+colCenter <- function(x, STATS) sweep(x, 2L, STATS, FUN = "-")
+colScale  <- function(x, STATS) sweep(x, 2L, STATS, FUN = "/")
