@@ -85,17 +85,23 @@ setReplaceMethod("design", c("NanoStringRccSet", "NULL"),
     x <- x[!is.na(x)]
 
   # Calculate statistics
+  n <- length(x)
   logX <- logt(x, thresh = 0.5)
   quartiles <- quantile(x, probs = c(0, 0.25, 0.5, 0.75, 1))
   names(quartiles) <- c("Min", "Q1", "Median", "Q3", "Max")
+  if (n < 3L)
+    ordstats <- structure(c(NA_integer_, NA_integer_),
+                          names = c("OrdStat2", "OrdStatp"))
+  else
+    ordstats <- structure(x[order(x)[c(2L, n - 1L)]],
+                          names = c("OrdStat2", "OrdStatp"))
   c("GeomMean" = geomMean(x),
     "SizeFactor" = NA_real_,
     "MedPolSF" = NA_real_,
-    "Mean"     = mean(x),
-    "SD"       = sd(x),
     "MeanLog"  = mean(logX),
     "SDLog"    = sd(logX),
-    quartiles)
+    quartiles,
+    ordstats)
 }
 
 setMethod("summary", "NanoStringRccSet",
