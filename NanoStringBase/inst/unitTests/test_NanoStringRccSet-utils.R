@@ -316,15 +316,15 @@ test_NanoStringRccSet_utils_esApply <- function() {
 # transforming
 test_NanoStringRccSet_utils_transform <- function() {
   rcc2 <- transform(rcc,
-                    exprs_thresh = pmax(exprs - 2, 0),
-                    log1p_exprs_thresh = log1p(exprs_thresh))
+                    exprs_scaled = sweep(exprs, 2L, c(2, 1, 0.5), FUN = "*"),
+                    exprs_thresh = pmax(exprs_scaled - 2L, 0L))
   checkTrue(validObject(rcc2))
-  checkIdentical(pmax(exprs(rcc) - 2, 0),
+  checkEquals(round(sweep(exprs(rcc), 2L, c(2, 1, 0.5), FUN = "*")),
+              assayDataElement(rcc2, "exprs_scaled"))
+  checkEquals(pmax(round(sweep(exprs(rcc), 2L, c(2, 1, 0.5), FUN = "*")) - 2L, 0L),
                  assayDataElement(rcc2, "exprs_thresh"))
-  checkIdentical(log1p(pmax(exprs(rcc) - 2, 0)),
-                 assayDataElement(rcc2, "log1p_exprs_thresh"))
-  checkIdentical(list(exprs_thresh = substitute(pmax(exprs - 2, 0)),
-                      log1p_exprs_thresh = substitute(log1p(exprs_thresh))),
+  checkIdentical(list(exprs_scaled = substitute(sweep(exprs, 2L, c(2, 1, 0.5), FUN = "*")),
+                      exprs_thresh = substitute(pmax(exprs_scaled - 2L, 0L))),
                  preproc(rcc2))
 }
 

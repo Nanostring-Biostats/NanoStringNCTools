@@ -152,13 +152,12 @@ function(object)
   }
   if (prod(dim(object)) > 0L) {
     # assayData
-    if (!.validNonNegativeInteger(exprs(object))) {
-      msg <- c(msg, "'exprs' must be a non-negative integer matrix")
-    }
-    for (elt in setdiff(assayDataElementNames(object), "exprs")) {
-      if (!.validNonNegativeNumber(assayDataElement(object, elt))) {
-        msg <- c(msg, "all 'assayData' elements must be a non-negative matrices")
-        break
+    for (elt in assayDataElementNames(object)) {
+      if (!.validNonNegativeInteger(assayDataElement(object, elt))) {
+        msg <-
+          c(msg,
+            sprintf("'assayData' element \"%s\" is not a non-negative integer matrix",
+                    elt))
       }
     }
   }

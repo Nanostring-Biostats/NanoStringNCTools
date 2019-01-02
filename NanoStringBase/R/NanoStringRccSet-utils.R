@@ -283,7 +283,12 @@ function(`_data`, ...)
     aData <- copyEnv(aData)
   }
   for (elt in names(exprs)) {
-    assign(elt, eval(exprs[[elt]], as.list(aData), parent.frame()), aData)
+    value <- eval(exprs[[elt]], as.list(aData), parent.frame())
+    if (!is.integer(value)) {
+      value <- round(value)
+      storage.mode(value) <- "integer"
+    }
+    assign(elt, value, aData)
   }
   if (isLocked) {
     lockEnvironment(aData)

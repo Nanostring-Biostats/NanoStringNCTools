@@ -237,10 +237,10 @@ NanoStringRccSet(assayData,
       \code{transform(`_data`, \ldots)}: Similar to the
       \code{\link[base]{transform}} generic in the \pkg{base} package, creates
       or modifies one or more \code{\link[Biobase]{assayData}} matrices based
-      upon \code{name = value} pairs in \code{\ldots}. The transforms specified
-      in \code{\ldots} are appended to the preprocessing list in
-      \code{\link{experimentData}}, which can be extracted using the
-      \code{\link{preproc}} method.
+      upon \code{name = value} pairs in \code{\ldots}. The transformed matrices
+      created in \code{\ldots} are rounded to the nearest integer and the calls
+      are appended to the preprocessing list in \code{\link{experimentData}},
+      which can be extracted using the \code{\link{preproc}} method.
     }
   }
 }
