@@ -99,7 +99,7 @@ NanoStringRccSet(assayData,
     \code{"LaneID"}, \code{"FovCount"}, \code{"FovCounted"}, \code{"ScannerID"},
     \code{"StagePosition"}, \code{"BindingDensity"}, \code{"CartridgeID"}, and
     \code{"CartridgeBarcode"}.}
-  \item{signatureWeights}{An optional named \code{\link[IRanges]{NumericList}}
+  \item{signatureWeights}{An optional named \code{\link{NumericList}}
     containing named gene signature weights.}
   \item{design}{An optional one-sided formula representing the experimental
     design based on columns from \code{\link[Biobase]{phenoData}}}
