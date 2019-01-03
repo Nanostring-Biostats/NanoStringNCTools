@@ -78,41 +78,29 @@ setReplaceMethod("design", c("NanoStringRccSet", "NULL"),
 
 
 # Summarizing
-.marginal.summary <- function(x, ordstats = FALSE)
+.marginal.summary <- function(x)
 {
   # Handle missing data
   if (anyNA(x))
     x <- x[!is.na(x)]
 
   # Calculate statistics
-  n <- length(x)
-  logX <- logt(x, thresh = 0.5)
+  log2X <- log2t(x, thresh = 0.5)
   quartiles <- quantile(x, probs = c(0, 0.25, 0.5, 0.75, 1))
   names(quartiles) <- c("Min", "Q1", "Median", "Q3", "Max")
-  stats <- c("GeomMean" = geomMean(x),
-             "SizeFactor" = NA_real_,
-             "MeanLog"  = mean(logX),
-             "SDLog"    = sd(logX),
-             quartiles)
-  if (ordstats) {
-    if (n < 3L)
-      extra <- structure(c(NA_integer_, NA_integer_),
-                          names = c("OrdStat2", "OrdStatp"))
-    else
-      extra <- structure(x[order(x)[c(2L, n - 1L)]],
-                          names = c("OrdStat2", "OrdStatp"))
-    stats <- c(stats, extra)
-  }
-  stats
+  c("GeomMean"   = geomMean(x),
+    "SizeFactor" = NA_real_,
+    "MeanLog2"   = mean(log2X),
+    "SDLog2"     = sd(log2X),
+    quartiles)
 }
 
 setMethod("summary", "NanoStringRccSet",
-function(object, MARGIN = 2L, GROUP = NULL, ordstats = FALSE, elt = "exprs", ...)
+function(object, MARGIN = 2L, GROUP = NULL, elt = "exprs", ...)
 {
   stopifnot(MARGIN %in% c(1L, 2L))
   FUN <- function(x) {
-    stats <- t(esApply(x, MARGIN = MARGIN, FUN = .marginal.summary,
-                       ordstats = ordstats, elt = elt))
+    stats <- t(esApply(x, MARGIN = MARGIN, FUN = .marginal.summary, elt = elt))
 
     # Size Factor
     logElt <- logt(assayDataElement2(x, elt), thresh = 0.5)
