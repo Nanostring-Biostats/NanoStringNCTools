@@ -19,6 +19,10 @@ function(x, thresh = 0.5)
 
 
 # Convenience wrappers around sweep function
-colThresh <- function(x, STATS) sweep(x, 2L, STATS, FUN = "pmax")
-colCenter <- function(x, STATS) sweep(x, 2L, STATS, FUN = "-")
-colScale  <- function(x, STATS) sweep(x, 2L, STATS, FUN = "/")
+fThresh <- function(x, STATS) sweep(x, 1L, STATS, FUN = "pmax")
+fCenter <- function(x, STATS) sweep(x, 1L, STATS, FUN = "-")
+fScale  <- function(x, STATS) sweep(x, 1L, STATS, FUN = "/")
+
+sThresh <- function(x, STATS) sweep(x, 2L, STATS, FUN = "pmax")
+sCenter <- function(x, STATS) sweep(x, 2L, STATS, FUN = "-")
+sScale  <- function(x, STATS) sweep(x, 2L, STATS, FUN = "/")

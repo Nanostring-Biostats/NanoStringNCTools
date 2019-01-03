@@ -1,19 +1,28 @@
-\name{colThresh}
-\alias{colThresh}
-\alias{colCenter}
-\alias{colScale}
+\name{sThresh}
+\alias{fThresh}
+\alias{fCenter}
+\alias{fScale}
+\alias{sThresh}
+\alias{sCenter}
+\alias{sScale}
 
-\title{Convenience Functions for Column Sweep Operations}
+\title{Convenience Functions for Assay Data Element Sweep Operations}
 
 \description{
   Convenience functions for matrix thresholding, centering, and scaling based
-  upon column statistics.
+  upon margin statistics.
 }
 
 \usage{
-colThresh(x, STATS)
-colCenter(x, STATS)
-colScale(x, STATS)
+# Loop over features
+fThresh(x, STATS)
+fCenter(x, STATS)
+fScale(x, STATS)
+
+# Loop over samples
+sThresh(x, STATS)
+sCenter(x, STATS)
+sScale(x, STATS)
 }
 
 \arguments{
@@ -29,9 +38,12 @@ colScale(x, STATS)
 \details{
  These functions are convenience wrappers for the following code:
   \describe{
-    \item{\code{colThresh}:}{\code{sweep(x, 2L, STATS, FUN = "pmax")}}
-    \item{\code{colCenter}:}{\code{sweep(x, 2L, STATS, FUN = "-")}}
-    \item{\code{colScale}:}{\code{sweep(x, 2L, STATS, FUN = "/")}}
+    \item{\code{fThresh}:}{\code{sweep(x, 1L, STATS, FUN = "pmax")}}
+    \item{\code{fCenter}:}{\code{sweep(x, 1L, STATS, FUN = "-")}}
+    \item{\code{fScale}:}{\code{sweep(x, 1L, STATS, FUN = "/")}}
+    \item{\code{sThresh}:}{\code{sweep(x, 2L, STATS, FUN = "pmax")}}
+    \item{\code{sCenter}:}{\code{sweep(x, 2L, STATS, FUN = "-")}}
+    \item{\code{sScale}:}{\code{sweep(x, 2L, STATS, FUN = "/")}}
   }
 }
 
@@ -44,15 +56,15 @@ colScale(x, STATS)
 thresh <- apply(stack.x, 2L, quantile, 0.05)
 
 # Threshold column values
-identical(colThresh(stack.x, thresh),
+identical(sThresh(stack.x, thresh),
           sweep(stack.x, 2L, thresh, FUN = "pmax"))
 
 # Substract column values
-identical(colCenter(stack.x, thresh),
+identical(sCenter(stack.x, thresh),
           sweep(stack.x, 2L, thresh))
 
 # Scale to common mean
-identical(colScale(stack.x, colMeans(stack.x) / mean(colMeans(stack.x))),
+identical(sScale(stack.x, colMeans(stack.x) / mean(colMeans(stack.x))),
           sweep(stack.x, 2L, colMeans(stack.x) / mean(colMeans(stack.x)),
                 FUN = "/"))
 }
