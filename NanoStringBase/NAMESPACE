@@ -7,7 +7,7 @@ importClassesFrom(Biobase, AnnotatedDataFrame, AssayData, ExpressionSet, MIAME,
                   Versions)
 importClassesFrom(IRanges, NumericList)
 importClassesFrom(methods, ANY, character, environment, formula, list, matrix,
-                  missing, "NULL")
+                  missing, "NULL", ".NULL")
 importMethodsFrom(Biobase, AnnotatedDataFrame, annotatedDataFrameFrom,
                   assayData, "assayData<-", esApply, exprs, fData, featureData,
                   fvarLabels, pData, preproc, "preproc<-", protocolData,
