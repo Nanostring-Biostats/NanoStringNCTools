@@ -58,7 +58,7 @@ test_NanoStringRccSet_utils_summary <- function() {
 
   # Marginal summaries by Feature
   checkEquals(cbind(GeomMean = c(2.519842100, 3.556893304, 4.932424149, 6.135792440),
-                    SizeFactor = c(0.74300232, 0.92875290, 1.11450348, 1.30025406),
+                    SizeFactor = c(0.6209112338, 0.8764497626, 1.2153926486, 1.5119131688),
                     MeanLog2 = c(1.333333333, 1.830617699, 2.302296865, 2.617249680),
                     SDLog2 = c(2.0816659995, 1.6410806067, 1.1864916416, 0.9515847943),
                     Min = structure(0:3, names = letters[1:4]),
@@ -80,7 +80,7 @@ test_NanoStringRccSet_utils_summary <- function() {
 
   # Marginal summaries by Sample
   checkEquals(cbind(GeomMean = c(1.316074013, 5.383563271, 9.433683366),
-                    SizeFactor = c(0.3376364857, 1.3076604860, 2.2649344008),
+                    SizeFactor = c(0.3242922004, 1.3265572922, 2.3245424696),
                     MeanLog2 = c(0.3962406252, 2.4285613794, 3.2378211787),
                     SDLog2 = c(1.1378458590, 0.3478416172, 0.1977826790),
                     Min = structure(c(0, 4, 8), names = sampleNames(rcc)),

@@ -152,19 +152,10 @@ NanoStringRccSet(assayData,
       Third Quartile, and Maximum.
 
       When \code{log2scale = TRUE}, the summary statistics are Geometric Mean
-      with thresholding at 0.5, Robust Regression Size Factor (see below),
-      Mean of Log2 with thresholding at 0.5, Standard Deviation of Log2 with
-      thresholding at 0.5, Minimum, First Quartile, Median, Third Quartile,
-      and Maximum.
-
-      The Size Factor is calculated using five steps:
-      \enumerate{
-        \item Log transform element with thresholding at 0.5
-        \item Calculate mean of log transformed values
-        \item Subtract means from log transformed values
-        \item Calculate median of the differences
-        \item Exponentiate the median difference
-      }
+      with thresholding at 0.5, Size Factor
+      (\code{2^(`MeanLog2` - mean(`MeanLog2`))}), Mean of Log2 with
+      thresholding at 0.5, Standard Deviation of Log2 with thresholding at 0.5,
+      Minimum, First Quartile, Median, Third Quartile, and Maximum.
     }
   }
 }

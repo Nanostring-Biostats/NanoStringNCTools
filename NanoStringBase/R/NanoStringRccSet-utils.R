@@ -110,11 +110,7 @@ function(object, MARGIN = 2L, GROUP = NULL, log2scale = TRUE, elt = "exprs", ...
     stats <- t(esApply(x, MARGIN = MARGIN, FUN = .marginal.summary,
                        log2scale = log2scale, elt = elt))
     if (log2scale) {
-      # Size Factor
-      logElt <- logt(assayDataElement2(x, elt), thresh = 0.5)
-      means <- apply(logElt, 3L - MARGIN, mean)
-      stats[,"SizeFactor"] <-
-        apply(logElt, MARGIN, function(y) exp(median(y - means)))
+      stats[,"SizeFactor"] <- 2^(stats[,"MeanLog2"] - mean(stats[,"MeanLog2"]))
     }
     stats
   }
