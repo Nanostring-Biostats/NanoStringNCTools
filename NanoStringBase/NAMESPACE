@@ -6,8 +6,8 @@ import(S4Vectors)
 importClassesFrom(Biobase, AnnotatedDataFrame, AssayData, ExpressionSet, MIAME,
                   Versions)
 importClassesFrom(IRanges, NumericList)
-importClassesFrom(methods, character, environment, formula, list, matrix,
-                  missing)
+importClassesFrom(methods, ANY, character, environment, formula, list, matrix,
+                  missing, "NULL")
 importMethodsFrom(Biobase, AnnotatedDataFrame, annotatedDataFrameFrom,
                   assayData, "assayData<-", esApply, exprs, fData, featureData,
                   fvarLabels, pData, preproc, "preproc<-", protocolData,
@@ -18,7 +18,7 @@ importFrom(Biobase, assayDataElement, assayDataElementNames, assayDataNew,
 importFrom(Biostrings, BStringSet, DNAStringSet)
 importFrom(IRanges, NumericList)
 importFrom(methods, as, callGeneric, callNextMethod, is, validObject)
-importFrom(stats, as.formula, median, medpolish, quantile)
+importFrom(stats, as.formula, median, quantile)
 importFrom(utils, read.csv, write.csv)
 
 ### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
