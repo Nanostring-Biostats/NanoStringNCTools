@@ -142,15 +142,22 @@ NanoStringRccSet(assayData,
 \section{Summarizing}{
   \describe{
     \item{}{
-      \code{summary(object, MARGIN = 2L, GROUP = NULL, elt = "exprs")}:
-      Marginal summaries (Geometric Mean with thresholding at 0.5, Robust
-      Regression Size Factor (see below), Mean of Log2 with thresholding
-      at 0.5, Standard Deviation of Log2 with thresholding at 0.5, Minimum,
-      First Quartile, Median, Third Quartile, and Maximum) of the \code{elt}
-      \code{\link[Biobase]{assayData}} matrix along either the feature
-      (\code{MARGIN = 1}) or sample (\code{MARGIN = 2}) dimension.
+      \code{summary(object, MARGIN = 2L, GROUP = NULL, log2scale = TRUE, elt = "exprs")}:
+      Marginal summaries of the \code{elt} \code{\link[Biobase]{assayData}}
+      matrix along either the feature (\code{MARGIN = 1}) or sample
+      (\code{MARGIN = 2}) dimension.
 
-      The Size Factor is calculated using three steps:
+      When \code{log2scale = FALSE}, the summary statistics are Mean, Standard
+      Deviation, Skewness, Excess Kurtosis, Minimum, First Quartile, Median,
+      Third Quartile, and Maximum.
+
+      When \code{log2scale = TRUE}, the summary statistics are Geometric Mean
+      with thresholding at 0.5, Robust Regression Size Factor (see below),
+      Mean of Log2 with thresholding at 0.5, Standard Deviation of Log2 with
+      thresholding at 0.5, Minimum, First Quartile, Median, Third Quartile,
+      and Maximum.
+
+      The Size Factor is calculated using five steps:
       \enumerate{
         \item Log transform element with thresholding at 0.5
         \item Calculate mean of log transformed values
@@ -238,10 +245,10 @@ NanoStringRccSet(assayData,
       \code{transform(`_data`, \ldots)}: Similar to the
       \code{\link[base]{transform}} generic in the \pkg{base} package, creates
       or modifies one or more \code{\link[Biobase]{assayData}} matrices based
-      upon \code{name = value} pairs in \code{\ldots}. The transformed matrices
-      created in \code{\ldots} are rounded to the nearest integer and the calls
-      are appended to the preprocessing list in \code{\link{experimentData}},
-      which can be extracted using the \code{\link{preproc}} method.
+      upon \code{name = value} pairs in \code{\ldots}. The expressions in
+      \code{\ldots} are appended to the preprocessing list in
+      \code{\link{experimentData}}, which can be extracted using the 
+      \code{\link{preproc}} method.
     }
   }
 }

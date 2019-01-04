@@ -54,7 +54,7 @@ test_NanoStringRccSet_utils_svarLabels <- function() {
 
 # Sumarizing
 test_NanoStringRccSet_utils_summary <- function() {
-  rcc2 <- transform(rcc, exprsp1 = exprs + 1L)
+  rcc2 <- transform(rcc, log2_exprs = log2t(exprs))
 
   # Marginal summaries by Feature
   checkEquals(cbind(GeomMean = c(2.519842100, 3.556893304, 4.932424149, 6.135792440),
@@ -67,16 +67,16 @@ test_NanoStringRccSet_utils_summary <- function() {
                     Q3 = 6:9,
                     Max = 8:11),
               summary(rcc2, 1L))
-  checkEquals(cbind(GeomMean = c(3.556893304, 4.932424149, 6.135792440, 7.268482371),
-                    SizeFactor = c(0.7809849842, 0.9371819811, 1.0933789779, 1.2495759748),
-                    MeanLog2 = c(1.830617699, 2.302296865, 2.617249680, 2.861654167),
-                    SDLog2 = c(1.6410806067, 1.1864916416, 0.9515847943, 0.8014868741),
-                    Min = structure(1:4, names = letters[1:4]),
-                    Q1 = 3:6,
-                    Median = 5:8,
-                    Q3 = 7:10,
-                    Max = 9:12),
-              summary(rcc2, 1L, elt = "exprsp1"))
+  checkEquals(cbind(Mean = c(1.333333333, 1.830617699, 2.302296865, 2.617249680),
+                    SD = c(2.0816659995, 1.6410806067, 1.1864916416, 0.9515847943),
+                    Skewness = c(-1.2933427807, -1.2264691300, -1.0112175576, -0.8631188095),
+                    Kurtosis = NA_real_,
+                    Min = structure(c(-1, 0, 1, 1.584962501), names = letters[1:4]),
+                    Q1 = c(0.5, 1.160964047, 1.792481250, 2.196158711),
+                    Median = c(2, 2.321928095, 2.584962501, 2.807354922),
+                    Q3 = c(2.5, 2.745926548, 2.953445298, 3.133393270),
+                    Max = c(3, 3.169925001, 3.321928095, 3.459431619)),
+              summary(rcc2, 1L, elt = "log2_exprs", log2scale = FALSE))
 
   # Marginal summaries by Sample
   checkEquals(cbind(GeomMean = c(1.316074013, 5.383563271, 9.433683366),
@@ -89,20 +89,20 @@ test_NanoStringRccSet_utils_summary <- function() {
                     Q3 = c(2.25, 6.25, 10.25),
                     Max = c(3, 7, 11)),
               summary(rcc2, 2L))
-  checkEquals(cbind(GeomMean = c(2.213363839, 6.402171746, 10.440086817),
-                    SizeFactor = c(0.4452563148, 1.1780374787, 1.9064736403),
-                    MeanLog2 = c(1.146240625, 2.678561379, 3.384061804),
-                    SDLog2 = c(0.8673015326, 0.2920380187, 0.1786587687),
-                    Min = structure(c(1, 5, 9), names = sampleNames(rcc)),
-                    Q1 = c(1.75, 5.75, 9.75),
-                    Median = c(2.5, 6.5, 10.5),
-                    Q3 = c(3.25, 7.25, 11.25),
-                    Max = c(4, 8, 12)),
-              summary(rcc2, 2L, elt = "exprsp1"))
+  checkEquals(cbind(Mean = c(0.3962406252, 2.4285613794, 3.2378211787),
+                    SD = c(1.1378458590, 0.3478416172, 0.1977826790),
+                    Skewness = c(-0.4002032906, -0.3444852394, -0.1969256558),
+                    Kurtosis = c(-1.6584093446, -0.9658168584, -1.1224275064),
+                    Min = structure(c(-1, 2, 3), names = sampleNames(rcc)),
+                    Q1 = c(-0.25, 2.241446071, 3.127443751),
+                    Median = c(0.5, 2.453445298, 3.245926548),
+                    Q3 = c(1.146240625, 2.640560606, 3.356303976),
+                    Max = c(1.584962501, 2.807354922, 3.459431619)),
+              summary(rcc2, 2L, elt = "log2_exprs", log2scale = FALSE))
 }
 
 test_NanoStringRccSet_utils_summary_GROUP <- function() {
-  rcc2 <- transform(rcc, exprsp1 = exprs + 1L)
+  rcc2 <- transform(rcc, log2_exprs = log2t(exprs))
 
   # Marginal summaries by Feature
   checkEquals(list(A =
@@ -127,59 +127,49 @@ test_NanoStringRccSet_utils_summary_GROUP <- function() {
                            Max = 8:11)),
               summary(rcc2, 1L, "Treatment"))
   checkEquals(list("1" =
-                     cbind(GeomMean = 1:4,
-                           SizeFactor = c(0.4518010018, 0.9036020036, 1.3554030054, 1.8072040072),
-                           MeanLog2 = c(0, 1, 1.584962501, 2),
-                           SDLog2 = NA_real_,
-                           Min = structure(1:4, names = letters[1:4]),
-                           Q1 = 1:4,
-                           Median = 1:4,
-                           Q3 = 1:4,
-                           Max = 1:4),
+                     cbind(Mean = c(-1, 0, 1, 1.584962501),
+                           SD = NA_real_,
+                           Skewness = NA_real_,
+                           Kurtosis = NA_real_,
+                           Min = structure(c(-1, 0, 1, 1.584962501), names = letters[1:4]),
+                           Q1 = c(-1, 0, 1, 1.584962501),
+                           Median = c(-1, 0, 1, 1.584962501),
+                           Q3 = c(-1, 0, 1, 1.584962501),
+                           Max = c(-1, 0, 1, 1.584962501)),
                    "2" =
-                     cbind(GeomMean = 5:8,
-                           SizeFactor = c(0.7809849842, 0.9371819811, 1.0933789779, 1.2495759748),
-                           MeanLog2 = c(2.321928095, 2.584962501, 2.807354922, 3),
-                           SDLog2 = NA_real_,
-                           Min = structure(5:8, names = letters[1:4]),
-                           Q1 = 5:8,
-                           Median = 5:8,
-                           Q3 = 5:8,
-                           Max = 5:8),
+                     cbind(Mean = c(2, 2.321928095, 2.584962501, 2.807354922),
+                           SD = NA_real_,
+                           Skewness = NA_real_,
+                           Kurtosis = NA_real_,
+                           Min = structure(c(2, 2.321928095, 2.584962501, 2.807354922), names = letters[1:4]),
+                           Q1 = c(2, 2.321928095, 2.584962501, 2.807354922),
+                           Median = c(2, 2.321928095, 2.584962501, 2.807354922),
+                           Q3 = c(2, 2.321928095, 2.584962501, 2.807354922),
+                           Max = c(2, 2.321928095, 2.584962501, 2.807354922)),
                    "3" =
-                     cbind(GeomMean = 9:12,
-                           SizeFactor = c(0.8620617968, 0.9578464409, 1.0536310849, 1.1494157290),
-                           MeanLog2 = c(3.169925001, 3.321928095, 3.459431619, 3.584962501),
-                           SDLog2 = NA_real_,
-                           Min = structure(9:12, names = letters[1:4]),
-                           Q1 = 9:12,
-                           Median = 9:12,
-                           Q3 = 9:12,
-                           Max = 9:12)),
-              summary(rcc2, 1L, "LaneID", elt = "exprsp1"))
+                     cbind(Mean = c(3, 3.169925001, 3.321928095, 3.459431619),
+                           SD = NA_real_,
+                           Skewness = NA_real_,
+                           Kurtosis = NA_real_,
+                           Min = structure(c(3, 3.169925001, 3.321928095, 3.459431619), names = letters[1:4]),
+                           Q1 = c(3, 3.169925001, 3.321928095, 3.459431619),
+                           Median = c(3, 3.169925001, 3.321928095, 3.459431619),
+                           Q3 = c(3, 3.169925001, 3.321928095, 3.459431619),
+                           Max = c(3, 3.169925001, 3.321928095, 3.459431619))),
+              summary(rcc2, 1L, "LaneID", elt = "log2_exprs", log2scale = FALSE))
 
   # Marginal summaries by Sample
   checkEquals(list(Endogenous =
-                     cbind(GeomMean = c(1, 5, 9),
-                           SizeFactor = c(0.2811442218, 1.4057211088, 2.5302979959),
-                           MeanLog2 = c(0, 2.321928095, 3.169925001),
+                     cbind(GeomMean = c(0.5, 4, 8),
+                           SizeFactor = c(0.1984251315, 1.5874010520, 3.1748021039),
+                           MeanLog2 = c(-1, 2, 3),
                            SDLog2 = NA_real_,
-                           Min = structure(c(1, 5, 9), names = sampleNames(rcc)),
-                           Q1 = c(1, 5, 9),
-                           Median = c(1, 5, 9),
-                           Q3 = c(1, 5, 9),
-                           Max = c(1, 5, 9)),
+                           Min = structure(c(0, 4, 8), names = sampleNames(rcc)),
+                           Q1 = c(0, 4, 8),
+                           Median = c(0, 4, 8),
+                           Q3 = c(0, 4, 8),
+                           Max = c(0, 4, 8)),
                    Housekeeping =
-                     cbind(GeomMean = c(4, 8, 12),
-                           SizeFactor = c(0.5503212081, 1.1006424163, 1.6509636244),
-                           MeanLog2 = c(2, 3, 3.584962501),
-                           SDLog2 = NA_real_,
-                           Min = structure(c(4, 8, 12), names = sampleNames(rcc)),
-                           Q1 = c(4, 8, 12),
-                           Median = c(4, 8, 12),
-                           Q3 = c(4, 8, 12),
-                           Max = c(4, 8, 12)),
-                   Negative =
                      cbind(GeomMean = c(3, 7, 11),
                            SizeFactor = c(0.4889344008, 1.1408469352, 1.7927594696),
                            MeanLog2 = c(1.584962501, 2.807354922, 3.459431619),
@@ -189,7 +179,7 @@ test_NanoStringRccSet_utils_summary_GROUP <- function() {
                            Median = c(3, 7, 11),
                            Q3 = c(3, 7, 11),
                            Max = c(3, 7, 11)),
-                   Positive =
+                   Negative =
                      cbind(GeomMean = c(2, 6, 10),
                            SizeFactor = c(0.405480133, 1.216440399, 2.027400665),
                            MeanLog2 = c(1, 2.584962501, 3.321928095),
@@ -198,8 +188,18 @@ test_NanoStringRccSet_utils_summary_GROUP <- function() {
                            Q1 = c(2, 6, 10),
                            Median = c(2, 6, 10),
                            Q3 = c(2, 6, 10),
-                           Max = c(2, 6, 10))),
-              summary(rcc2, 2L, "BarcodeClass", elt = "exprsp1"))
+                           Max = c(2, 6, 10)),
+                   Positive =
+                     cbind(GeomMean = c(1, 5, 9),
+                           SizeFactor = c(0.2811442218, 1.4057211088, 2.5302979959),
+                           MeanLog2 = c(0, 2.321928095, 3.169925001),
+                           SDLog2 = NA_real_,
+                           Min = structure(c(1, 5, 9), names = sampleNames(rcc)),
+                           Q1 = c(1, 5, 9),
+                           Median = c(1, 5, 9),
+                           Q3 = c(1, 5, 9),
+                           Max = c(1, 5, 9))),
+              summary(rcc2, 2L, "BarcodeClass"))
 }
 
 # Subsetting
@@ -280,9 +280,9 @@ test_NanoStringRccSet_utils_transform <- function() {
                     exprs_scaled = sweep(exprs, 2L, c(2, 1, 0.5), FUN = "*"),
                     exprs_thresh = pmax(exprs_scaled - 2L, 0L))
   checkTrue(validObject(rcc2))
-  checkEquals(round(sweep(exprs(rcc), 2L, c(2, 1, 0.5), FUN = "*")),
+  checkEquals(sweep(exprs(rcc), 2L, c(2, 1, 0.5), FUN = "*"),
               assayDataElement(rcc2, "exprs_scaled"))
-  checkEquals(pmax(round(sweep(exprs(rcc), 2L, c(2, 1, 0.5), FUN = "*")) - 2L, 0L),
+  checkEquals(pmax(sweep(exprs(rcc), 2L, c(2, 1, 0.5), FUN = "*") - 2L, 0L),
                  assayDataElement(rcc2, "exprs_thresh"))
   checkIdentical(list(exprs_scaled = substitute(sweep(exprs, 2L, c(2, 1, 0.5), FUN = "*")),
                       exprs_thresh = substitute(pmax(exprs_scaled - 2L, 0L))),

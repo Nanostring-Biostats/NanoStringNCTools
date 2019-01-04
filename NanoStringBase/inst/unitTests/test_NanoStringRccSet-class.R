@@ -219,8 +219,8 @@ test_NanoStringRccSet_exception_assayData <- function() {
                         annotation = rcc$annotation,
                         protocolData = rcc$protocolData)
   checkTrue(validObject(x))
-  assayDataElement(x, "bad") <- rcc$assayData - 1L
-  checkException(validObject(x))
+  assayDataElement(x, "shifted") <- rcc$assayData - 1L
+  checkTrue(validObject(x))
 }
 
 test_NanoStringRccSet_exception_duplicate_names <- function() {

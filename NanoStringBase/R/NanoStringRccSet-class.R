@@ -152,13 +152,8 @@ function(object)
   }
   if (prod(dim(object)) > 0L) {
     # assayData
-    for (elt in assayDataElementNames(object)) {
-      if (!.validNonNegativeInteger(assayDataElement(object, elt))) {
-        msg <-
-          c(msg,
-            sprintf("'assayData' element \"%s\" is not a non-negative integer matrix",
-                    elt))
-      }
+    if (!.validNonNegativeInteger(exprs(object))) {
+      msg <- c(msg, "'exprs' does not contain non-negative integer values")
     }
   }
   if (any(duplicated(c(fvarLabels(object), svarLabels(object),

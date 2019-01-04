@@ -78,36 +78,44 @@ setReplaceMethod("design", c("NanoStringRccSet", "NULL"),
 
 
 # Summarizing
-.marginal.summary <- function(x)
+.marginal.summary <- function(x, log2scale = TRUE)
 {
   # Handle missing data
   if (anyNA(x))
     x <- x[!is.na(x)]
 
   # Calculate statistics
-  log2X <- log2t(x, thresh = 0.5)
   quartiles <- quantile(x, probs = c(0, 0.25, 0.5, 0.75, 1))
   names(quartiles) <- c("Min", "Q1", "Median", "Q3", "Max")
-  c("GeomMean"   = geomMean(x),
-    "SizeFactor" = NA_real_,
-    "MeanLog2"   = mean(log2X),
-    "SDLog2"     = sd(log2X),
-    quartiles)
+  if (log2scale) {
+    log2X <- log2t(x, thresh = 0.5)
+    stats <- c("GeomMean"   = geomMean(x),
+               "SizeFactor" = NA_real_,
+               "MeanLog2"   = mean(log2X),
+               "SDLog2"     = sd(log2X))
+  } else {
+    stats <- c("Mean"       = mean(x),
+               "SD"         = sd(x),
+               "Skewness"   = skewness(x),
+               "Kurtosis"   = kurtosis(x))
+  }
+  c(stats, quartiles)
 }
 
 setMethod("summary", "NanoStringRccSet",
-function(object, MARGIN = 2L, GROUP = NULL, elt = "exprs", ...)
+function(object, MARGIN = 2L, GROUP = NULL, log2scale = TRUE, elt = "exprs", ...)
 {
   stopifnot(MARGIN %in% c(1L, 2L))
   FUN <- function(x) {
-    stats <- t(esApply(x, MARGIN = MARGIN, FUN = .marginal.summary, elt = elt))
-
-    # Size Factor
-    logElt <- logt(assayDataElement2(x, elt), thresh = 0.5)
-    means <- apply(logElt, 3L - MARGIN, mean)
-    stats[,"SizeFactor"] <-
-      apply(logElt, MARGIN, function(y) exp(median(y - means)))
-
+    stats <- t(esApply(x, MARGIN = MARGIN, FUN = .marginal.summary,
+                       log2scale = log2scale, elt = elt))
+    if (log2scale) {
+      # Size Factor
+      logElt <- logt(assayDataElement2(x, elt), thresh = 0.5)
+      means <- apply(logElt, 3L - MARGIN, mean)
+      stats[,"SizeFactor"] <-
+        apply(logElt, MARGIN, function(y) exp(median(y - means)))
+    }
     stats
   }
   if (is.null(GROUP)) {
@@ -275,12 +283,7 @@ function(`_data`, ...)
     aData <- copyEnv(aData)
   }
   for (elt in names(exprs)) {
-    value <- eval(exprs[[elt]], as.list(aData), parent.frame())
-    if (!is.integer(value)) {
-      value <- round(value)
-      storage.mode(value) <- "integer"
-    }
-    assign(elt, value, aData)
+    assign(elt, eval(exprs[[elt]], as.list(aData), parent.frame()), aData)
   }
   if (isLocked) {
     lockEnvironment(aData)
