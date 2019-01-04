@@ -59,4 +59,6 @@ export(readNanoStringRccSet,
        writeNanoStringRccSet,
        fThresh, fCenter, fScale,
        sThresh, sCenter, sScale,
+       fIntThresh, fIntCenter, fIntScale,
+       sIntThresh, sIntCenter, sIntScale,
        logt, log2t)

@@ -1,10 +1,18 @@
 \name{sThresh}
+
 \alias{fThresh}
 \alias{fCenter}
 \alias{fScale}
 \alias{sThresh}
 \alias{sCenter}
 \alias{sScale}
+
+\alias{fIntThresh}
+\alias{fIntCenter}
+\alias{fIntScale}
+\alias{sIntThresh}
+\alias{sIntCenter}
+\alias{sIntScale}
 
 \title{Convenience Functions for Assay Data Element Sweep Operations}
 
@@ -19,10 +27,21 @@ fThresh(x, STATS)
 fCenter(x, STATS)
 fScale(x, STATS)
 
+## Round results to integers
+fIntThresh(x, STATS)
+fIntCenter(x, STATS)
+fIntScale(x, STATS)
+
+
 # Loop over samples
 sThresh(x, STATS)
 sCenter(x, STATS)
 sScale(x, STATS)
+
+# Round results to integers
+sIntThresh(x, STATS)
+sIntCenter(x, STATS)
+sIntScale(x, STATS)
 }
 
 \arguments{
@@ -41,9 +60,15 @@ sScale(x, STATS)
     \item{\code{fThresh}:}{\code{sweep(x, 1L, STATS, FUN = "pmax")}}
     \item{\code{fCenter}:}{\code{sweep(x, 1L, STATS, FUN = "-")}}
     \item{\code{fScale}:}{\code{sweep(x, 1L, STATS, FUN = "/")}}
+    \item{\code{fIntThresh}:}{\code{round(sweep(x, 1L, STATS, FUN = "pmax"))}}
+    \item{\code{fIntCenter}:}{\code{round(sweep(x, 1L, STATS, FUN = "-"))}}
+    \item{\code{fIntScale}:}{\code{round(sweep(x, 1L, STATS, FUN = "/"))}}
     \item{\code{sThresh}:}{\code{sweep(x, 2L, STATS, FUN = "pmax")}}
     \item{\code{sCenter}:}{\code{sweep(x, 2L, STATS, FUN = "-")}}
     \item{\code{sScale}:}{\code{sweep(x, 2L, STATS, FUN = "/")}}
+    \item{\code{sIntThresh}:}{\code{round(sweep(x, 2L, STATS, FUN = "pmax"))}}
+    \item{\code{sIntCenter}:}{\code{round(sweep(x, 2L, STATS, FUN = "-"))}}
+    \item{\code{sIntScale}:}{\code{round(sweep(x, 2L, STATS, FUN = "/"))}}
   }
 }
 
@@ -67,6 +92,9 @@ identical(sCenter(stack.x, thresh),
 identical(sScale(stack.x, colMeans(stack.x) / mean(colMeans(stack.x))),
           sweep(stack.x, 2L, colMeans(stack.x) / mean(colMeans(stack.x)),
                 FUN = "/"))
+
+# Scale to common mean, rounded to the nearest integer
+sIntScale(stack.x, colMeans(stack.x) / mean(colMeans(stack.x)))
 }
 
 \keyword{array}
