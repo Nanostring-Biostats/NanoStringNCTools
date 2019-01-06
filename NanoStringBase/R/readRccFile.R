@@ -17,6 +17,14 @@ function(file)
 
   # Convert single row attributes to data.table objects
   for (tag in c("Header", "Sample_Attributes", "Lane_Attributes")) {
+    while (length(bad <- grep(",", output[[tag]], invert = TRUE)) > 0L) {
+      bad <- bad[1L]
+      if (bad == 1L)
+        stop(sprintf("%s section has malformed first line", tag))
+      fixed <- output[[tag]]
+      fixed[bad - 1L] <- sprintf("%s %s", fixed[bad - 1L], fixed[bad])
+      output[[tag]] <- fixed[- bad]
+    }
     output[[tag]] <- strsplit(output[[tag]], split = ",")
     output[[tag]] <-
       structure(lapply(output[[tag]],
