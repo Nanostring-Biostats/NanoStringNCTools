@@ -48,10 +48,15 @@ function(object, formula = design(object), ...)
   else
     data <- NULL
   if (nargs() > 2L) {
-    if (is.null(data))
+    if (is.null(data)) {
       data <- cbind.data.frame(...)
-    else
+      if (!identical(rownames(data), featureNames(object)) &&
+          !identical(rownames(data), sampleNames(object))) {
+        stop("data in \"...\" do not match 'featureNames' or 'sampleNames'")
+      }
+    } else {
       data <- cbind(data, ...)
+    }
   }
   model.frame(formula, data)
 })

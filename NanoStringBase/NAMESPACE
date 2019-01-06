@@ -10,8 +10,8 @@ importClassesFrom(methods, ANY, character, environment, formula, list, matrix,
                   missing, "NULL", ".NULL")
 importMethodsFrom(Biobase, AnnotatedDataFrame, annotatedDataFrameFrom,
                   assayData, "assayData<-", esApply, exprs, fData, featureData,
-                  fvarLabels, pData, preproc, "preproc<-", protocolData,
-                  sampleNames, varLabels)
+                  featureNames, fvarLabels, pData, preproc, "preproc<-",
+                  protocolData, sampleNames, varLabels)
 importMethodsFrom(methods, initialize, show)
 importFrom(Biobase, assayDataElement, assayDataElementNames, assayDataNew,
            copyEnv, MIAME, multiassign)

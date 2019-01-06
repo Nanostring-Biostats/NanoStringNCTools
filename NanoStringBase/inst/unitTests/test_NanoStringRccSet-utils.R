@@ -52,6 +52,40 @@ test_NanoStringRccSet_utils_svarLabels <- function() {
   checkIdentical(c(varLabels(rcc), varLabels(protocolData(rcc))), svarLabels(rcc))
 }
 
+test_NanoStringRccSet_utils_modelData <- function() {
+  # Exceptions
+  checkException(modelData(rcc))
+
+  rcc2 <- rcc
+  design(rcc2) <- ~ BarcodeClass + BindingDensity
+  checkException(modelData(rcc2))
+
+  checkException(modelData(rcc, ~ GNP, longley))
+
+  # Valid results
+  design(rcc2) <- ~ Treatment + Age
+  target <- pData(rcc2)
+  attr(target, "terms") <- terms(design(rcc2))
+  checkEquals(target, modelData(rcc2))
+
+  target <- fData(rcc)[,"BarcodeClass", drop = FALSE]
+  attr(target, "terms") <- terms(~ BarcodeClass)
+  checkEquals(target, modelData(rcc, ~ BarcodeClass))
+
+  target <- sData(rcc)[, c("Treatment", "LaneID")]
+  attr(target, "terms") <- terms(~ Treatment + LaneID)
+  checkEquals(target, modelData(rcc, ~ Treatment + LaneID))
+
+  target <- data.frame(V1 = 11:13, row.names = sampleNames(rcc))
+  attr(target, "terms") <- terms(~ V1)
+  checkEquals(target, modelData(rcc, ~ V1, target))
+
+  newdata <- data.frame(V1 = 11:13, row.names = sampleNames(rcc))
+  target <- cbind(pData(rcc)[, "Treatment", drop = FALSE], newdata)
+  attr(target, "terms") <- terms(~ Treatment + V1)
+  checkEquals(target, modelData(rcc, ~ Treatment + V1, newdata))
+}
+
 # Sumarizing
 test_NanoStringRccSet_utils_summary <- function() {
   rcc2 <- transform(rcc, log2_exprs = log2t(exprs))
