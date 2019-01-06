@@ -28,6 +28,34 @@ setGeneric("svarLabels", signature = "object",
 setMethod("svarLabels", "NanoStringRccSet",
           function(object) c(varLabels(object), varLabels(protocolData(object))))
 
+setGeneric("modelData", signature = "object",
+           function(object, formula = design(object), ...)
+             standardGeneric("modelData"))
+setMethod("modelData", "NanoStringRccSet",
+function(object, formula = design(object), ...)
+{
+  if (is.null(formula))
+    stop("\"formula\" argument is missing")
+  vars <- all.vars(formula)
+  hasFeatureVars <- any(vars %in% fvarLabels(object))
+  hasSampleVars  <- any(vars %in% svarLabels(object))
+  if (hasFeatureVars && hasSampleVars)
+    stop("\"formula\" argument cannot use both feature and sample variables")
+  if (hasFeatureVars)
+    data <- fData(object)
+  else if (hasSampleVars)
+    data <- sData(object)
+  else
+    data <- NULL
+  if (nargs() > 2L) {
+    if (is.null(data))
+      data <- cbind.data.frame(...)
+    else
+      data <- cbind(data, ...)
+  }
+  model.frame(formula, data)
+})
+
 assayDataElement2 <- function(object, elt)
 {
   if (elt %in% assayDataElementNames(object))

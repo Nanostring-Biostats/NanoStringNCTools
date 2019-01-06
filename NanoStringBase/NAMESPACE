@@ -18,7 +18,7 @@ importFrom(Biobase, assayDataElement, assayDataElementNames, assayDataNew,
 importFrom(Biostrings, BStringSet, DNAStringSet)
 importFrom(IRanges, NumericList)
 importFrom(methods, as, callGeneric, callNextMethod, is, validObject)
-importFrom(stats, as.formula, median, quantile)
+importFrom(stats, as.formula, model.frame, quantile)
 importFrom(utils, read.csv, write.csv)
 
 ### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -30,7 +30,7 @@ exportClasses(NanoStringRccSet)
 ### Export S4 generics
 
 export(NanoStringRccSet,
-       sData, svarLabels,
+       sData, svarLabels, modelData,
        signatureWeights, "signatureWeights<-",
        endogenousSubset, housekeepingSubset,
        negativeControlSubset, positiveControlSubset,
@@ -41,7 +41,7 @@ export(NanoStringRccSet,
 ### Export S4 methods
 
 exportMethods(NanoStringRccSet,
-              sData, svarLabels,
+              sData, svarLabels, modelData,
               signatureWeights, "signatureWeights<-",
               design, "design<-",
               summary, "[", subset,
