@@ -58,7 +58,31 @@ function(object, formula = design(object), ...)
       data <- cbind(data, ...)
     }
   }
-  data[, vars, drop = FALSE]
+  assayDataElts <- intersect(vars, assayDataElementNames(object))
+  if (length(assayDataElts) == 0L) {
+    data[, vars, drop = FALSE]
+  } else {
+    transpose <- identical(rownames(data), sampleNames(object))
+    stackedData <-
+      sapply(assayDataElts, function(elt) {
+        mat <- assayDataElement(object, elt)
+        if (transpose)
+          mat <- t(mat)
+        as.vector(mat)
+      })
+    if (transpose)
+      stackedData <-
+        data.frame(FeatureName = rep(featureNames(object), each = ncol(object)),
+                   SampleName = rep.int(sampleNames(object), nrow(object)),
+                   stackedData)
+    else
+      stackedData <-
+        data.frame(FeatureName = rep.int(featureNames(object), ncol(object)),
+                   SampleName = rep(sampleNames(object), each = nrow(object)),
+                   stackedData)
+    data <- data[, setdiff(vars, assayDataElts), drop = FALSE]
+    suppressWarnings(cbind(stackedData, data))
+  }
 })
 
 assayDataElement2 <- function(object, elt)
