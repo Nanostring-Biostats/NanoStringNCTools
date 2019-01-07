@@ -58,7 +58,7 @@ function(object, formula = design(object), ...)
       data <- cbind(data, ...)
     }
   }
-  model.frame(formula, data)
+  data[, vars, drop = FALSE]
 })
 
 assayDataElement2 <- function(object, elt)
