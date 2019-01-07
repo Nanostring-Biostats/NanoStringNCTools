@@ -91,7 +91,9 @@ function(file)
   output[["Code_Summary"]] <-
     read.csv(textConnection(output[["Code_Summary"]]),
              colClasses = c(BarcodeClass = "character", GeneName = "character",
-                            Accession = "character", Count = "integer"))
+                            Accession = "character", Count = "numeric"))
+  output[["Code_Summary"]][["Count"]] <-
+    as.integer(round(output[["Code_Summary"]][["Count"]]))
   rownames(output[["Code_Summary"]]) <-
     sprintf("%s_%s_%s",
             output[["Code_Summary"]][["BarcodeClass"]],
