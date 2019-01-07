@@ -40,3 +40,13 @@ fIntScale  <- function(x, STATS) .safe.as.integer(sweep(x, 1L, STATS, FUN = "/")
 sIntThresh <- function(x, STATS) .safe.as.integer(sweep(x, 2L, STATS, FUN = "pmax"))
 sIntCenter <- function(x, STATS) .safe.as.integer(sweep(x, 2L, STATS, FUN = "-"))
 sIntScale  <- function(x, STATS) .safe.as.integer(sweep(x, 2L, STATS, FUN = "/"))
+
+fAbove <- function(x, STATS) sweep(x, 1L, STATS, FUN = ">")
+fBelow <- function(x, STATS) sweep(x, 1L, STATS, FUN = "<")
+fAtLeast <- function(x, STATS) sweep(x, 1L, STATS, FUN = ">=")
+fAtMost  <- function(x, STATS) sweep(x, 1L, STATS, FUN = "<=")
+
+sAbove <- function(x, STATS) sweep(x, 2L, STATS, FUN = ">")
+sBelow <- function(x, STATS) sweep(x, 2L, STATS, FUN = "<")
+sAtLeast <- function(x, STATS) sweep(x, 2L, STATS, FUN = ">=")
+sAtMost  <- function(x, STATS) sweep(x, 2L, STATS, FUN = "<=")

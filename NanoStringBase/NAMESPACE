@@ -61,4 +61,6 @@ export(readNanoStringRccSet,
        sThresh, sCenter, sScale,
        fIntThresh, fIntCenter, fIntScale,
        sIntThresh, sIntCenter, sIntScale,
+       fAbove, fBelow, fAtLeast, fAtMost,
+       sAbove, sBelow, sAtLeast, sAtMost,
        logt, log2t)
