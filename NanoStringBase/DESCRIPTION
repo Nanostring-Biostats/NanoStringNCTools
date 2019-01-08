@@ -6,7 +6,7 @@ Encoding: UTF-8
 Author: Patrick Aboyoun
 Maintainer: Patrick Aboyoun <paboyoun@nanostring.com>
 Depends: R (>= 3.3.0), Biobase, Biostrings
-Imports: BiocGenerics, IRanges, methods, S4Vectors, stats, utils
+Imports: BiocGenerics, biovizBase, IRanges, methods, S4Vectors, stats, utils
 Suggests: RUnit
 License: Artistic-2.0
 Collate: RccMetadata.R

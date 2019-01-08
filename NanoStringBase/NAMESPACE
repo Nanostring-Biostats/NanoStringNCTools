@@ -12,6 +12,7 @@ importMethodsFrom(Biobase, AnnotatedDataFrame, annotatedDataFrameFrom,
                   assayData, "assayData<-", esApply, exprs, fData, featureData,
                   featureNames, fvarLabels, pData, preproc, "preproc<-",
                   protocolData, sampleNames, varLabels)
+importMethodsFrom(biovizBase, mold)
 importMethodsFrom(methods, initialize, show)
 importFrom(Biobase, assayDataElement, assayDataElementNames, assayDataNew,
            copyEnv, MIAME, multiassign)
@@ -30,7 +31,7 @@ exportClasses(NanoStringRccSet)
 ### Export S4 generics
 
 export(NanoStringRccSet,
-       sData, svarLabels, modelData,
+       sData, svarLabels,
        signatureWeights, "signatureWeights<-",
        endogenousSubset, housekeepingSubset,
        negativeControlSubset, positiveControlSubset,
@@ -41,7 +42,7 @@ export(NanoStringRccSet,
 ### Export S4 methods
 
 exportMethods(NanoStringRccSet,
-              sData, svarLabels, modelData,
+              sData, svarLabels, mold,
               signatureWeights, "signatureWeights<-",
               design, "design<-",
               summary, "[", subset,

@@ -28,60 +28,60 @@ setGeneric("svarLabels", signature = "object",
 setMethod("svarLabels", "NanoStringRccSet",
           function(object) c(varLabels(object), varLabels(protocolData(object))))
 
-setGeneric("modelData", signature = "object",
-           function(object, formula = design(object), ...)
-             standardGeneric("modelData"))
-setMethod("modelData", "NanoStringRccSet",
-function(object, formula = design(object), ...)
+setMethod("mold", "NanoStringRccSet",
+function(data, formula = design(data), ...)
 {
   if (is.null(formula))
     stop("\"formula\" argument is missing")
   vars <- all.vars(formula)
-  hasFeatureVars <- any(vars %in% fvarLabels(object))
-  hasSampleVars  <- any(vars %in% svarLabels(object))
+  hasFeatureVars <- any(vars %in% fvarLabels(data))
+  hasSampleVars  <- any(vars %in% svarLabels(data))
   if (hasFeatureVars && hasSampleVars)
     stop("\"formula\" argument cannot use both feature and sample variables")
   if (hasFeatureVars)
-    data <- fData(object)
+    df <- fData(data)
   else if (hasSampleVars)
-    data <- sData(object)
+    df <- sData(data)
   else
-    data <- NULL
+    df <- NULL
   if (nargs() > 2L) {
-    if (is.null(data)) {
-      data <- cbind.data.frame(...)
-      if (!identical(rownames(data), featureNames(object)) &&
-          !identical(rownames(data), sampleNames(object))) {
-        stop("data in \"...\" do not match 'featureNames' or 'sampleNames'")
+    if (is.null(df)) {
+      df <- cbind.data.frame(...)
+      if (!identical(rownames(df), featureNames(data)) &&
+          !identical(rownames(df), sampleNames(data))) {
+        stop("'rownames' in \"...\" do not match 'featureNames' or 'sampleNames'")
       }
     } else {
-      data <- cbind(data, ...)
+      df <- cbind(df, ...)
     }
   }
-  assayDataElts <- intersect(vars, assayDataElementNames(object))
+  assayDataElts <- intersect(vars, assayDataElementNames(data))
   if (length(assayDataElts) == 0L) {
-    data[, vars, drop = FALSE]
+    df[, vars, drop = FALSE]
   } else {
-    transpose <- identical(rownames(data), sampleNames(object))
+    df <- df[, setdiff(vars, assayDataElts), drop = FALSE]
+    transpose <- identical(rownames(df), sampleNames(data))
     stackedData <-
       sapply(assayDataElts, function(elt) {
-        mat <- assayDataElement(object, elt)
+        mat <- assayDataElement(data, elt)
         if (transpose)
           mat <- t(mat)
         as.vector(mat)
       })
-    if (transpose)
+    if (transpose) {
       stackedData <-
-        data.frame(FeatureName = rep(featureNames(object), each = ncol(object)),
-                   SampleName = rep.int(sampleNames(object), nrow(object)),
+        data.frame(FeatureName = rep(featureNames(data), each = ncol(data)),
+                   SampleName = rep.int(sampleNames(data), nrow(data)),
                    stackedData)
-    else
+      df <- df[stackedData[["SampleName"]], , drop = FALSE]
+    } else {
       stackedData <-
-        data.frame(FeatureName = rep.int(featureNames(object), ncol(object)),
-                   SampleName = rep(sampleNames(object), each = nrow(object)),
+        data.frame(FeatureName = rep.int(featureNames(data), ncol(data)),
+                   SampleName = rep(sampleNames(data), each = nrow(data)),
                    stackedData)
-    data <- data[, setdiff(vars, assayDataElts), drop = FALSE]
-    suppressWarnings(cbind(stackedData, data))
+      df <- df[stackedData[["FeatureName"]], , drop = FALSE]
+    }
+    cbind(stackedData, df)
   }
 })
 

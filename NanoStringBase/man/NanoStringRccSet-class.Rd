@@ -19,8 +19,7 @@
 \alias{sData,NanoStringRccSet-method}
 \alias{svarLabels}
 \alias{svarLabels,NanoStringRccSet-method}
-\alias{modelData}
-\alias{modelData,NanoStringRccSet-method}
+\alias{mold,NanoStringRccSet-method}
 \alias{signatureWeights}
 \alias{signatureWeights,NanoStringRccSet-method}
 \alias{signatureWeights<-}
@@ -36,7 +35,7 @@
 \alias{summary,NanoStringRccSet-method}
 
 % subsetting
-\alias{[,NanoStringRccSet-method}
+\alias{[,NanoStringRccSet,ANY,ANY,ANY-method}
 \alias{subset,NanoStringRccSet-method}
 \alias{endogenousSubset}
 \alias{endogenousSubset,NanoStringRccSet-method}
@@ -121,9 +120,10 @@ NanoStringRccSet(assayData,
       \code{c(varLabels(object), varLabels(protocolData(object)))}
     }
     \item{}{
-      \code{modelData(object, formula = design(object), \ldots)}: extracts
-      the data columns specified in \code{formula}. Supplemental data can
-      be specified with \code{\ldots}.
+      \code{mold(data, formula = design(data), \ldots)}: mold \code{data}
+      into a \code{data.frame} for modeling and visualization using the
+      \code{formula} argument. Supplemental data can be specified with
+      \code{\ldots}.
     }
     \item{}{
       \code{signatureWeights(object)}: extracts the list of gene signature
@@ -296,7 +296,7 @@ svarLabels(solidTumor)
 # Set experimental design
 design(solidTumor) <- ~ BRAFGenotype + Treatment
 design(solidTumor)
-modelData(solidTumor)
+mold(solidTumor)
 
 
 # Marginal summarizing of NanoStringRccSet assayData matrices
