@@ -120,10 +120,10 @@ NanoStringRccSet(assayData,
       \code{c(varLabels(object), varLabels(protocolData(object)))}
     }
     \item{}{
-      \code{mold(data, formula = design(data), \ldots)}: mold \code{data}
-      into a \code{data.frame} for modeling and visualization using the
-      \code{formula} argument. Supplemental data can be specified with
-      \code{\ldots}.
+      \code{mold(data, formula = design(data), extradata = NULL, \ldots)}: mold
+      \code{data} into a \code{data.frame} for modeling and visualization using
+      the \code{formula} argument. Supplemental data can be specified using the
+      \code{extradata} argument.
     }
     \item{}{
       \code{signatureWeights(object)}: extracts the list of gene signature

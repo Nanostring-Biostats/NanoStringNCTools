@@ -29,7 +29,7 @@ setMethod("svarLabels", "NanoStringRccSet",
           function(object) c(varLabels(object), varLabels(protocolData(object))))
 
 setMethod("mold", "NanoStringRccSet",
-function(data, formula = design(data), ...)
+function(data, formula = design(data), extradata = NULL, ...)
 {
   if (is.null(formula))
     stop("\"formula\" argument is missing")
@@ -44,16 +44,15 @@ function(data, formula = design(data), ...)
     df <- sData(data)
   else
     df <- NULL
-  if (nargs() > 2L) {
-    if (is.null(df)) {
-      df <- cbind.data.frame(...)
-      if (!identical(rownames(df), featureNames(data)) &&
-          !identical(rownames(df), sampleNames(data))) {
-        stop("'rownames' in \"...\" do not match 'featureNames' or 'sampleNames'")
-      }
-    } else {
-      df <- cbind(df, ...)
+  if (!is.null(extradata)) {
+    if (!identical(rownames(extradata), featureNames(data)) &&
+        !identical(rownames(extradata), sampleNames(data))) {
+      stop("\"extradata\" 'rownames' do not match 'featureNames' or 'sampleNames'")
     }
+    if (is.null(df))
+      df <- extradata
+    else
+      df <- cbind(df, extradata)
   }
   assayDataElts <- intersect(vars, assayDataElementNames(data))
   if (length(assayDataElts) == 0L) {
