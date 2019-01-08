@@ -19,7 +19,6 @@
 \alias{sData,NanoStringRccSet-method}
 \alias{svarLabels}
 \alias{svarLabels,NanoStringRccSet-method}
-\alias{mold,NanoStringRccSet-method}
 \alias{signatureWeights}
 \alias{signatureWeights,NanoStringRccSet-method}
 \alias{signatureWeights<-}
@@ -62,6 +61,10 @@
 
 % evaluating
 \alias{with,NanoStringRccSet-method}
+
+% plotting
+\alias{mold,NanoStringRccSet-method}
+\alias{ggplot.NanoStringRccSet}
 
 \title{Class to Contain NanoString Expression Level Assays}
 
@@ -118,12 +121,6 @@ NanoStringRccSet(assayData,
     \item{}{
       \code{svarLabels(object)}: extracts the sample data column names,
       \code{c(varLabels(object), varLabels(protocolData(object)))}
-    }
-    \item{}{
-      \code{mold(data, formula = design(data), extradata = NULL, \ldots)}: mold
-      \code{data} into a \code{data.frame} for modeling and visualization using
-      the \code{formula} argument. Supplemental data can be specified using the
-      \code{extradata} argument.
     }
     \item{}{
       \code{signatureWeights(object)}: extracts the list of gene signature
@@ -259,6 +256,23 @@ NanoStringRccSet(assayData,
       \code{\link[Biobase]{featureData}}, \code{\link[Biobase]{phenoData}},
       and \code{\link[Biobase]{protocolData}};
       \code{c(as.list(assayData(data)), fData(data), sData(data))}.
+    }
+  }
+}
+
+\section{Plotting}{
+  \describe{
+    \item{}{
+      \code{mold(data, mapping = design(data), extradata = NULL, \ldots)}: mold
+      argument \code{data} into a data.frame object for modeling and
+      visualization using the \code{mapping} argument. Supplemental data can be
+      specified using the \code{extradata} argument.
+    }
+    \item{}{
+      \code{ggplot(data, mapping = aes(), extradata = NULL, \ldots, environment = parent.frame())}:
+      the \code{NanoStringRccSet} method for \code{ggplot} returns a
+      \code{\link[ggbio]{ggbio}} object that stores the original \code{data}
+      object.
     }
   }
 }

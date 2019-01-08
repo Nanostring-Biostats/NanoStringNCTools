@@ -17,6 +17,8 @@ importMethodsFrom(methods, initialize, show)
 importFrom(Biobase, assayDataElement, assayDataElementNames, assayDataNew,
            copyEnv, MIAME, multiassign)
 importFrom(Biostrings, BStringSet, DNAStringSet)
+importFrom(ggbio, GGbio)
+importFrom(ggplot2, aes, ggplot)
 importFrom(IRanges, NumericList)
 importFrom(methods, as, callGeneric, callNextMethod, is, validObject)
 importFrom(stats, as.formula, quantile)
@@ -65,3 +67,8 @@ export(readNanoStringRccSet,
        fAbove, fBelow, fAtLeast, fAtMost,
        sAbove, sBelow, sAtLeast, sAtMost,
        logt, log2t)
+
+### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+### Export S3 methods
+
+S3method(ggplot, NanoStringRccSet)

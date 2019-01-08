@@ -28,62 +28,6 @@ setGeneric("svarLabels", signature = "object",
 setMethod("svarLabels", "NanoStringRccSet",
           function(object) c(varLabels(object), varLabels(protocolData(object))))
 
-setMethod("mold", "NanoStringRccSet",
-function(data, formula = design(data), extradata = NULL, ...)
-{
-  if (is.null(formula))
-    stop("\"formula\" argument is missing")
-  vars <- all.vars(formula)
-  hasFeatureVars <- any(vars %in% fvarLabels(data))
-  hasSampleVars  <- any(vars %in% svarLabels(data))
-  if (hasFeatureVars && hasSampleVars)
-    stop("\"formula\" argument cannot use both feature and sample variables")
-  if (hasFeatureVars)
-    df <- fData(data)
-  else if (hasSampleVars)
-    df <- sData(data)
-  else
-    df <- NULL
-  if (!is.null(extradata)) {
-    if (!identical(rownames(extradata), featureNames(data)) &&
-        !identical(rownames(extradata), sampleNames(data))) {
-      stop("\"extradata\" 'rownames' do not match 'featureNames' or 'sampleNames'")
-    }
-    if (is.null(df))
-      df <- extradata
-    else
-      df <- cbind(df, extradata)
-  }
-  assayDataElts <- intersect(vars, assayDataElementNames(data))
-  if (length(assayDataElts) == 0L) {
-    df[, vars, drop = FALSE]
-  } else {
-    df <- df[, setdiff(vars, assayDataElts), drop = FALSE]
-    transpose <- identical(rownames(df), sampleNames(data))
-    stackedData <-
-      sapply(assayDataElts, function(elt) {
-        mat <- assayDataElement(data, elt)
-        if (transpose)
-          mat <- t(mat)
-        as.vector(mat)
-      })
-    if (transpose) {
-      stackedData <-
-        data.frame(FeatureName = rep(featureNames(data), each = ncol(data)),
-                   SampleName = rep.int(sampleNames(data), nrow(data)),
-                   stackedData)
-      df <- df[stackedData[["SampleName"]], , drop = FALSE]
-    } else {
-      stackedData <-
-        data.frame(FeatureName = rep.int(featureNames(data), ncol(data)),
-                   SampleName = rep(sampleNames(data), each = nrow(data)),
-                   stackedData)
-      df <- df[stackedData[["FeatureName"]], , drop = FALSE]
-    }
-    cbind(stackedData, df)
-  }
-})
-
 assayDataElement2 <- function(object, elt)
 {
   if (elt %in% assayDataElementNames(object))
@@ -350,3 +294,78 @@ function(`_data`, ...)
 setMethod("with", "NanoStringRccSet",
           function(data, expr, ...)
             eval(substitute(expr), as(data, "list"), parent.frame()))
+
+
+# Plotting
+setMethod("mold", "NanoStringRccSet",
+function(data, mapping = design(data), extradata = NULL, ...)
+{
+  if (is.null(mapping))
+    stop("\"mapping\" argument is missing")
+  if (inherits(mapping, "formula"))
+    vars <- all.vars(mapping)
+  else if (is.list(mapping))
+    vars <- unique(unlist(lapply(mapping, all.vars), use.names = FALSE))
+  hasFeatureVars <- any(vars %in% fvarLabels(data))
+  hasSampleVars  <- any(vars %in% svarLabels(data))
+  if (hasFeatureVars && hasSampleVars)
+    stop("\"mapping\" argument cannot use both feature and sample variables")
+  if (hasFeatureVars)
+    df <- fData(data)
+  else if (hasSampleVars)
+    df <- sData(data)
+  else
+    df <- NULL
+  if (!is.null(extradata)) {
+    if (!identical(rownames(extradata), featureNames(data)) &&
+        !identical(rownames(extradata), sampleNames(data))) {
+      stop("\"extradata\" 'rownames' do not match 'featureNames' or 'sampleNames'")
+    }
+    if (is.null(df))
+      df <- extradata
+    else
+      df <- cbind(df, extradata)
+  }
+  assayDataElts <- intersect(vars, assayDataElementNames(data))
+  if (length(assayDataElts) == 0L) {
+    df[, vars, drop = FALSE]
+  } else {
+    df <- df[, setdiff(vars, assayDataElts), drop = FALSE]
+    transpose <- identical(rownames(df), sampleNames(data))
+    stackedData <-
+      sapply(assayDataElts, function(elt) {
+        mat <- assayDataElement(data, elt)
+        if (transpose)
+          mat <- t(mat)
+        as.vector(mat)
+      })
+    if (transpose) {
+      stackedData <-
+        data.frame(FeatureName = rep(featureNames(data), each = ncol(data)),
+                   SampleName = rep.int(sampleNames(data), nrow(data)),
+                   stackedData)
+      df <- df[stackedData[["SampleName"]], , drop = FALSE]
+    } else {
+      stackedData <-
+        data.frame(FeatureName = rep.int(featureNames(data), ncol(data)),
+                   SampleName = rep(sampleNames(data), each = nrow(data)),
+                   stackedData)
+      df <- df[stackedData[["FeatureName"]], , drop = FALSE]
+    }
+    cbind(stackedData, df)
+  }
+})
+
+ggplot.NanoStringRccSet <-
+function(data, mapping = aes(), extradata = NULL, ...,
+         environment = parent.frame())
+{
+  if (length(mapping) == 0L) {
+    mapping <- design(data)
+    if (is.null(mapping))
+      stop("\"mapping\" argument is missing")
+  }
+  df <- mold(data, mapping = mapping, extradata = extradata)
+  g <- ggplot(df, mapping, ..., environment = environment)
+  GGbio(g, data = data)
+}

@@ -5,9 +5,9 @@ Version: 0.0.1
 Encoding: UTF-8
 Author: Patrick Aboyoun
 Maintainer: Patrick Aboyoun <paboyoun@nanostring.com>
-Depends: R (>= 3.3.0), Biobase
-Imports: BiocGenerics, Biostrings, biovizBase, IRanges, methods, S4Vectors,
-         stats, utils
+Depends: R (>= 3.3.0), Biobase, ggplot2
+Imports: BiocGenerics, Biostrings, biovizBase, ggbio, IRanges, methods,
+         S4Vectors, stats, utils
 Suggests: RUnit
 License: Artistic-2.0
 Collate: RccMetadata.R
