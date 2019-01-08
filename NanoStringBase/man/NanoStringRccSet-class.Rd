@@ -271,8 +271,7 @@ NanoStringRccSet(assayData,
     \item{}{
       \code{ggplot(data, mapping = aes(), extradata = NULL, \ldots, environment = parent.frame())}:
       the \code{NanoStringRccSet} method for \code{ggplot} returns a
-      \code{\link[ggbio]{ggbio}} object that stores the original \code{data}
-      object.
+      \code{\link{ggbio}} object that stores the original \code{data} object.
     }
   }
 }
