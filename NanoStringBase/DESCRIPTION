@@ -12,6 +12,7 @@ Suggests: RUnit
 License: Artistic-2.0
 Collate: RccMetadata.R
          NanoStringRccSet-class.R
+         NanoStringRccSet-subset.R
          NanoStringRccSet-utils.R
          NanoStringRccSet-plot.R
          readRccFile.R
