@@ -46,7 +46,7 @@ export(NanoStringRccSet,
 ### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ### Export S4 methods
 
-exportMethods(NanoStringRccSet,
+exportMethods(NanoStringRccSet, show,
               sData, svarLabels, mold,
               signatureWeights, "signatureWeights<-",
               design, "design<-",
