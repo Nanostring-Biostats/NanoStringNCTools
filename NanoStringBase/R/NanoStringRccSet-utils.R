@@ -6,51 +6,6 @@ setAs("NanoStringRccSet", "list",
 setMethod("as.list", "NanoStringRccSet", function(x, ...) as(x, "list"))
 
 
-# Summarizing
-.marginal.summary <- function(x, log2scale = TRUE)
-{
-  # Handle missing data
-  if (anyNA(x))
-    x <- x[!is.na(x)]
-
-  # Calculate statistics
-  quartiles <- quantile(x, probs = c(0, 0.25, 0.5, 0.75, 1))
-  names(quartiles) <- c("Min", "Q1", "Median", "Q3", "Max")
-  if (log2scale) {
-    log2X <- log2t(x, thresh = 0.5)
-    stats <- c("GeomMean"   = geomMean(x),
-               "SizeFactor" = NA_real_,
-               "MeanLog2"   = mean(log2X),
-               "SDLog2"     = sd(log2X))
-  } else {
-    stats <- c("Mean"       = mean(x),
-               "SD"         = sd(x),
-               "Skewness"   = skewness(x),
-               "Kurtosis"   = kurtosis(x))
-  }
-  c(stats, quartiles)
-}
-
-setMethod("summary", "NanoStringRccSet",
-function(object, MARGIN = 2L, GROUP = NULL, log2scale = TRUE, elt = "exprs", ...)
-{
-  stopifnot(MARGIN %in% c(1L, 2L))
-  FUN <- function(x) {
-    stats <- t(esApply(x, MARGIN = MARGIN, FUN = .marginal.summary,
-                       log2scale = log2scale, elt = elt))
-    if (log2scale) {
-      stats[,"SizeFactor"] <- 2^(stats[,"MeanLog2"] - mean(stats[,"MeanLog2"]))
-    }
-    stats
-  }
-  if (is.null(GROUP)) {
-    FUN(object)
-  } else {
-    esBy(object, GROUP = GROUP, FUN = FUN, simplify = FALSE)
-  }
-})
-
-
 # Looping
 setMethod("esApply", "NanoStringRccSet",
 function(X, MARGIN, FUN, ..., elt = "exprs")

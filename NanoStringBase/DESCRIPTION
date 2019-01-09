@@ -16,11 +16,11 @@ Collate: RccMetadata.R
          NanoStringRccSet-accessors.R
          NanoStringRccSet-subset.R
          NanoStringRccSet-utils.R
+         NanoStringRccSet-summary.R
          NanoStringRccSet-plot.R
          readRccFile.R
          readRlfFile.R
          readNanoStringRccSet.R
          writeNanoStringRccSet.R
          Math.R
-         Summary.R
          zzz.R
