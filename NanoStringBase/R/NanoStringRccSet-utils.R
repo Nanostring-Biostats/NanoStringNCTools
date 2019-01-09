@@ -343,15 +343,18 @@ function(data, mapping = design(data), extradata = NULL, ...)
       stackedData <-
         data.frame(FeatureName = rep(featureNames(data), each = ncol(data)),
                    SampleName = rep.int(sampleNames(data), nrow(data)),
-                   stackedData)
+                   stackedData,
+                   stringsAsFactors = FALSE)
       df <- df[stackedData[["SampleName"]], , drop = FALSE]
     } else {
       stackedData <-
         data.frame(FeatureName = rep.int(featureNames(data), ncol(data)),
                    SampleName = rep(sampleNames(data), each = nrow(data)),
-                   stackedData)
+                   stackedData,
+                   stringsAsFactors = FALSE)
       df <- df[stackedData[["FeatureName"]], , drop = FALSE]
     }
+    rownames(df) <- NULL
     cbind(stackedData, df)
   }
 })
@@ -375,7 +378,8 @@ function(object, ...,
          type = c("MeanLog2-SDLog2-Features",
                   "MeanLog2-SDLog2-Samples",
                   "Mean-SD-Features",
-                  "Mean-SD-Samples"),
+                  "Mean-SD-Samples",
+                  "PositiveControl-LogLog"),
          elt = "exprs",
          tooltip_digits = 6L)
 {
@@ -405,7 +409,19 @@ function(object, ...,
                      colnames(df)[1L], signif(df[,1L], tooltip_digits),
                      colnames(df)[2L], signif(df[,2L], tooltip_digits))
            p <- ggplot(df, mapping, ...) + geom_point_interactive(...)
+         },
+         "PositiveControl-LogLog" = {
+           formula <- eval(parse(text = sprintf("%s ~ ControlConc", elt)))
+           df <- mold(positiveControlSubset(object), formula)
+           df <- df[, c("SampleName", "ControlConc", elt)]
+           df[["ToolTip"]] <-
+             sprintf("%s<br>ControlConc = %s<br>%s = %s", df[["SampleName"]],
+                     df[["ControlConc"]], elt, df[[elt]])
+           mapping <-
+             aes_string(x = "ControlConc", y = elt, tooltip = "ToolTip")
+           p <- ggplot(df, mapping, ...) + geom_point_interactive(...) +
+             scale_x_continuous(trans = "log2") +
+             scale_y_continuous(trans = "log2")
          })
-
   p
 })

@@ -20,7 +20,8 @@ importFrom(Biobase, assayDataElement, assayDataElementNames, assayDataNew,
 importFrom(Biostrings, BStringSet, DNAStringSet)
 importFrom(ggbio, GGbio)
 importFrom(ggiraph, geom_point_interactive)
-importFrom(ggplot2, aes, aes_string, ggplot)
+importFrom(ggplot2, aes, aes_string, ggplot, scale_x_continuous,
+           scale_y_continuous)
 importFrom(IRanges, NumericList)
 importFrom(methods, as, callGeneric, callNextMethod, is, validObject)
 importFrom(stats, as.formula, quantile)
