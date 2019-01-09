@@ -13,6 +13,7 @@ License: Artistic-2.0
 Collate: RccMetadata.R
          NanoStringRccSet-class.R
          NanoStringRccSet-validity.R
+         NanoStringRccSet-accessors.R
          NanoStringRccSet-subset.R
          NanoStringRccSet-utils.R
          NanoStringRccSet-plot.R
