@@ -43,45 +43,61 @@ rcc <-
        signatureWeights =
          list(x = c(a = 1), y = c(b = 1/3, d = 2/3), z = c(a = 2, c = 4)))
 
-# Looping
-test_NanoStringRccSet_utils_esApply <- function() {
-  rcc2 <- transform(rcc, log1p_exprs = log1p(exprs))
+# Subsetting
+test_NanoStringRccSet_subset <- function() {
+  checkEquals(rcc[featureData(rcc)[["BarcodeClass"]] == "Endogenous", ],
+              subset(rcc, BarcodeClass == "Endogenous"))
+  checkEquals(IRanges::NumericList(x = c(a = 1), compress = FALSE),
+              signatureWeights(subset(rcc, BarcodeClass == "Endogenous")))
 
-  checkIdentical(apply(exprs(rcc2), 1L, mean), esApply(rcc2, 1L, mean))
-  checkIdentical(apply(exprs(rcc2), 2L, mean), esApply(rcc2, 2L, mean))
+  checkEquals(rcc[, phenoData(rcc)[["Treatment"]] == "A"],
+              subset(rcc, select = Treatment == "A"))
+  checkEquals(signatureWeights(rcc),
+              signatureWeights(subset(rcc, select = Treatment == "A")))
 
-  checkIdentical(apply(assayDataElement(rcc2, "log1p_exprs"), 1L, mean),
-                 esApply(rcc2, 1L, mean, elt = "log1p_exprs"))
-  checkIdentical(apply(assayDataElement(rcc2, "log1p_exprs"), 2L, mean),
-                 esApply(rcc2, 2L, mean, elt = "log1p_exprs"))
+  checkEquals(rcc[featureData(rcc)[["BarcodeClass"]] == "Endogenous",
+                  phenoData(rcc)[["Treatment"]] == "A"],
+              subset(rcc, BarcodeClass == "Endogenous", Treatment == "A"))
+  checkEquals(IRanges::NumericList(x = c(a = 1), compress = FALSE),
+              signatureWeights(subset(rcc, BarcodeClass == "Endogenous",
+                                      Treatment == "A")))
 }
 
-# Transforming
-test_NanoStringRccSet_utils_transform <- function() {
-  rcc2 <- transform(rcc,
-                    exprs_scaled = sweep(exprs, 2L, c(2, 1, 0.5), FUN = "*"),
-                    exprs_thresh = pmax(exprs_scaled - 2L, 0L))
-  checkTrue(validObject(rcc2))
-  checkEquals(sweep(exprs(rcc), 2L, c(2, 1, 0.5), FUN = "*"),
-              assayDataElement(rcc2, "exprs_scaled"))
-  checkEquals(pmax(sweep(exprs(rcc), 2L, c(2, 1, 0.5), FUN = "*") - 2L, 0L),
-                 assayDataElement(rcc2, "exprs_thresh"))
-  checkIdentical(list(exprs_scaled = substitute(sweep(exprs, 2L, c(2, 1, 0.5), FUN = "*")),
-                      exprs_thresh = substitute(pmax(exprs_scaled - 2L, 0L))),
-                 preproc(rcc2))
+test_NanoStringRccSet_endogenousSubset <- function() {
+  checkEquals(rcc[featureData(rcc)[["BarcodeClass"]] == "Endogenous", ],
+              endogenousSubset(rcc))
 }
 
-# Evaluating
-test_NanoStringRccSet_utils_with <- function() {
-  nms <- sort(c(assayDataElementNames(rcc), fvarLabels(rcc), svarLabels(rcc),
-                "signatureWeights", "design"))
-  checkIdentical(nms, with(rcc, ls()))
+test_NanoStringRccSet_housekeepingSubset <- function() {
+  checkEquals(rcc[featureData(rcc)[["BarcodeClass"]] == "Housekeeping", ],
+              housekeepingSubset(rcc))
+}
 
-  # calculate means across Features
-  checkIdentical(esApply(rcc, 1L, mean),
-                 with(rcc, apply(exprs, 1L, mean)))
+test_NanoStringRccSet_negativeControlSubset <- function() {
+  checkEquals(rcc[featureData(rcc)[["BarcodeClass"]] == "Negative", ],
+              negativeControlSubset(rcc))
+}
 
-  # calculate means across Samples
-  checkIdentical(esApply(rcc, 2L, mean),
-                 with(rcc, apply(exprs, 2L, mean)))
+test_NanoStringRccSet_positiveControlSubset <- function() {
+  checkEquals(rcc[featureData(rcc)[["BarcodeClass"]] == "Positive", ],
+              positiveControlSubset(rcc))
+
+  checkEquals(rcc[featureData(rcc)[["BarcodeClass"]] == "Positive" &
+                  featureData(rcc)[["ControlConc"]] >= 0.5, ],
+              positiveControlSubset(rcc, subset = ControlConc >= 0.5))
+}
+
+test_NanoStringRccSet_controlSubset <- function() {
+  checkEquals(rcc[featureData(rcc)[["IsControl"]], ], controlSubset(rcc))
+}
+
+test_NanoStringRccSet_nonControlSubset <- function() {
+  checkEquals(rcc[!featureData(rcc)[["IsControl"]], ], nonControlSubset(rcc))
+}
+
+test_NanoStringRccSet_signatureSubset <- function() {
+  x <- rcc
+  signatureWeights(x) <- signatureWeights(x)[1L]
+  checkEquals(rcc[featureData(rcc)[["GeneName"]] == "a", ],
+              signatureSubset(x))
 }

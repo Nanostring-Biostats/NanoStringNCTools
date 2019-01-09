@@ -43,45 +43,32 @@ rcc <-
        signatureWeights =
          list(x = c(a = 1), y = c(b = 1/3, d = 2/3), z = c(a = 2, c = 4)))
 
-# Looping
-test_NanoStringRccSet_utils_esApply <- function() {
-  rcc2 <- transform(rcc, log1p_exprs = log1p(exprs))
+# Molding data for plotting
+test_NanoStringRccSet_mold <- function() {
+  # Exceptions
+  checkException(mold(rcc))
 
-  checkIdentical(apply(exprs(rcc2), 1L, mean), esApply(rcc2, 1L, mean))
-  checkIdentical(apply(exprs(rcc2), 2L, mean), esApply(rcc2, 2L, mean))
+  rcc2 <- rcc
+  design(rcc2) <- ~ BarcodeClass + BindingDensity
+  checkException(mold(rcc2))
 
-  checkIdentical(apply(assayDataElement(rcc2, "log1p_exprs"), 1L, mean),
-                 esApply(rcc2, 1L, mean, elt = "log1p_exprs"))
-  checkIdentical(apply(assayDataElement(rcc2, "log1p_exprs"), 2L, mean),
-                 esApply(rcc2, 2L, mean, elt = "log1p_exprs"))
-}
+  checkException(mold(rcc, ~ GNP, longley))
 
-# Transforming
-test_NanoStringRccSet_utils_transform <- function() {
-  rcc2 <- transform(rcc,
-                    exprs_scaled = sweep(exprs, 2L, c(2, 1, 0.5), FUN = "*"),
-                    exprs_thresh = pmax(exprs_scaled - 2L, 0L))
-  checkTrue(validObject(rcc2))
-  checkEquals(sweep(exprs(rcc), 2L, c(2, 1, 0.5), FUN = "*"),
-              assayDataElement(rcc2, "exprs_scaled"))
-  checkEquals(pmax(sweep(exprs(rcc), 2L, c(2, 1, 0.5), FUN = "*") - 2L, 0L),
-                 assayDataElement(rcc2, "exprs_thresh"))
-  checkIdentical(list(exprs_scaled = substitute(sweep(exprs, 2L, c(2, 1, 0.5), FUN = "*")),
-                      exprs_thresh = substitute(pmax(exprs_scaled - 2L, 0L))),
-                 preproc(rcc2))
-}
+  # Valid results
+  design(rcc2) <- ~ Treatment + Age
+  target <- pData(rcc2)
+  checkIdentical(target, mold(rcc2))
 
-# Evaluating
-test_NanoStringRccSet_utils_with <- function() {
-  nms <- sort(c(assayDataElementNames(rcc), fvarLabels(rcc), svarLabels(rcc),
-                "signatureWeights", "design"))
-  checkIdentical(nms, with(rcc, ls()))
+  target <- fData(rcc)[,"BarcodeClass", drop = FALSE]
+  checkIdentical(target, mold(rcc, ~ BarcodeClass))
 
-  # calculate means across Features
-  checkIdentical(esApply(rcc, 1L, mean),
-                 with(rcc, apply(exprs, 1L, mean)))
+  target <- sData(rcc)[, c("Treatment", "LaneID")]
+  checkIdentical(target, mold(rcc, ~ Treatment + LaneID))
 
-  # calculate means across Samples
-  checkIdentical(esApply(rcc, 2L, mean),
-                 with(rcc, apply(exprs, 2L, mean)))
+  target <- data.frame(V1 = 11:13, row.names = sampleNames(rcc))
+  checkIdentical(target, mold(rcc, ~ V1, target))
+
+  newdata <- data.frame(V1 = 11:13, row.names = sampleNames(rcc))
+  target <- cbind(pData(rcc)[, "Treatment", drop = FALSE], newdata)
+  checkIdentical(target, mold(rcc, ~ Treatment + V1, newdata))
 }
