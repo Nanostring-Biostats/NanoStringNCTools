@@ -372,24 +372,24 @@ function(data, mapping = aes(), extradata = NULL, ...,
 
 setMethod("autoplot", "NanoStringRccSet",
 function(object, ...,
-         type = c("meanlog2-sdlog2-features",
-                  "meanlog2-sdlog2-samples",
-                  "mean-sd-features",
-                  "mean-sd-samples"),
+         type = c("MeanLog2-SDLog2-Features",
+                  "MeanLog2-SDLog2-Samples",
+                  "Mean-SD-Features",
+                  "Mean-SD-Samples"),
          elt = "exprs",
          tooltip_digits = 6L)
 {
   args <- list(...)
   type <- match.arg(type)
   switch(type,
-         "meanlog2-sdlog2-features" =,
-         "meanlog2-sdlog2-samples" =,
-         "mean-sd-features" =,
-         "mean-sd-samples" = {
-           MARGIN <- 1L + (type %in% c("meanlog2-sdlog2-samples",
-                                       "mean-sd-samples"))
-           log2scale <- type %in% c("meanlog2-sdlog2-features",
-                                    "meanlog2-sdlog2-samples")
+         "MeanLog2-SDLog2-Features" =,
+         "MeanLog2-SDLog2-Samples" =,
+         "Mean-SD-Features" =,
+         "Mean-SD-Samples" = {
+           MARGIN <- 1L + (type %in% c("MeanLog2-SDLog2-Samples",
+                                       "Mean-SD-Samples"))
+           log2scale <- type %in% c("MeanLog2-SDLog2-Features",
+                                    "MeanLog2-SDLog2-Samples")
            stats <- summary(object, MARGIN = MARGIN, log2scale = log2scale,
                             elt = elt)
            if (log2scale) {
