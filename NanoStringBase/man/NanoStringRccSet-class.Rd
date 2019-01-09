@@ -65,6 +65,7 @@
 % plotting
 \alias{mold,NanoStringRccSet-method}
 \alias{ggplot.NanoStringRccSet}
+\alias{autoplot,NanoStringRccSet-method}
 
 \title{Class to Contain NanoString Expression Level Assays}
 

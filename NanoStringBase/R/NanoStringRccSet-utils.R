@@ -369,3 +369,43 @@ function(data, mapping = aes(), extradata = NULL, ...,
   g <- ggplot(df, mapping, ..., environment = environment)
   GGbio(g, data = data)
 }
+
+setMethod("autoplot", "NanoStringRccSet",
+function(object, ...,
+         type = c("meanlog2-sdlog2-features",
+                  "meanlog2-sdlog2-samples",
+                  "mean-sd-features",
+                  "mean-sd-samples"),
+         elt = "exprs",
+         tooltip_digits = 6L)
+{
+  args <- list(...)
+  type <- match.arg(type)
+  switch(type,
+         "meanlog2-sdlog2-features" =,
+         "meanlog2-sdlog2-samples" =,
+         "mean-sd-features" =,
+         "mean-sd-samples" = {
+           MARGIN <- 1L + (type %in% c("meanlog2-sdlog2-samples",
+                                       "mean-sd-samples"))
+           log2scale <- type %in% c("meanlog2-sdlog2-features",
+                                    "meanlog2-sdlog2-samples")
+           stats <- summary(object, MARGIN = MARGIN, log2scale = log2scale,
+                            elt = elt)
+           if (log2scale) {
+             mapping <- aes_string(x = "MeanLog2", y = "SDLog2",
+                                   tooltip = "ToolTip")
+             df <- as.data.frame(stats[,c("MeanLog2", "SDLog2")])
+           } else {
+             mapping <- aes_string(x = "Mean", y = "SD", tooltip = "ToolTip")
+             df <- as.data.frame(stats[,c("Mean", "SD")])
+           }
+           df[["ToolTip"]] <-
+             sprintf("%s<br>%s = %s<br>%s = %s", rownames(df),
+                     colnames(df)[1L], signif(df[,1L], tooltip_digits),
+                     colnames(df)[2L], signif(df[,2L], tooltip_digits))
+           p <- ggplot(df, mapping, ...) + geom_point_interactive(...)
+         })
+
+  p
+})
