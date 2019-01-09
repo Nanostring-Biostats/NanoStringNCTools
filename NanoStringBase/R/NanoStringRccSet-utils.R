@@ -1,14 +1,3 @@
-# Show
-setMethod("show", signature = "NanoStringRccSet",
-          function(object) {
-            callNextMethod(object)
-            cat("signatureWeights: ")
-            if (length(signatureWeights(object)) == 0L)
-              cat("none\n")
-            else
-              cat("use 'signatureWeights(object)'")
-          })
-
 # Coercion
 setAs("NanoStringRccSet", "list",
       function(from) c(as.list(assayData(from)), fData(from), sData(from),
