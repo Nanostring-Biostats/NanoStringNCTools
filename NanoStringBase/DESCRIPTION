@@ -17,6 +17,7 @@ Collate: RccMetadata.R
          NanoStringRccSet-subset.R
          NanoStringRccSet-utils.R
          NanoStringRccSet-summary.R
+         NanoStringRccSet-normalize.R
          NanoStringRccSet-plot.R
          readRccFile.R
          readRlfFile.R

@@ -62,6 +62,9 @@
 % evaluating
 \alias{with,NanoStringRccSet-method}
 
+% normalization
+\alias{normalize,NanoStringRccSet-method}
+
 % plotting
 \alias{mold,NanoStringRccSet-method}
 \alias{ggplot.NanoStringRccSet}
@@ -261,6 +264,14 @@ NanoStringRccSet(assayData,
   }
 }
 
+\section{Normalizing}{
+  \describe{
+    \item{}{
+      \code{normalize(object, type, fromElt = "exprs", toElt = "exprs_norm", \ldots)}:
+    }
+  }
+}
+
 \section{Plotting}{
   \describe{
     \item{}{
@@ -273,6 +284,9 @@ NanoStringRccSet(assayData,
       \code{ggplot(data, mapping = aes(), extradata = NULL, \ldots, environment = parent.frame())}:
       the \code{NanoStringRccSet} method for \code{ggplot} returns a
       \code{\link{ggbio}} object that stores the original \code{data} object.
+    }
+    \item{}{
+      \code{autoplot(object, \ldots, type, elt = "exprs", tooltip_digits = 6L)}:
     }
   }
 }
