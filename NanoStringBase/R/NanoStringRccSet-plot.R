@@ -36,7 +36,7 @@ function(data, mapping = design(data), extradata = NULL, ...)
     transpose <- identical(rownames(df), sampleNames(data))
     stackedData <-
       sapply(assayDataElts, function(elt) {
-        mat <- assayDataElement(data, elt)
+        mat <- assayDataElement2(data, elt)
         if (transpose)
           mat <- t(mat)
         as.vector(mat)
