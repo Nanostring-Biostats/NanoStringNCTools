@@ -42,15 +42,19 @@ function(X, GROUP, FUN, ..., simplify = TRUE)
                          names = protocolNames))
   GROUP <- choices[match.arg(GROUP, names(choices))]
   values <- do.call(GROUP, list(X))[[names(GROUP)]]
-  keys <- sort(unique(values))
+  keys <- sort(unique(values), na.last = TRUE)
   names(keys) <- as.character(keys)
-  if (GROUP == "featureData") {
-    sapply(keys, function(k) FUN(X[values == k, ], ...),
-           simplify = simplify)
-  } else {
-    sapply(keys, function(k) FUN(X[, values == k], ...),
-           simplify = simplify)
-  }
+  sapply(keys,
+         function(k) {
+           if (is.na(k))
+             keep <- which(is.na(values))
+           else
+             keep <- which(!is.na(values) & values == k)
+           if (GROUP == "featureData")
+             FUN(X[keep, ], ...)
+           else
+             FUN(X[, keep], ...)
+         }, simplify = simplify)
 })
 
 
