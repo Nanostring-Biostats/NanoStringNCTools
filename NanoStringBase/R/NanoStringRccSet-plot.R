@@ -28,9 +28,14 @@ function(data, mapping = design(data), extradata = NULL, ...)
       df <- cbind(df, extradata)
   }
   assayDataElts <- intersect(vars, assayDataElementNames(data))
-  if (length(assayDataElts) == 0L) {
-    df[, vars, drop = FALSE]
-  } else {
+  if (length(assayDataElts) > 0L) {
+    vars <- setdiff(vars, c(assayDataElts, "FeatureName", "SampleName"))
+  }
+  if (!all(vars %in% colnames(df))) {
+    stop("\"mapping\" contains undefined variables")
+  }
+  df <- df[, vars, drop = FALSE]
+  if (length(assayDataElts) > 0L) {
     df <- df[, setdiff(vars, c(assayDataElts, "FeatureName", "SampleName")),
              drop = FALSE]
     transpose <- identical(rownames(df), sampleNames(data))
