@@ -31,7 +31,8 @@ function(data, mapping = design(data), extradata = NULL, ...)
   if (length(assayDataElts) == 0L) {
     df[, vars, drop = FALSE]
   } else {
-    df <- df[, setdiff(vars, assayDataElts), drop = FALSE]
+    df <- df[, setdiff(vars, c(assayDataElts, "FeatureName", "SampleName")),
+             drop = FALSE]
     transpose <- identical(rownames(df), sampleNames(data))
     stackedData <-
       sapply(assayDataElts, function(elt) {
@@ -71,6 +72,16 @@ function(data, mapping = aes(), extradata = NULL, ...,
       stop("\"mapping\" argument is missing")
   }
   df <- mold(data, mapping = mapping, extradata = extradata)
+  if ("tooltip" %in% names(mapping)) {
+    tooltip <- as.character(mapping[["tooltip"]][[2L]])
+    for (j in c("x", "y")) {
+      if (j %in% names(mapping)) {
+        mf <- model.frame(mapping[[j]], df)
+        df[[tooltip]] <-
+          sprintf("%s<br>%s = %s", df[[tooltip]], names(mf)[1L], mf[[1L]])
+      }
+    }
+  }
   g <- ggplot(df, mapping, ..., environment = environment)
   GGbio(g, data = data)
 }
@@ -114,15 +125,10 @@ function(object, ...,
            p <- ggplot(df, mapping, ...) + geom_point_interactive(...)
          },
          "PositiveControl-LogLog" = {
-           formula <- eval(parse(text = sprintf("%s ~ ControlConc", elt)))
-           df <- mold(positiveControlSubset(object), formula)
-           df <- df[, c("SampleName", "ControlConc", elt)]
-           df[["ToolTip"]] <-
-             sprintf("%s<br>ControlConc = %s<br>%s = %s", df[["SampleName"]],
-                     df[["ControlConc"]], elt, df[[elt]])
            mapping <-
-             aes_string(x = "ControlConc", y = elt, tooltip = "ToolTip")
-           p <- ggplot(df, mapping, ...) + geom_point_interactive(...) +
+             aes_string(x = "ControlConc", y = elt, tooltip = "SampleName")
+           p <- ggplot(positiveControlSubset(object), mapping) +
+             geom_point_interactive(...) +
              scale_x_continuous(trans = "log2") +
              scale_y_continuous(trans = "log2")
          })

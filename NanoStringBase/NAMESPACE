@@ -24,7 +24,7 @@ importFrom(ggplot2, aes, aes_string, ggplot, scale_x_continuous,
            scale_y_continuous)
 importFrom(IRanges, NumericList)
 importFrom(methods, as, callGeneric, callNextMethod, is, validObject)
-importFrom(stats, as.formula, quantile)
+importFrom(stats, as.formula, model.frame, quantile)
 importFrom(utils, read.csv, write.csv)
 
 ### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
