@@ -62,8 +62,9 @@ function(data, mapping = design(data), extradata = NULL, ...)
       df <- df[stackedData[["FeatureName"]], , drop = FALSE]
     }
     rownames(df) <- NULL
-    cbind(stackedData, df)
+    df <- cbind(stackedData, df)
   }
+  df
 })
 
 
