@@ -286,7 +286,7 @@ NanoStringRccSet(assayData,
       \code{\link{ggbio}} object that stores the original \code{data} object.
     }
     \item{}{
-      \code{autoplot(object, \ldots, type, elt = "exprs", tooltip_digits = 6L)}:
+      \code{autoplot(object, \ldots, type, log2scale = TRUE, elt = "exprs", tooltip_digits = 6L)}:
     }
   }
 }
