@@ -95,7 +95,9 @@ function(data, mapping = aes(), extradata = NULL, ...,
 
 setMethod("autoplot", "NanoStringRccSet",
 function(object, ...,
-         type = c("heatmap",
+         type = c("bindingDensity-mean",
+                  "bindingDensity-sd",
+                  "heatmap",
                   "mean-sd-features",
                   "mean-sd-samples",
                   "positiveControl"),
@@ -106,6 +108,24 @@ function(object, ...,
   args <- list(...)
   type <- match.arg(type)
   switch(type,
+         "bindingDensity-mean" =,
+         "bindingDensity-sd" = {
+           stats <- summary(object, log2scale = log2scale, elt = elt)
+           df <- pData(protocolData(object))[, "BindingDensity", drop = FALSE]
+           if (log2scale) {
+             y <- if (type == "bindingDensity-mean") "MeanLog2" else "SDLog2"
+           } else {
+             y <- if (type == "bindingDensity-mean") "Mean" else "SD"
+           }
+           mapping <- aes_string(x = "BindingDensity", y = y,
+                                 tooltip = "ToolTip")
+           df <- cbind(df, stats[, y, drop = FALSE])
+           df[["ToolTip"]] <-
+             sprintf("%s<br>%s = %s<br>%s = %s", rownames(df),
+                     colnames(df)[1L], signif(df[,1L], tooltip_digits),
+                     colnames(df)[2L], signif(df[,2L], tooltip_digits))
+           p <- ggplot(df, mapping, ...) + geom_point_interactive(...)
+         },
          "heatmap" = {
            object <- endogenousSubset(object)
            scores <- assayDataElement2(object, elt)
