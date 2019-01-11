@@ -69,25 +69,30 @@ test_NanoStringRccSet_mold_exception_ambiguous_summaries <- function() {
 }
 
 test_NanoStringRccSet_mold_featureData <- function() {
-  target <- fData(rcc)[,"BarcodeClass", drop = FALSE]
+  target <- data.frame(FeatureName = featureNames(rcc),
+                       BarcodeClass = c("Endogenous", "Positive", "Negative", "Housekeeping"),
+                       stringsAsFactors = FALSE)
   checkIdentical(target, mold(rcc, ~ BarcodeClass))
 
   target <-
-    data.frame(MeanLog2 = c(1.333333333, 1.830617699, 2.302296865, 2.617249680),
+    data.frame(FeatureName = featureNames(rcc),
+               MeanLog2 = c(1.333333333, 1.830617699, 2.302296865, 2.617249680),
                BarcodeClass = c("Endogenous", "Positive", "Negative", "Housekeeping"),
-               row.names = letters[1:4], stringsAsFactors = FALSE)
+               stringsAsFactors = FALSE)
   checkEquals(target, mold(rcc, ~ MeanLog2 + BarcodeClass))
 
   target <-
-    data.frame(Mean = 4:7,
+    data.frame(FeatureName = featureNames(rcc),
+               Mean = 4:7,
                BarcodeClass = c("Endogenous", "Positive", "Negative", "Housekeeping"),
-               row.names = letters[1:4], stringsAsFactors = FALSE)
+               stringsAsFactors = FALSE)
   checkEquals(target, mold(rcc, ~ Mean + BarcodeClass))
 
   target <-
-    data.frame(Median = 4:7,
+    data.frame(FeatureName = featureNames(rcc),
+               Median = 4:7,
                BarcodeClass = c("Endogenous", "Positive", "Negative", "Housekeeping"),
-               row.names = letters[1:4], stringsAsFactors = FALSE)
+               stringsAsFactors = FALSE)
   checkEquals(target, mold(rcc, ~ Median + BarcodeClass))
 }
 
@@ -95,34 +100,49 @@ test_NanoStringRccSet_mold_sampleData <- function() {
   rcc2 <- rcc
 
   design(rcc2) <- ~ Treatment + Age
-  target <- pData(rcc2)
+  target <- data.frame(SampleName = sampleNames(rcc2),
+                       Treatment = c("A", "A", "B"),
+                       Age = c(58L, 42L, 27L),
+                       stringsAsFactors = FALSE)
   checkIdentical(target, mold(rcc2))
 
-  target <- sData(rcc)[, c("Treatment", "LaneID")]
+  target <- data.frame(SampleName = sampleNames(rcc2),
+                       Treatment = c("A", "A", "B"),
+                       LaneID = 1:3,
+                       stringsAsFactors = FALSE)
   checkIdentical(target, mold(rcc, ~ Treatment + LaneID))
 
   target <-
-    data.frame(MeanLog2 = c(0.3962406252, 2.4285613794, 3.2378211787),
+    data.frame(SampleName = sampleNames(rcc),
+               MeanLog2 = c(0.3962406252, 2.4285613794, 3.2378211787),
                Treatment = c("A", "A", "B"),
-               row.names = sampleNames(rcc), stringsAsFactors = FALSE)
+               stringsAsFactors = FALSE)
   checkEquals(target, mold(rcc, ~ MeanLog2 + Treatment))
 
   target <-
-    data.frame(Mean = c(1.5, 5.5, 9.5),
+    data.frame(SampleName = sampleNames(rcc),
+               Mean = c(1.5, 5.5, 9.5),
                Treatment = c("A", "A", "B"),
-               row.names = sampleNames(rcc), stringsAsFactors = FALSE)
+               stringsAsFactors = FALSE)
   checkEquals(target, mold(rcc, ~ Mean + Treatment))
 
   target <-
-    data.frame(Median = c(1.5, 5.5, 9.5),
+    data.frame(SampleName = sampleNames(rcc),
+               Median = c(1.5, 5.5, 9.5),
                Treatment = c("A", "A", "B"),
-               row.names = sampleNames(rcc), stringsAsFactors = FALSE)
+               stringsAsFactors = FALSE)
   checkEquals(target, mold(rcc, ~ Median + Treatment))
 
-  target <- data.frame(V1 = 11:13, row.names = sampleNames(rcc))
-  checkIdentical(target, mold(rcc, ~ V1, target))
+  newdata <- data.frame(V1 = 11:13, row.names = sampleNames(rcc))
+  target <- data.frame(SampleName = sampleNames(rcc),
+                       V1 = 11:13,
+                       stringsAsFactors = FALSE)
+  checkIdentical(target, mold(rcc, ~ V1, newdata))
 
   newdata <- data.frame(V1 = 11:13, row.names = sampleNames(rcc))
-  target <- cbind(pData(rcc)[, "Treatment", drop = FALSE], newdata)
+  target <- data.frame(SampleName = sampleNames(rcc),
+                       Treatment = c("A", "A", "B"),
+                       V1 = 11:13,
+                       stringsAsFactors = FALSE)
   checkIdentical(target, mold(rcc, ~ Treatment + V1, newdata))
 }

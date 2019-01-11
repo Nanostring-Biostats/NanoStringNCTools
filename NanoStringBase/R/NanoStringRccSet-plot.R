@@ -68,7 +68,16 @@ function(data, mapping = design(data), extradata = NULL, elt = "exprs", ...)
   df <- df[, vars, drop = FALSE]
 
   # Get assay data elements if needed
-  if (length(assayDataElts) > 0L) {
+  if (length(assayDataElts) == 0L) {
+    if (identical(rownames(df), featureNames(data))) {
+      df <- cbind(data.frame(FeatureName = rownames(df),
+                             stringsAsFactors = FALSE), df)
+    } else {
+      df <- cbind(data.frame(SampleName = rownames(df),
+                             stringsAsFactors = FALSE), df)
+    }
+    rownames(df) <- NULL
+  } else {
     df <- df[, setdiff(vars, c(assayDataElts, "FeatureName", "SampleName")),
              drop = FALSE]
     transpose <- identical(rownames(df), sampleNames(data))
