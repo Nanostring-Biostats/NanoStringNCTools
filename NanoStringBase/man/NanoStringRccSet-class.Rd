@@ -275,8 +275,8 @@ NanoStringRccSet(assayData,
 \section{Plotting}{
   \describe{
     \item{}{
-      \code{mold(data, mapping = design(data), extradata = NULL, \ldots)}: mold
-      argument \code{data} into a data.frame object for modeling and
+      \code{mold(data, mapping = design(data), extradata = NULL, elt = "exprs", \ldots)}:
+      mold argument \code{data} into a data.frame object for modeling and
       visualization using the \code{mapping} argument. Supplemental data can be
       specified using the \code{extradata} argument.
     }
