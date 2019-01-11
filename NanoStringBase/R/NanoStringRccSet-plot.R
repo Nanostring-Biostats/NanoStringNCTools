@@ -95,10 +95,10 @@ function(data, mapping = aes(), extradata = NULL, ...,
 
 setMethod("autoplot", "NanoStringRccSet",
 function(object, ...,
-         type = c("mean-sd-features",
+         type = c("heatmap",
+                  "mean-sd-features",
                   "mean-sd-samples",
-                  "positiveControl",
-                  "heatmap"),
+                  "positiveControl"),
          log2scale = TRUE,
          elt = "exprs",
          tooltip_digits = 6L)
@@ -106,6 +106,25 @@ function(object, ...,
   args <- list(...)
   type <- match.arg(type)
   switch(type,
+         "heatmap" = {
+           object <- endogenousSubset(object)
+           scores <- assayDataElement2(object, elt)
+           rownames(scores) <- featureData(object)[["GeneName"]]
+           colnames(scores) <- protocolData(object)[["SampleID"]]
+           if (log2scale)
+             scores <- log2t(scores)
+           scores <- t(pmin(pmax(scale(scores), -3), 3))
+           p <- pheatmap(scores,
+                         color =
+                           colorRampPalette(c("darkblue",
+                                              rev(brewer.pal(n = 7L,
+                                                             name = "RdYlBu")),
+                                              "darkred"))(100),
+                         show_rownames = (nrow(scores) <= 64L),
+                         show_colnames = (ncol(scores) <= 64L),
+                         silent = TRUE,
+                         ...)
+         },
          "mean-sd-features" =,
          "mean-sd-samples" = {
            MARGIN <- 1L + (type == "mean-sd-samples")
@@ -132,25 +151,6 @@ function(object, ...,
              geom_point_interactive(...) +
              scale_x_continuous(trans = "log2") +
              scale_y_continuous(trans = "log2")
-         },
-         "heatmap" = {
-           object <- endogenousSubset(object)
-           scores <- assayDataElement2(object, elt)
-           rownames(scores) <- featureData(object)[["GeneName"]]
-           colnames(scores) <- protocolData(object)[["SampleID"]]
-           if (log2scale)
-             scores <- log2t(scores)
-           scores <- t(pmin(pmax(scale(scores), -3), 3))
-           p <- pheatmap(scores,
-                         color =
-                           colorRampPalette(c("darkblue",
-                                              rev(brewer.pal(n = 7L,
-                                                             name = "RdYlBu")),
-                                              "darkred"))(100),
-                         show_rownames = (nrow(scores) <= 64L),
-                         show_colnames = (ncol(scores) <= 64L),
-                         silent = TRUE,
-                         ...)
          })
   p
 })
