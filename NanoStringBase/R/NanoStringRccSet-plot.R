@@ -97,6 +97,8 @@ setMethod("autoplot", "NanoStringRccSet",
 function(object, ...,
          type = c("bindingDensity-mean",
                   "bindingDensity-sd",
+                  "fov-mean",
+                  "fov-sd",
                   "heatmap",
                   "mean-sd-features",
                   "mean-sd-samples",
@@ -125,6 +127,26 @@ function(object, ...,
                      colnames(df)[1L], signif(df[,1L], tooltip_digits),
                      colnames(df)[2L], signif(df[,2L], tooltip_digits))
            p <- ggplot(df, mapping, ...) + geom_point_interactive(...)
+         },
+         "fov-mean" =,
+         "fov-sd" = {
+           stats <- summary(object, log2scale = log2scale, elt = elt)
+           df <- pData(protocolData(object))[, c("FovCounted", "FovCount")]
+           df <- data.frame(FovCounted = df[["FovCounted"]] / df[["FovCount"]],
+                            row.names = rownames(df))
+           if (log2scale) {
+             y <- if (type == "fov-mean") "MeanLog2" else "SDLog2"
+           } else {
+             y <- if (type == "fov-mean") "Mean" else "SD"
+           }
+           mapping <- aes_string(x = "FovCounted", y = y, tooltip = "ToolTip")
+           df <- cbind(df, stats[, y, drop = FALSE])
+           df[["ToolTip"]] <-
+             sprintf("%s<br>%s = %s<br>%s = %s", rownames(df),
+                     colnames(df)[1L], signif(df[,1L], tooltip_digits),
+                     colnames(df)[2L], signif(df[,2L], tooltip_digits))
+           p <- ggplot(df, mapping, ...) + geom_point_interactive(...) +
+             scale_x_continuous(name = "FOV Counted", labels = percent)
          },
          "heatmap" = {
            object <- endogenousSubset(object)
