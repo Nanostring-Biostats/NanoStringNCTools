@@ -1,13 +1,3 @@
-setGeneric("sData", signature = "object",
-           function(object) standardGeneric("sData"))
-setMethod("sData", "NanoStringRccSet",
-          function(object) cbind(pData(object), pData(protocolData(object))))
-
-setGeneric("svarLabels", signature = "object",
-           function(object) standardGeneric("svarLabels"))
-setMethod("svarLabels", "NanoStringRccSet",
-          function(object) c(varLabels(object), varLabels(protocolData(object))))
-
 assayDataElement2 <- function(object, elt)
 {
   if (elt %in% assayDataElementNames(object))
@@ -16,6 +6,19 @@ assayDataElement2 <- function(object, elt)
     stop("'elt' not present in assayData(object)")
 }
 
+# sData Accessor
+setGeneric("sData", signature = "object",
+           function(object) standardGeneric("sData"))
+setMethod("sData", "NanoStringRccSet",
+          function(object) cbind(pData(object), pData(protocolData(object))))
+
+# svarLabels Accessor
+setGeneric("svarLabels", signature = "object",
+           function(object) standardGeneric("svarLabels"))
+setMethod("svarLabels", "NanoStringRccSet",
+          function(object) c(varLabels(object), varLabels(protocolData(object))))
+
+# signatureWeights Accessor and Replacer
 setGeneric("signatureWeights", signature = "object",
            function(object) standardGeneric("signatureWeights"))
 setMethod("signatureWeights", "NanoStringRccSet",
@@ -39,6 +42,7 @@ setReplaceMethod("signatureWeights", c("NanoStringRccSet", "NULL"),
                    object
                  })
 
+# design Accessor and Replacer
 setMethod("design", "NanoStringRccSet", function(object) object@design)
 setReplaceMethod("design", c("NanoStringRccSet", "formula"),
                  function(object, value) {
