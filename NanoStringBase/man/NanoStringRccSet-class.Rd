@@ -281,12 +281,12 @@ NanoStringRccSet(assayData,
       specified using the \code{extradata} argument.
     }
     \item{}{
-      \code{ggplot(data, mapping = aes(), extradata = NULL, \ldots, environment = parent.frame())}:
+      \code{ggplot(data, mapping = aes(), \ldots, extradata = NULL, tooltip_digits = 4L, environment = parent.frame())}:
       the \code{NanoStringRccSet} method for \code{ggplot} returns a
       \code{\link{ggbio}} object that stores the original \code{data} object.
     }
     \item{}{
-      \code{autoplot(object, \ldots, type, log2scale = TRUE, elt = "exprs", tooltip_digits = 6L)}:
+      \code{autoplot(object, \ldots, type, log2scale = TRUE, elt = "exprs", tooltip_digits = 4L)}:
     }
   }
 }

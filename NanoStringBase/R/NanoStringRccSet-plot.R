@@ -8,6 +8,7 @@ function(data, mapping = design(data), extradata = NULL, elt = "exprs", ...)
     vars <- all.vars(mapping)
   else if (is.list(mapping))
     vars <- unique(unlist(lapply(mapping, all.vars), use.names = FALSE))
+  vars <- setdiff(vars, c("FeatureName", "SampleName"))
 
   # Determine the types of variables
   hasFeatureVars <- any(vars %in% fvarLabels(data))
@@ -60,7 +61,7 @@ function(data, mapping = design(data), extradata = NULL, elt = "exprs", ...)
   # Determine if assay data elements are needed
   assayDataElts <- intersect(vars, assayDataElementNames(data))
   if (length(assayDataElts) > 0L) {
-    vars <- setdiff(vars, c(assayDataElts, "FeatureName", "SampleName"))
+    vars <- setdiff(vars, assayDataElts)
   }
   if (!all(vars %in% colnames(df))) {
     stop("\"mapping\" contains undefined variables")
@@ -113,8 +114,8 @@ function(data, mapping = design(data), extradata = NULL, elt = "exprs", ...)
 
 
 ggplot.NanoStringRccSet <-
-function(data, mapping = aes(), extradata = NULL, ...,
-         environment = parent.frame())
+function(data, mapping = aes(), ..., extradata = NULL,
+         tooltip_digits = 4L, environment = parent.frame())
 {
   if (length(mapping) == 0L) {
     mapping <- design(data)
@@ -128,7 +129,8 @@ function(data, mapping = aes(), extradata = NULL, ...,
       if (j %in% names(mapping)) {
         mf <- model.frame(mapping[[j]], df)
         df[[tooltip]] <-
-          sprintf("%s<br>%s = %s", df[[tooltip]], names(mf)[1L], mf[[1L]])
+          sprintf("%s<br>%s = %s", df[[tooltip]], names(mf)[1L],
+                  signif(mf[[1L]], digits = tooltip_digits))
       }
     }
   }
@@ -149,47 +151,36 @@ function(object, ...,
                   "positiveControl"),
          log2scale = TRUE,
          elt = "exprs",
-         tooltip_digits = 6L)
+         tooltip_digits = 4L)
 {
   args <- list(...)
   type <- match.arg(type)
   switch(type,
          "bindingDensity-mean" =,
          "bindingDensity-sd" = {
-           stats <- summary(object, log2scale = log2scale, elt = elt)
-           df <- pData(protocolData(object))[, "BindingDensity", drop = FALSE]
            if (log2scale) {
              y <- if (type == "bindingDensity-mean") "MeanLog2" else "SDLog2"
            } else {
              y <- if (type == "bindingDensity-mean") "Mean" else "SD"
            }
            mapping <- aes_string(x = "BindingDensity", y = y,
-                                 tooltip = "ToolTip")
-           df <- cbind(df, stats[, y, drop = FALSE])
-           df[["ToolTip"]] <-
-             sprintf("%s<br>%s = %s<br>%s = %s", rownames(df),
-                     colnames(df)[1L], signif(df[,1L], tooltip_digits),
-                     colnames(df)[2L], signif(df[,2L], tooltip_digits))
-           p <- ggplot(df, mapping, ...) + geom_point_interactive(...)
+                                 tooltip = "SampleName")
+           p <- ggplot(object, mapping, ...) + geom_point_interactive(...)
          },
          "fov-mean" =,
          "fov-sd" = {
-           stats <- summary(object, log2scale = log2scale, elt = elt)
-           df <- pData(protocolData(object))[, c("FovCounted", "FovCount")]
-           df <- data.frame(FovCounted = df[["FovCounted"]] / df[["FovCount"]],
+           df <- pData(protocolData(object))
+           df <- data.frame(FOVCounted = df[["FovCounted"]] / df[["FovCount"]],
                             row.names = rownames(df))
            if (log2scale) {
              y <- if (type == "fov-mean") "MeanLog2" else "SDLog2"
            } else {
              y <- if (type == "fov-mean") "Mean" else "SD"
            }
-           mapping <- aes_string(x = "FovCounted", y = y, tooltip = "ToolTip")
-           df <- cbind(df, stats[, y, drop = FALSE])
-           df[["ToolTip"]] <-
-             sprintf("%s<br>%s = %s<br>%s = %s", rownames(df),
-                     colnames(df)[1L], signif(df[,1L], tooltip_digits),
-                     colnames(df)[2L], signif(df[,2L], tooltip_digits))
-           p <- ggplot(df, mapping, ...) + geom_point_interactive(...) +
+           mapping <- aes_string(x = "FOVCounted", y = y,
+                                 tooltip = "SampleName")
+           p <- ggplot(object, mapping, extradata = df, ...) +
+             geom_point_interactive(...) +
              scale_x_continuous(name = "FOV Counted", labels = percent)
          },
          "heatmap" = {
