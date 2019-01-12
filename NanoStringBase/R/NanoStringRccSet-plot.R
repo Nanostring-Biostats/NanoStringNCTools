@@ -204,7 +204,7 @@ function(object, ...,
            p <- ggplot(object, mapping, extradata = df, ...) +
              geom_point_interactive(...) +
              scale_x_continuous(name = "Lane", breaks = 1:12) +
-             scale_y_continuous(name = "FOV Counted", labels = percent)
+             scale_y_continuous(name = "FOV Counted", labels = format_percent)
          },
          "mean-sd-features" =,
          "mean-sd-samples" = {
@@ -235,3 +235,8 @@ function(object, ...,
          })
   p
 })
+
+
+format_percent <- function(x) {
+  sprintf("%s%%", format(100 * x, digits = 2L))
+}

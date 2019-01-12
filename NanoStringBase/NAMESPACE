@@ -27,7 +27,6 @@ importFrom(IRanges, NumericList)
 importFrom(methods, as, callGeneric, callNextMethod, is, validObject)
 importFrom(pheatmap, pheatmap)
 importFrom(RColorBrewer, brewer.pal)
-importFrom(scales, percent)
 importFrom(stats, as.formula, coef, lm, model.frame, quantile)
 importFrom(utils, read.csv, write.csv)
 

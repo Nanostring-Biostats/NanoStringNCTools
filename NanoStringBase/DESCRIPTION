@@ -7,7 +7,7 @@ Author: Patrick Aboyoun
 Maintainer: Patrick Aboyoun <paboyoun@nanostring.com>
 Depends: R (>= 3.3.0), Biobase, ggbio
 Imports: BiocGenerics, Biostrings, biovizBase, ggiraph, ggplot2, grDevices,
-         IRanges, methods, pheatmap, RColorBrewer, S4Vectors, scales, stats, utils
+         IRanges, methods, pheatmap, RColorBrewer, S4Vectors, stats, utils
 Suggests: RUnit
 License: Artistic-2.0
 Collate: RccMetadata.R
