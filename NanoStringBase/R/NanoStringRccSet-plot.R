@@ -16,8 +16,8 @@ function(data, mapping = design(data), extradata = NULL, elt = "exprs", ...)
   hasLog2Summaries <- any(vars %in% c("GeomMean", "MeanLog2", "SDLog2"))
   hasSummaries <- any(vars %in% c("Mean", "SD", "Skewness", "Kurtosis"))
   hasQuantiles <- any(vars %in% c("Min", "Q1", "Median", "Q3", "Max"))
-  if (hasQuantiles && !hasSummaries)
-    hasLog2Summaries <- TRUE
+  if (hasQuantiles && !hasLog2Summaries)
+    hasSummaries <- TRUE
   if (hasFeatureVars && hasSampleVars)
     stop("\"mapping\" argument cannot use both feature and sample variables")
   if (hasLog2Summaries && hasSummaries)
