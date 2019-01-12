@@ -143,9 +143,9 @@ setMethod("autoplot", "NanoStringRccSet",
 function(object, ...,
          type = c("bindingDensity-mean",
                   "bindingDensity-sd",
-                  "fov-mean",
-                  "fov-sd",
                   "heatmap",
+                  "lane-bindingDensity",
+                  "lane-fov",
                   "mean-sd-features",
                   "mean-sd-samples",
                   "positiveControl"),
@@ -165,23 +165,8 @@ function(object, ...,
            }
            mapping <- aes_string(x = "BindingDensity", y = y,
                                  tooltip = "SampleName")
-           p <- ggplot(object, mapping, ...) + geom_point_interactive(...)
-         },
-         "fov-mean" =,
-         "fov-sd" = {
-           df <- pData(protocolData(object))
-           df <- data.frame(FOVCounted = df[["FovCounted"]] / df[["FovCount"]],
-                            row.names = rownames(df))
-           if (log2scale) {
-             y <- if (type == "fov-mean") "MeanLog2" else "SDLog2"
-           } else {
-             y <- if (type == "fov-mean") "Mean" else "SD"
-           }
-           mapping <- aes_string(x = "FOVCounted", y = y,
-                                 tooltip = "SampleName")
-           p <- ggplot(object, mapping, extradata = df, ...) +
-             geom_point_interactive(...) +
-             scale_x_continuous(name = "FOV Counted", labels = percent)
+           p <- ggplot(object, mapping, ...) + geom_point_interactive(...) +
+             scale_x_continuous(name = "Binding Density")
          },
          "heatmap" = {
            object <- endogenousSubset(object)
@@ -201,6 +186,25 @@ function(object, ...,
                          show_colnames = (ncol(scores) <= 64L),
                          silent = TRUE,
                          ...)
+         },
+         "lane-bindingDensity" = {
+           mapping <- aes_string(x = "LaneID", y = "BindingDensity",
+                                 tooltip = "SampleName")
+           p <- ggplot(object, mapping, ...) +
+             geom_point_interactive(...) +
+             scale_x_continuous(name = "Lane", breaks = 1:12) +
+             scale_y_continuous(name = "Binding Density")
+         },
+         "lane-fov" = {
+           df <- pData(protocolData(object))
+           df <- data.frame(FOVCounted = df[["FovCounted"]] / df[["FovCount"]],
+                            row.names = rownames(df))
+           mapping <- aes_string(x = "LaneID", y = "FOVCounted",
+                                 tooltip = "SampleName")
+           p <- ggplot(object, mapping, extradata = df, ...) +
+             geom_point_interactive(...) +
+             scale_x_continuous(name = "Lane", breaks = 1:12) +
+             scale_y_continuous(name = "FOV Counted", labels = percent)
          },
          "mean-sd-features" =,
          "mean-sd-samples" = {
@@ -226,7 +230,7 @@ function(object, ...,
              aes_string(x = "ControlConc", y = elt, tooltip = "SampleName")
            p <- ggplot(positiveControlSubset(object), mapping) +
              geom_point_interactive(...) +
-             scale_x_continuous(trans = "log2") +
+             scale_x_continuous(name = "Concentration", trans = "log2") +
              scale_y_continuous(trans = "log2")
          })
   p
