@@ -11,10 +11,13 @@ setMethod("esApply", "NanoStringRccSet",
 function(X, MARGIN, FUN, ..., elt = "exprs")
 {
   stopifnot(MARGIN %in% c(1L, 2L))
-  if (MARGIN == 1L)
+  if (MARGIN == 1L) {
+    df <- fData(X)
     kvs <- c(sData(X), list(design = design(X)))
-  else
+  } else {
+    df <- sData(X)
     kvs <- c(fData(X), list(signatureWeights = signatureWeights(X)))
+  }
 
   parent <- environment(FUN)
   if (is.null(parent))
@@ -23,7 +26,23 @@ function(X, MARGIN, FUN, ..., elt = "exprs")
   multiassign(names(kvs), kvs, envir = e1)
   environment(FUN) <- e1
 
-  apply(assayDataElement2(X, elt), MARGIN, FUN, ...)
+  mat <- assayDataElement2(X, elt)
+  if (MARGIN == 1L) {
+    output <- vector("list", nrow(X))
+    for (i in seq_along(output)) {
+      multiassign(colnames(df), df[i, ], environment(FUN))
+      output[[i]] <- FUN(mat[i, ], ...)
+    }
+    names(output) <- featureNames(X)
+  } else {
+    output <- vector("list", ncol(X))
+    for (j in seq_along(output)) {
+      multiassign(colnames(df), df[j, ], environment(FUN))
+      output[[j]] <- FUN(mat[, j], ...)
+    }
+    names(output) <- sampleNames(X)
+  }
+  simplify2array(output, higher = FALSE)
 })
 
 setGeneric("esBy", signature = "X",
