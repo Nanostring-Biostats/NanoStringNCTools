@@ -13,9 +13,9 @@ function(data, mapping = design(data), extradata = NULL, elt = "exprs", ...)
   # Determine the types of variables
   hasFeatureVars <- any(vars %in% fvarLabels(data))
   hasSampleVars  <- any(vars %in% svarLabels(data))
-  hasLog2Summaries <- any(vars %in% c("GeomMean", "MeanLog2", "SDLog2"))
-  hasSummaries <- any(vars %in% c("Mean", "SD", "Skewness", "Kurtosis"))
-  hasQuantiles <- any(vars %in% c("Min", "Q1", "Median", "Q3", "Max"))
+  hasLog2Summaries <- any(vars %in% rownames(.summaryMetadata[["log2"]]))
+  hasSummaries <- any(vars %in% rownames(.summaryMetadata[["moments"]]))
+  hasQuantiles <- any(vars %in% rownames(.summaryMetadata[["quantiles"]]))
   if (hasQuantiles && !hasLog2Summaries)
     hasSummaries <- TRUE
   if (hasFeatureVars && hasSampleVars)

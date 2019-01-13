@@ -68,8 +68,38 @@ function(x, na.rm = FALSE)
 }
 
 
+# Summary metadata
+.summaryMetadata <-
+  list(log2 =
+         data.frame(labelDescription =
+                      c("Geometric Mean",
+                        "Geometric Mean Size Factor",
+                        "Mean Log2",
+                        "SD Log2"),
+                    row.names =
+                      c("GeomMean", "SizeFactor", "MeanLog2", "SDLog2"),
+                    stringsAsFactors = FALSE),
+       moments =
+         data.frame(labelDescription =
+                      c("Mean",
+                        "Standard Deviation",
+                        "Skewness",
+                        "Excess Kurtosis"),
+                    row.names = c("Mean", "SD", "Skewness", "Kurtosis"),
+                    stringsAsFactors = FALSE),
+       quantiles =
+         data.frame(labelDescription =
+                      c("Minimum",
+                        "First Quartile",
+                        "Median",
+                        "Third Quartile",
+                        "Maximum"),
+                    row.names = c("Min", "Q1", "Median", "Q3", "Max"),
+                    stringsAsFactors = FALSE))
+
+
 # Marginal summary
-.marginal.summary <- function(x, log2scale = TRUE)
+.marginalSummary <- function(x, log2scale = TRUE)
 {
   # Handle missing data
   if (anyNA(x))
@@ -77,18 +107,14 @@ function(x, na.rm = FALSE)
   
   # Calculate statistics
   quartiles <- quantile(x, probs = c(0, 0.25, 0.5, 0.75, 1))
-  names(quartiles) <- c("Min", "Q1", "Median", "Q3", "Max")
+  names(quartiles) <- rownames(.summaryMetadata[["quantiles"]])
   if (log2scale) {
     log2X <- log2t(x, thresh = 0.5)
-    stats <- c("GeomMean"   = geomMean(x),
-               "SizeFactor" = NA_real_,
-               "MeanLog2"   = mean(log2X),
-               "SDLog2"     = sd(log2X))
+    stats <- structure(c(geomMean(x), NA_real_, mean(log2X), sd(log2X)),
+                       names = rownames(.summaryMetadata[["log2"]]))
   } else {
-    stats <- c("Mean"       = mean(x),
-               "SD"         = sd(x),
-               "Skewness"   = skewness(x),
-               "Kurtosis"   = kurtosis(x))
+    stats <- structure(c(mean(x), sd(x), skewness(x), kurtosis(x)),
+                       names = rownames(.summaryMetadata[["moments"]]))
   }
   c(stats, quartiles)
 }
@@ -100,7 +126,7 @@ function(object, MARGIN = 2L, GROUP = NULL, log2scale = TRUE, elt = "exprs", ...
 {
   stopifnot(MARGIN %in% c(1L, 2L))
   FUN <- function(x) {
-    stats <- t(esApply(x, MARGIN = MARGIN, FUN = .marginal.summary,
+    stats <- t(esApply(x, MARGIN = MARGIN, FUN = .marginalSummary,
                        log2scale = log2scale, elt = elt))
     if (log2scale) {
       stats[,"SizeFactor"] <- 2^(stats[,"MeanLog2"] - mean(stats[,"MeanLog2"]))
