@@ -18,6 +18,7 @@ Collate: RccMetadata.R
          NanoStringRccSet-utils.R
          NanoStringRccSet-summary.R
          NanoStringRccSet-normalize.R
+         NanoStringRccSet-munge.R
          NanoStringRccSet-ggplot.R
          NanoStringRccSet-protoplot.R
          NanoStringRccSet-exprsplot.R
