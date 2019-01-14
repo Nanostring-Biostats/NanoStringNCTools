@@ -34,7 +34,7 @@
 \alias{summary,NanoStringRccSet-method}
 
 % subsetting
-\alias{[,NanoStringRccSet,ANY,ANY,ANY-method}
+\alias{[,NanoStringRccSet-method}
 \alias{subset,NanoStringRccSet-method}
 \alias{endogenousSubset}
 \alias{endogenousSubset,NanoStringRccSet-method}
@@ -57,6 +57,8 @@
 \alias{esBy,NanoStringRccSet-method}
 
 % transforming
+\alias{munge}
+\alias{munge,NanoStringRccSet-method}
 \alias{transform,NanoStringRccSet-method}
 
 % evaluating
@@ -66,9 +68,9 @@
 \alias{normalize,NanoStringRccSet-method}
 
 % plotting
-\alias{mold,NanoStringRccSet-method}
 \alias{ggplot.NanoStringRccSet}
-\alias{autoplot,NanoStringRccSet-method}
+\alias{protoplot}
+\alias{protoplot,NanoStringRccSet-method}
 \alias{exprsplot}
 \alias{exprsplot,NanoStringRccSet-method}
 
@@ -243,6 +245,12 @@ NanoStringRccSet(assayData,
 \section{Transforming}{
   \describe{
     \item{}{
+      \code{munge(data, mapping = design(data), extradata = NULL, elt = "exprs", \ldots)}:
+      munge argument \code{data} into a data.frame object for modeling and
+      visualization using the \code{mapping} argument. Supplemental data can be
+      specified using the \code{extradata} argument.
+    }
+    \item{}{
       \code{transform(`_data`, \ldots)}: Similar to the
       \code{\link[base]{transform}} generic in the \pkg{base} package, creates
       or modifies one or more \code{\link[Biobase]{assayData}} matrices based
@@ -277,18 +285,11 @@ NanoStringRccSet(assayData,
 \section{Plotting}{
   \describe{
     \item{}{
-      \code{mold(data, mapping = design(data), extradata = NULL, elt = "exprs", \ldots)}:
-      mold argument \code{data} into a data.frame object for modeling and
-      visualization using the \code{mapping} argument. Supplemental data can be
-      specified using the \code{extradata} argument.
-    }
-    \item{}{
       \code{ggplot(data, mapping = aes(), \ldots, extradata = NULL, tooltip_digits = 4L, environment = parent.frame())}:
-      the \code{NanoStringRccSet} method for \code{ggplot} returns a
-      \code{\link{ggbio}} object that stores the original \code{data} object.
+      the \code{NanoStringRccSet} method for \code{ggplot}.
     }
     \item{}{
-      \code{autoplot(object, \ldots, type, log2scale = TRUE, elt = "exprs", tooltip_digits = 4L)}:
+      \code{orotoplot(object, \ldots, type, log2scale = TRUE, elt = "exprs", tooltip_digits = 4L)}:
     }
   }
 }
@@ -326,7 +327,7 @@ svarLabels(solidTumor)
 # Set experimental design
 design(solidTumor) <- ~ BRAFGenotype + Treatment
 design(solidTumor)
-mold(solidTumor)
+munge(solidTumor)
 
 
 # Marginal summarizing of NanoStringRccSet assayData matrices

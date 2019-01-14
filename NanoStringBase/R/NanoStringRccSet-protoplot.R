@@ -1,4 +1,7 @@
-setMethod("autoplot", "NanoStringRccSet",
+setGeneric("protoplot", signature = "object",
+           function(object, ...) standardGeneric("protoplot"))
+
+setMethod("protoplot", "NanoStringRccSet",
 function(object, ...,
          type = c("bindingDensity-mean",
                   "bindingDensity-sd",

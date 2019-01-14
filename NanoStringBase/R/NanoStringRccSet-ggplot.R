@@ -1,4 +1,7 @@
-setMethod("mold", "NanoStringRccSet",
+setGeneric("munge", signature = "data",
+           function(data, ...) standardGeneric("munge"))
+
+setMethod("munge", "NanoStringRccSet",
 function(data, mapping = design(data), extradata = NULL, elt = "exprs", ...)
 {
   # Get list of variables
@@ -122,7 +125,7 @@ function(data, mapping = aes(), ..., extradata = NULL,
     if (is.null(mapping))
       stop("\"mapping\" argument is missing")
   }
-  df <- mold(data, mapping = mapping, extradata = extradata)
+  df <- munge(data, mapping = mapping, extradata = extradata)
   if ("tooltip" %in% names(mapping)) {
     tooltip <- as.character(mapping[["tooltip"]][[2L]])
     for (j in c("x", "y")) {
@@ -134,8 +137,7 @@ function(data, mapping = aes(), ..., extradata = NULL,
       }
     }
   }
-  g <- ggplot(df, mapping, ..., environment = environment)
-  GGbio(g, data = data)
+  ggplot(df, mapping, ..., environment = environment)
 }
 
 
