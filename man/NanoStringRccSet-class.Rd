@@ -64,6 +64,10 @@
 % evaluating
 \alias{with,NanoStringRccSet-method}
 
+% quality control
+\alias{setQCFlags}
+\alias{setQCFlags,NanoStringRccSet-method}
+
 % normalization
 \alias{normalize,NanoStringRccSet-method}
 

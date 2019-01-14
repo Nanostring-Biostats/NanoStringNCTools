@@ -11,7 +11,7 @@ importClassesFrom(methods, ANY, character, environment, formula, list, matrix,
 importMethodsFrom(Biobase, AnnotatedDataFrame, annotatedDataFrameFrom,
                   assayData, "assayData<-", esApply, exprs, fData, featureData,
                   featureNames, fvarLabels, pData, preproc, "preproc<-",
-                  protocolData, sampleNames, varLabels)
+                  protocolData, "protocolData<-", sampleNames, varLabels)
 importMethodsFrom(methods, initialize, show)
 importFrom(Biobase, assayDataElement, "assayDataElement<-",
            assayDataElementNames, assayDataNew, copyEnv, MIAME, multiassign)
@@ -42,7 +42,10 @@ export(NanoStringRccSet,
        endogenousSubset, housekeepingSubset,
        negativeControlSubset, positiveControlSubset,
        controlSubset, nonControlSubset, signatureSubset,
-       esBy, munge, protoplot, exprsplot)
+       esBy,
+       munge,
+       setQCFlags,
+       protoplot, exprsplot)
 
 ### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ### Export S4 methods
@@ -57,7 +60,8 @@ exportMethods(NanoStringRccSet, show,
               controlSubset, nonControlSubset, signatureSubset,
               esApply, esBy, with,
               munge, transform,
-              normalize, protoplot, exprsplot)
+              setQCFlags, normalize,
+              protoplot, exprsplot)
 
 ### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ### Export non-generic functions
