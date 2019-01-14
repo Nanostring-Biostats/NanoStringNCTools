@@ -139,6 +139,21 @@ function(data, mapping = aes(), ..., extradata = NULL,
 }
 
 
+geom_beeswarm_interactive <-
+function(mapping = NULL, data = NULL,
+         priority = c("ascending", "descending", "density", "random", "none"),
+         cex = 1, groupOnX = NULL, dodge.width = 0, stat = "identity",
+         na.rm = FALSE, show.legend = NA, inherit.aes = TRUE, ...)
+{
+  position <- position_beeswarm(priority = priority, cex = cex,
+                                groupOnX = groupOnX, dodge.width = dodge.width)
+  layer(data = data, mapping = mapping, stat = stat,
+        geom = GeomInteractivePoint, position = position,
+        show.legend = show.legend, inherit.aes = inherit.aes,
+        params = list(na.rm = na.rm, ...))
+}
+
+
 format_percent <- function(x) {
   sprintf("%s%%", format(100 * x, digits = 2L))
 }
