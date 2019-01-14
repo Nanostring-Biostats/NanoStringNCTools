@@ -1,6 +1,6 @@
 test_writeNanoStringRccSet_rlf <- function() {
   datadir <- system.file("extdata", "3D_Bio_Example_Data",
-                         package = "NanoStringBase")
+                         package = "NanoStringNCTools")
   files <- dir(datadir, pattern = "SKMEL.*\\.RCC$")
   rcc <-
     readNanoStringRccSet(file.path(datadir, files),

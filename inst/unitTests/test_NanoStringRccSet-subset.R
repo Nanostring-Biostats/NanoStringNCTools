@@ -38,16 +38,66 @@ rcc <-
                                        CartridgeBarcode = rep("", 3L),
                                        row.names = sprintf("%s.RCC", LETTERS[1:3]),
                                        stringsAsFactors = FALSE),
-                            NanoStringBase:::.rccMetadata[["protocolData"]],
+                            NanoStringNCTools:::.rccMetadata[["protocolData"]],
                             dimLabels = c("sampleNames", "sampleColumns")),
        signatureWeights =
          list(x = c(a = 1), y = c(b = 1/3, d = 2/3), z = c(a = 2, c = 4)))
 
-# Accessing
-test_NanoStringRccSet_sData <- function() {
-  checkIdentical(cbind(pData(rcc), pData(protocolData(rcc))), sData(rcc))
+# Subsetting
+test_NanoStringRccSet_subset <- function() {
+  checkEquals(rcc[featureData(rcc)[["BarcodeClass"]] == "Endogenous", ],
+              subset(rcc, BarcodeClass == "Endogenous"))
+  checkEquals(IRanges::NumericList(x = c(a = 1), compress = FALSE),
+              signatureWeights(subset(rcc, BarcodeClass == "Endogenous")))
+
+  checkEquals(rcc[, phenoData(rcc)[["Treatment"]] == "A"],
+              subset(rcc, select = Treatment == "A"))
+  checkEquals(signatureWeights(rcc),
+              signatureWeights(subset(rcc, select = Treatment == "A")))
+
+  checkEquals(rcc[featureData(rcc)[["BarcodeClass"]] == "Endogenous",
+                  phenoData(rcc)[["Treatment"]] == "A"],
+              subset(rcc, BarcodeClass == "Endogenous", Treatment == "A"))
+  checkEquals(IRanges::NumericList(x = c(a = 1), compress = FALSE),
+              signatureWeights(subset(rcc, BarcodeClass == "Endogenous",
+                                      Treatment == "A")))
 }
 
-test_NanoStringRccSet_svarLabels <- function() {
-  checkIdentical(c(varLabels(rcc), varLabels(protocolData(rcc))), svarLabels(rcc))
+test_NanoStringRccSet_endogenousSubset <- function() {
+  checkEquals(rcc[featureData(rcc)[["BarcodeClass"]] == "Endogenous", ],
+              endogenousSubset(rcc))
+}
+
+test_NanoStringRccSet_housekeepingSubset <- function() {
+  checkEquals(rcc[featureData(rcc)[["BarcodeClass"]] == "Housekeeping", ],
+              housekeepingSubset(rcc))
+}
+
+test_NanoStringRccSet_negativeControlSubset <- function() {
+  checkEquals(rcc[featureData(rcc)[["BarcodeClass"]] == "Negative", ],
+              negativeControlSubset(rcc))
+}
+
+test_NanoStringRccSet_positiveControlSubset <- function() {
+  checkEquals(rcc[featureData(rcc)[["BarcodeClass"]] == "Positive", ],
+              positiveControlSubset(rcc))
+
+  checkEquals(rcc[featureData(rcc)[["BarcodeClass"]] == "Positive" &
+                  featureData(rcc)[["ControlConc"]] >= 0.5, ],
+              positiveControlSubset(rcc, subset = ControlConc >= 0.5))
+}
+
+test_NanoStringRccSet_controlSubset <- function() {
+  checkEquals(rcc[featureData(rcc)[["IsControl"]], ], controlSubset(rcc))
+}
+
+test_NanoStringRccSet_nonControlSubset <- function() {
+  checkEquals(rcc[!featureData(rcc)[["IsControl"]], ], nonControlSubset(rcc))
+}
+
+test_NanoStringRccSet_signatureSubset <- function() {
+  x <- rcc
+  signatureWeights(x) <- signatureWeights(x)[1L]
+  checkEquals(rcc[featureData(rcc)[["GeneName"]] == "a", ],
+              signatureSubset(x))
 }

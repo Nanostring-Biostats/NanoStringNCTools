@@ -29,7 +29,7 @@ readRlfFile(file)
 
 \examples{
 datadir <- system.file("extdata", "3D_Bio_Example_Data",
-                       package = "NanoStringBase")
+                       package = "NanoStringNCTools")
 rlf <- file.path(datadir, "3D_SolidTumor_Sig.rlf")
 rlfData <- readRlfFile(rlf)
 }

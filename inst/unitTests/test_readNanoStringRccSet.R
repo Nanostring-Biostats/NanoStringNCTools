@@ -1,6 +1,6 @@
 test_readNanoStringRccSet_onearg <- function() {
   datadir <- system.file("extdata", "3D_Bio_Example_Data",
-                         package = "NanoStringBase")
+                         package = "NanoStringNCTools")
   rcc <-
     readNanoStringRccSet(dir(datadir, pattern = "SKMEL.*\\.RCC$",
                              full.names = TRUE))
@@ -44,7 +44,7 @@ test_readNanoStringRccSet_onearg <- function() {
 
 test_readNanoStringRccSet_rlf <- function() {
   datadir <- system.file("extdata", "3D_Bio_Example_Data",
-                         package = "NanoStringBase")
+                         package = "NanoStringNCTools")
   rcc <-
     readNanoStringRccSet(dir(datadir, pattern = "SKMEL.*\\.RCC$",
                              full.names = TRUE),
@@ -97,7 +97,7 @@ test_readNanoStringRccSet_rlf <- function() {
 
 test_readNanoStringRccSet_rlf_pheno <- function() {
   datadir <- system.file("extdata", "3D_Bio_Example_Data",
-                         package = "NanoStringBase")
+                         package = "NanoStringNCTools")
   rcc <-
     readNanoStringRccSet(dir(datadir, pattern = "SKMEL.*\\.RCC$",
                              full.names = TRUE),
@@ -151,7 +151,7 @@ test_readNanoStringRccSet_rlf_pheno <- function() {
 
 test_readNanoStringRccSet_rlf_pheno <- function() {
   datadir <- system.file("extdata", "3D_Bio_Example_Data",
-                         package = "NanoStringBase")
+                         package = "NanoStringNCTools")
   rcc <-
     readNanoStringRccSet(dir(datadir, pattern = "SKMEL.*\\.RCC$",
                              full.names = TRUE),

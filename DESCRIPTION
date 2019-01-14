@@ -1,6 +1,6 @@
-Package: NanoStringBase
-Title: NanoString Base
-Description: Base package for NanoString Technologies.
+Package: NanoStringNCTools
+Title: NanoString nCounter® Tools
+Description: Tools for NanoString Technologies nCounter® Technology.
 Version: 0.0.1
 Encoding: UTF-8
 Author: Patrick Aboyoun

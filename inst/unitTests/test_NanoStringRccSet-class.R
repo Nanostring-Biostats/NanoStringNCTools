@@ -42,7 +42,7 @@ rcc <-
                                        CartridgeBarcode = rep("", 3L),
                                        row.names = sprintf("%s.RCC", LETTERS[1:3]),
                                        stringsAsFactors = FALSE),
-                            NanoStringBase:::.rccMetadata[["protocolData"]],
+                            NanoStringNCTools:::.rccMetadata[["protocolData"]],
                             dimLabels = c("sampleNames", "sampleColumns")))
 
 test_NanoStringRccSet_constructor_simple <- function() {

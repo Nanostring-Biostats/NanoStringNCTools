@@ -40,7 +40,7 @@ readNanoStringRccSet(rccFiles, rlfFile = NULL,
 \examples{
 # Data file paths
 datadir <- system.file("extdata", "3D_Bio_Example_Data",
-                       package = "NanoStringBase")
+                       package = "NanoStringNCTools")
 rccs <- dir(datadir, pattern = "SKMEL.*\\\\.RCC$", full.names = TRUE)
 rlf <- file.path(datadir, "3D_SolidTumor_Sig.rlf")
 pheno <- file.path(datadir, "3D_SolidTumor_PhenoData.csv")
