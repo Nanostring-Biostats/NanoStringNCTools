@@ -153,7 +153,8 @@ function(object)
       genes <- names(unlist(unname(signatureWeights(object))))
       if (is.null(genes) || any(nchar(genes) == 0L)) {
         msg <- c(msg, "'signatureWeights' vectors must be named")
-      } else if(!all(unique(genes) %in% featureData(object)[["GeneName"]])) {
+      } else if(!all(unique(genes) %in%
+                     c("(Intercept)", featureData(object)[["GeneName"]]))) {
         msg <-
           c(msg,
             "'signatureWeights' vectors must be named with values from 'featureData' \"GeneName\"")

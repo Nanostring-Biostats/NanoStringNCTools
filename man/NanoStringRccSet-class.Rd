@@ -23,6 +23,7 @@
 \alias{signatureWeights,NanoStringRccSet-method}
 \alias{signatureWeights<-}
 \alias{signatureWeights<-,NanoStringRccSet,ANY-method}
+\alias{signatureWeights<-,NanoStringRccSet,list-method}
 \alias{signatureWeights<-,NanoStringRccSet,NULL-method}
 \alias{signatureWeights<-,NanoStringRccSet,NumericList-method}
 \alias{design,NanoStringRccSet-method}

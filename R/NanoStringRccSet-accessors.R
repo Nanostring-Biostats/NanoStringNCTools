@@ -36,6 +36,18 @@ setReplaceMethod("signatureWeights", c("NanoStringRccSet", "ANY"),
                    object@signatureWeights <- as(value, "NumericList")
                    object
                  })
+setReplaceMethod("signatureWeights", c("NanoStringRccSet", "list"),
+                 function(object, value) {
+                   value <- lapply(value, function(x) {
+                     if(is.matrix(x) && ncol(x) == 1L)
+                       structure(x[, 1L, drop = TRUE],
+                                 names = rownames(x))
+                     else
+                       x
+                   })
+                   object@signatureWeights <- as(value, "NumericList")
+                   object
+                 })
 setReplaceMethod("signatureWeights", c("NanoStringRccSet", "NULL"),
                  function(object, value) {
                    object@signatureWeights <- NumericList()
