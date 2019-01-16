@@ -26,6 +26,8 @@
 \alias{signatureWeights<-,NanoStringRccSet,list-method}
 \alias{signatureWeights<-,NanoStringRccSet,NULL-method}
 \alias{signatureWeights<-,NanoStringRccSet,NumericList-method}
+\alias{signatureScores}
+\alias{signatureScores,NanoStringRccSet-method}
 \alias{design,NanoStringRccSet-method}
 \alias{design<-,NanoStringRccSet,ANY-method}
 \alias{design<-,NanoStringRccSet,NULL-method}
@@ -142,6 +144,10 @@ NanoStringRccSet(assayData,
     \item{}{
       \code{signatureWeights(object) <- value}: replaces the list of gene
       signature weights.
+    }
+    \item{}{
+      \code{signatureScores(object, elt = "exprs")}: extracts the matrix
+      of computed signature scores.
     }
     \item{}{
       \code{design(object)}: extracts the one-sided formula representing

@@ -51,3 +51,16 @@ test_NanoStringRccSet_sData <- function() {
 test_NanoStringRccSet_svarLabels <- function() {
   checkIdentical(c(varLabels(rcc), varLabels(protocolData(rcc))), svarLabels(rcc))
 }
+
+test_NanoStringRccSet_signatureScores <- function() {
+  checkEquals(matrix(c(0, 7, 24, 12, 19, 96, 24, 31, 168)/3,
+                     nrow = 3L, ncol = 3L,
+                     dimnames = list(c("x", "y", "z"), sampleNames(rcc))),
+                 signatureScores(rcc))
+
+  rcc2 <- transform(rcc, exprs3 = 3 * exprs)
+  checkEquals(matrix(c(0, 7, 24, 12, 19, 96, 24, 31, 168),
+                     nrow = 3L, ncol = 3L,
+                     dimnames = list(c("x", "y", "z"), sampleNames(rcc2))),
+              signatureScores(rcc2, "exprs3"))
+}

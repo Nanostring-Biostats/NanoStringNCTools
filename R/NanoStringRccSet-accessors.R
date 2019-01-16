@@ -54,6 +54,22 @@ setReplaceMethod("signatureWeights", c("NanoStringRccSet", "NULL"),
                    object
                  })
 
+# signatureScores Accessor and Replacer
+setGeneric("signatureScores", signature = "object",
+           function(object, ...) standardGeneric("signatureScores"))
+setMethod("signatureScores", "NanoStringRccSet",
+          function(object, elt = "exprs") {
+            exprs <- assayDataElement2(object, elt)
+            rownames(exprs) <- featureData(object)[["GeneName"]]
+            t(sapply(signatureWeights(object),
+                     function(wts){
+                       if ("(Intercept)" %in% names(wts))
+                         exprs <- rbind("(Intercept)" = 1, exprs)
+                       exprs <- exprs[names(wts), , drop = FALSE]
+                       colSums(wts * exprs)
+                     }))
+          })
+
 # design Accessor and Replacer
 setMethod("design", "NanoStringRccSet", function(object) object@design)
 setReplaceMethod("design", c("NanoStringRccSet", "formula"),
