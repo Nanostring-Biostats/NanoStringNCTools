@@ -300,7 +300,7 @@ NanoStringRccSet(assayData,
       the \code{NanoStringRccSet} method for \code{ggplot}.
     }
     \item{}{
-      \code{orotoplot(object, \ldots, type, log2scale = TRUE, elt = "exprs", tooltip_digits = 4L)}:
+      \code{protoplot(object, \ldots, type, log2scale = TRUE, elt = "exprs", tooltip_digits = 4L)}:
     }
   }
 }
