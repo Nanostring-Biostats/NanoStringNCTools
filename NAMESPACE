@@ -18,8 +18,9 @@ importFrom(Biobase, assayDataElement, "assayDataElement<-",
 importFrom(Biostrings, BStringSet, DNAStringSet)
 importFrom(ggbeeswarm, position_beeswarm)
 importFrom(ggiraph, GeomInteractivePoint, geom_point_interactive)
-importFrom(ggplot2, aes, aes_string, geom_boxplot, ggplot, layer,
-           scale_x_continuous, scale_x_discrete, scale_y_continuous)
+importFrom(ggplot2, aes, aes_string, geom_boxplot, geom_hline, ggplot, layer,
+           scale_x_continuous, scale_x_discrete, scale_y_continuous,
+           stat_boxplot)
 importFrom(grDevices, colorRampPalette)
 importFrom(IRanges, NumericList)
 importFrom(methods, as, callGeneric, callNextMethod, is, validObject)
