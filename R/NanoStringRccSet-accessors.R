@@ -55,19 +55,36 @@ setReplaceMethod("signatureWeights", c("NanoStringRccSet", "NULL"),
                  })
 
 # signatureScores Accessor and Replacer
+.sigCalc <- function(X, sigWeights)
+{
+  t(sapply(sigWeights,
+           function(wts){
+             if ("(Intercept)" %in% names(wts))
+               X <- rbind("(Intercept)" = 1, X)
+             if (all(names(wts) %in% rownames(X))) {
+               X <- X[names(wts), , drop = FALSE]
+               colSums(wts * X)
+             } else {
+               rep.int(NA_real_, ncol(X))
+             }
+           }))
+}
 setGeneric("signatureScores", signature = "object",
            function(object, ...) standardGeneric("signatureScores"))
 setMethod("signatureScores", "NanoStringRccSet",
           function(object, elt = "exprs") {
             exprs <- assayDataElement2(object, elt)
             rownames(exprs) <- featureData(object)[["GeneName"]]
-            t(sapply(signatureWeights(object),
-                     function(wts){
-                       if ("(Intercept)" %in% names(wts))
-                         exprs <- rbind("(Intercept)" = 1, exprs)
-                       exprs <- exprs[names(wts), , drop = FALSE]
-                       colSums(wts * exprs)
-                     }))
+            scores <- .sigCalc(exprs, signatureWeights(object))
+            while (length(idx <- which(rowSums(is.na(scores)) > 0L))) {
+              subscores <- .sigCalc(rbind(exprs, scores[-idx, , drop = FALSE]),
+                                    signatureWeights(object)[idx])
+              if (all(is.na(subscores)))
+                break
+              else
+                scores[idx, ] <- subscores
+            }
+            scores
           })
 
 # design Accessor and Replacer
