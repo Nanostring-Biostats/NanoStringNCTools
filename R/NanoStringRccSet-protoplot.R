@@ -16,6 +16,8 @@ function(object, ...,
          tooltip_digits = 4L)
 {
   args <- list(...)
+  pointColor <- "#4E79A7"
+  refLineColor <- "#E15759"
   type <- match.arg(type)
   switch(type,
          "bindingDensity-mean" =,
@@ -53,9 +55,13 @@ function(object, ...,
            mapping <- aes_string(x = "LaneID", y = "BindingDensity",
                                  tooltip = "SampleName")
            p <- ggplot(object, mapping, ...) +
-             geom_point_interactive(...) +
-             scale_x_continuous(name = "Lane", breaks = 1:12) +
-             scale_y_continuous(name = "Binding Density")
+             geom_point_interactive(color = pointColor, ...) +
+             scale_x_continuous(name = "Lane", breaks = 1:12,
+                                limits = c(1L, 12L)) +
+             scale_y_continuous(name = "Binding Density",
+                                limits = c(0, NA_real_)) +
+             geom_hline(yintercept = c(0.1, 1.8, 2.25), linetype = 2L,
+                        color = refLineColor)
          },
          "lane-fov" = {
            df <- pData(protocolData(object))
@@ -64,9 +70,12 @@ function(object, ...,
            mapping <- aes_string(x = "LaneID", y = "FOVCounted",
                                  tooltip = "SampleName")
            p <- ggplot(object, mapping, extradata = df, ...) +
-             geom_point_interactive(...) +
-             scale_x_continuous(name = "Lane", breaks = 1:12) +
-             scale_y_continuous(name = "FOV Counted", labels = format_percent)
+             geom_point_interactive(color = pointColor, ...) +
+             scale_x_continuous(name = "Lane", breaks = 1:12,
+                                limits = c(1L, 12L)) +
+             scale_y_continuous(name = "FOV Counted", labels = format_percent,
+                                limits = c(0, 1)) +
+             geom_hline(yintercept = 0.75, linetype = 2L, color = refLineColor)
          },
          "mean-sd-features" =,
          "mean-sd-samples" = {
@@ -89,10 +98,13 @@ function(object, ...,
          },
          "positiveControl" = {
            mapping <-
-             aes_string(x = "ControlConc", y = elt, tooltip = "SampleName")
-           p <- ggplot(positiveControlSubset(object), mapping) +
-             geom_point_interactive(...) +
-             scale_x_continuous(name = "Concentration", trans = "log2") +
+             aes_string(x = "ControlConc", y = elt, group = "SampleName")
+           p <- ggplot(positiveControlSubset(object), mapping, ...) +
+             geom_line_interactive(aes_string(tooltip = "SampleName"),
+                                   color = pointColor) +
+             geom_point_interactive(aes_string(tooltip = "SampleName"),
+                                    color = pointColor, ...) +
+             scale_x_continuous(name = "Concentration (fM)", trans = "log2") +
              scale_y_continuous(trans = "log2")
          })
   p
