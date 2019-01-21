@@ -3,7 +3,7 @@ setGeneric("setQCFlags", signature = "object",
 setMethod("setQCFlags", "NanoStringRccSet",
 function(object,
          fovPercentLB = 0.75,
-         bindDenRange = c(0.1, 1.8),
+         bindDenRange = c(0.1, 2.25),
          posCtrlRsqLB = 0.95,
          negCtrlSDUB = 2,
          ...)
@@ -22,27 +22,24 @@ function(object,
   posCtrl <- posCtrl[featureData(posCtrl)[["ControlConc"]] >= 0.5, ]
   controlConc <- featureData(posCtrl)[["ControlConc"]]
 
-
   # Update protocolData with QC Flags
   prData <- protocolData(object)
-
-  prData[["FovFlag"]] <-
-    prData[["FovCounted"]] / prData[["FovCount"]] < fovPercentLB
-
-  prData[["BindFlag"]] <-
-    prData[["BindingDensity"]] < bindDenRange[1L] |
-    prData[["BindingDensity"]] > bindDenRange[2L]
-
   x <- log2(controlConc)
-  prData[["LinFlag"]] <-
-    esApply(posCtrl, 2L, function(y) cor(x, log2t(y, 0.5))^2 < posCtrlRsqLB)
 
-  prData[["LoDFlag"]] <-
-    apply(exprs(posCtrl[controlConc == 0.5, ]), 2L, max) <=
-      esApply(negCtrl, 2L, function(x) mean(x) + negCtrlSDUB * sd(x))
+  prData[["QCFlags"]] <-
+    cbind(Imaging =
+            prData[["FovCounted"]] / prData[["FovCount"]] < fovPercentLB,
+          Binding =
+            prData[["BindingDensity"]] < bindDenRange[1L] |
+            prData[["BindingDensity"]] > bindDenRange[2L],
+          Linearity =
+            esApply(posCtrl, 2L, function(y)
+              cor(x, log2t(y, 0.5))^2 < posCtrlRsqLB),
+          LoD =
+            apply(exprs(posCtrl[controlConc == 0.5, ]), 2L, max) <=
+            esApply(negCtrl, 2L, function(x) mean(x) + negCtrlSDUB * sd(x)))
 
   protocolData(object) <- prData
-
 
   # Add method call to preproc list
   preproc(object)["QCFlags"] <-
