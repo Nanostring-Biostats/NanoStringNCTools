@@ -5,7 +5,8 @@ setMethod("protoplot", "NanoStringRccSet",
 function(object, ...,
          type = c("bindingDensity-mean",
                   "bindingDensity-sd",
-                  "heatmap",
+                  "heatmap-genes",
+                  "heatmap-signatures",
                   "lane-bindingDensity",
                   "lane-fov",
                   "mean-sd-features",
@@ -32,10 +33,27 @@ function(object, ...,
            p <- ggplot(object, mapping, ...) + geom_point_interactive(...) +
              scale_x_continuous(name = "Binding Density")
          },
-         "heatmap" = {
+         "heatmap-genes" = {
            object <- endogenousSubset(object)
            scores <- assayDataElement2(object, elt)
            rownames(scores) <- featureData(object)[["GeneName"]]
+           colnames(scores) <- protocolData(object)[["SampleID"]]
+           if (log2scale)
+             scores <- log2t(scores)
+           scores <- t(pmin(pmax(scale(scores), -3), 3))
+           p <- pheatmap(scores,
+                         color =
+                           colorRampPalette(c("darkblue",
+                                              rev(brewer.pal(n = 7L,
+                                                             name = "RdYlBu")),
+                                              "darkred"))(100),
+                         show_rownames = (nrow(scores) <= 64L),
+                         show_colnames = (ncol(scores) <= 64L),
+                         silent = TRUE,
+                         ...)
+         },
+         "heatmap-signatures" = {
+           scores <- signatureScores(object, elt)
            colnames(scores) <- protocolData(object)[["SampleID"]]
            if (log2scale)
              scores <- log2t(scores)
