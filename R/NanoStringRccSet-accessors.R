@@ -54,11 +54,20 @@ setReplaceMethod("signatureWeights", c("NanoStringRccSet", "NULL"),
                    object
                  })
 
+# signatureWeights Accessor and Replacer
+setGeneric("signatureLength", signature = "object",
+           function(object) standardGeneric("signatureLength"))
+setMethod("signatureLength", "NanoStringRccSet",
+          function(object) {
+            sapply(signatureWeights(object),
+                   function(x) sum(names(x) != "(Intercept)"))
+          })
+
 # signatureScores Accessor and Replacer
 .sigCalc <- function(X, sigWeights)
 {
   t(sapply(sigWeights,
-           function(wts){
+           function(wts) {
              if ("(Intercept)" %in% names(wts))
                X <- rbind("(Intercept)" = 1, X)
              if (all(names(wts) %in% rownames(X))) {
