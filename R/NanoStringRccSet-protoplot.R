@@ -14,6 +14,7 @@ function(object, ...,
                   "positiveControl"),
          log2scale = TRUE,
          elt = "exprs",
+         group = NULL,
          tooltip_digits = 4L)
 {
   args <- list(...)
@@ -38,36 +39,14 @@ function(object, ...,
            scores <- assayDataElement2(object, elt)
            rownames(scores) <- featureData(object)[["GeneName"]]
            colnames(scores) <- protocolData(object)[["SampleID"]]
-           if (log2scale)
-             scores <- log2t(scores)
-           scores <- t(pmin(pmax(scale(scores), -3), 3))
-           p <- pheatmap(scores,
-                         color =
-                           colorRampPalette(c("darkblue",
-                                              rev(brewer.pal(n = 7L,
-                                                             name = "RdYlBu")),
-                                              "darkred"))(100),
-                         show_rownames = (nrow(scores) <= 64L),
-                         show_colnames = (ncol(scores) <= 64L),
-                         silent = TRUE,
-                         ...)
+           p <- protoheatmap(scores, log2scale = log2scale, group = group,
+                             object = object, ...)
          },
          "heatmap-signatures" = {
            scores <- signatureScores(object, elt)
            colnames(scores) <- protocolData(object)[["SampleID"]]
-           if (log2scale)
-             scores <- log2t(scores)
-           scores <- t(pmin(pmax(scale(scores), -3), 3))
-           p <- pheatmap(scores,
-                         color =
-                           colorRampPalette(c("darkblue",
-                                              rev(brewer.pal(n = 7L,
-                                                             name = "RdYlBu")),
-                                              "darkred"))(100),
-                         show_rownames = (nrow(scores) <= 64L),
-                         show_colnames = (ncol(scores) <= 64L),
-                         silent = TRUE,
-                         ...)
+           p <- protoheatmap(scores, log2scale = log2scale, group = group,
+                             object = object, ...)
          },
          "lane-bindingDensity" = {
            mapping <- aes_string(x = "LaneID", y = "BindingDensity",
@@ -127,3 +106,29 @@ function(object, ...,
          })
   p
 })
+
+
+protoheatmap <- function(scores, log2scale, group, object, ...)
+{
+  if (log2scale)
+    scores <- log2t(scores)
+  scores <- t(pmin(pmax(scale(scores), -3), 3))
+
+  if (is.null(group)) {
+    annotation_row <- NA
+  } else {
+    annotation_row <- sData(object)[group]
+    rownames(annotation_row) <- rownames(scores)
+  }
+
+  pheatmap(scores,
+           color =
+             colorRampPalette(c("darkblue",
+                                rev(brewer.pal(n = 7L, name = "RdYlBu")),
+                                "darkred"))(100),
+           annotation_row = annotation_row,
+           show_rownames = (nrow(scores) <= 64L),
+           show_colnames = (ncol(scores) <= 64L),
+           silent = TRUE,
+           ...)
+}
