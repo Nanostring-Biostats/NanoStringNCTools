@@ -18,8 +18,9 @@ function(object, ...,
          tooltip_digits = 4L)
 {
   args <- list(...)
-  pointColor <- "#4E79A7"
-  refLineColor <- "#E15759"
+  blue <- "#4E79A7"
+  orange <- "#F28E2B"
+  red <- "#E15759"
   type <- match.arg(type)
   switch(type,
          "bindingDensity-mean" =,
@@ -52,13 +53,13 @@ function(object, ...,
            mapping <- aes_string(x = "LaneID", y = "BindingDensity",
                                  tooltip = "SampleName")
            p <- ggplot(object, mapping, ...) +
-             geom_point_interactive(color = pointColor, ...) +
+             geom_point_interactive(color = blue, ...) +
              scale_x_continuous(name = "Lane", breaks = 1:12,
                                 limits = c(1L, 12L)) +
              scale_y_continuous(name = "Binding Density",
                                 limits = c(0, NA_real_)) +
              geom_hline(yintercept = c(0.1, 1.8, 2.25), linetype = 2L,
-                        color = refLineColor)
+                        color = red)
          },
          "lane-fov" = {
            df <- pData(protocolData(object))
@@ -67,12 +68,12 @@ function(object, ...,
            mapping <- aes_string(x = "LaneID", y = "FOVCounted",
                                  tooltip = "SampleName")
            p <- ggplot(object, mapping, extradata = df, ...) +
-             geom_point_interactive(color = pointColor, ...) +
+             geom_point_interactive(color = blue, ...) +
              scale_x_continuous(name = "Lane", breaks = 1:12,
                                 limits = c(1L, 12L)) +
              scale_y_continuous(name = "FOV Counted", labels = format_percent,
                                 limits = c(0, 1)) +
-             geom_hline(yintercept = 0.75, linetype = 2L, color = refLineColor)
+             geom_hline(yintercept = 0.75, linetype = 2L, color = red)
          },
          "mean-sd-features" =,
          "mean-sd-samples" = {
@@ -94,13 +95,36 @@ function(object, ...,
            p <- ggplot(df, mapping, ...) + geom_point_interactive(...)
          },
          "positiveControl" = {
-           mapping <-
-             aes_string(x = "ControlConc", y = elt, group = "SampleName")
-           p <- ggplot(positiveControlSubset(object), mapping, ...) +
-             geom_line_interactive(aes_string(tooltip = "SampleName"),
-                                   color = pointColor) +
-             geom_point_interactive(aes_string(tooltip = "SampleName"),
-                                    color = pointColor, ...) +
+           posCtrl <- positiveControlSubset(object)
+           posCtrl <- posCtrl[featureData(posCtrl)[["ControlConc"]] >= 0.5, ]
+           x <- log2(featureData(posCtrl)[["ControlConc"]])
+           extradata <-
+             data.frame(RSquared =
+                          esApply(posCtrl, 2L,
+                                  function(y) cor(x, log2t(y, 0.5))))
+           extradata[["Low R-Squared"]] <- extradata[["RSquared"]] < 0.95
+           extradata[["CustomTooltip"]] <-
+             sprintf("%s\nR-Squared = %.4f", rownames(extradata),
+                     extradata[["RSquared"]])
+
+           if (any(extradata[["Low R-Squared"]])) {
+             mapping <-
+               aes_string(x = "ControlConc", y = elt, group = "SampleName",
+                          tooltip = "CustomTooltip",
+                          color = as.name("Low R-Squared"))
+             p <- ggplot(posCtrl, mapping, extradata = extradata, ...) +
+               geom_line_interactive() +
+               geom_point_interactive() +
+               scale_color_manual(values = c(blue, red))
+           } else {
+             mapping <-
+               aes_string(x = "ControlConc", y = elt, group = "SampleName",
+                          tooltip = "CustomTooltip")
+             p <- ggplot(posCtrl, mapping, extradata = extradata, ...) +
+               geom_line_interactive(color = blue) +
+               geom_point_interactive(color = blue)
+           }
+           p <- p +
              scale_x_continuous(name = "Concentration (fM)", trans = "log2") +
              scale_y_continuous(trans = "log2")
          })
