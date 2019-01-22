@@ -34,7 +34,7 @@ function(data, mapping = design(data), extradata = NULL, elt = "exprs", ...)
   else
     df <- NULL
 
-  # Add extra data if supplied
+  # Use extra data if appropriate
   if (!is.null(extradata)) {
     matchFeatureNames <- identical(rownames(extradata), featureNames(data))
     matchSampleNames  <- identical(rownames(extradata), sampleNames(data))
@@ -45,8 +45,15 @@ function(data, mapping = design(data), extradata = NULL, elt = "exprs", ...)
       hasFeatureVars <- matchFeatureNames
       hasSampleVars  <- matchSampleNames
       df <- extradata
-    } else
+      extradata <- NULL
+    } else if ((hasFeatureVars && matchFeatureNames) ||
+               (hasSampleVars && matchSampleNames)) {
       df <- cbind(df, extradata)
+      extradata <- NULL
+    } else if (any(colnames(extradata) %in% vars)) {
+      extradata <- extradata[intersect(vars, colnames(extradata))]
+      vars <- setdiff(vars, colnames(extradata))
+    }
   }
 
   # Add marginal summaries if needed
@@ -109,6 +116,16 @@ function(data, mapping = design(data), extradata = NULL, elt = "exprs", ...)
     }
     rownames(df) <- NULL
     df <- cbind(stackedData, df)
+  }
+
+  # Add any remaining extra data
+  if (!is.null(extradata)) {
+    if (matchFeatureNames) {
+      df <- cbind(df, extradata[df[["FeatureName"]], , drop = FALSE])
+    } else {
+      df <- cbind(df, extradata[df[["SampleName"]], , drop = FALSE])
+    }
+    rownames(df) <- NULL
   }
 
   # Return result
