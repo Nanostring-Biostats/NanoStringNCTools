@@ -18,9 +18,8 @@ function(object, ...,
          tooltip_digits = 4L)
 {
   args <- list(...)
-  blue <- "#4E79A7"
-  orange <- "#F28E2B"
-  red <- "#E15759"
+  colors <- c(blue = "#4E79A7", orange = "#F28E2B", red = "#E15759",
+              darkgray = "#79706E")
   type <- match.arg(type)
   switch(type,
          "bindingDensity-mean" =,
@@ -50,16 +49,29 @@ function(object, ...,
                              object = object, ...)
          },
          "lane-bindingDensity" = {
-           mapping <- aes_string(x = "LaneID", y = "BindingDensity",
-                                 tooltip = "SampleName")
-           p <- ggplot(object, mapping, ...) +
-             geom_point_interactive(color = blue, ...) +
+           maxBD <- 2.25
+           outlier <- protocolData(object)[["BindingDensity"]] > maxBD
+           if (any(outlier)) {
+             extradata <- data.frame(Outlier = outlier,
+                                     row.names = sampleNames(object))
+             mapping <- aes_string(x = "LaneID", y = "BindingDensity",
+                                   tooltip = "SampleName", color = "Outlier")
+             p <- ggplot(object, mapping, extradata = extradata, ...) +
+               geom_point_interactive() +
+               scale_color_manual(values = unname(colors[c("blue", "red")]))
+           } else {
+             mapping <- aes_string(x = "LaneID", y = "BindingDensity",
+                                   tooltip = "SampleName")
+             p <- ggplot(object, mapping, ...) +
+               geom_point_interactive(color = colors[["blue"]])
+           }
+           p <- p +
              scale_x_continuous(name = "Lane", breaks = 1:12,
                                 limits = c(1L, 12L)) +
              scale_y_continuous(name = "Binding Density",
                                 limits = c(0, NA_real_)) +
-             geom_hline(yintercept = c(0.1, 1.8, 2.25), linetype = 2L,
-                        color = red)
+             geom_hline(yintercept = c(0.1, maxBD), linetype = 2L,
+                        color = colors[["darkgray"]])
          },
          "lane-fov" = {
            df <- pData(protocolData(object))
@@ -68,12 +80,13 @@ function(object, ...,
            mapping <- aes_string(x = "LaneID", y = "FOVCounted",
                                  tooltip = "SampleName")
            p <- ggplot(object, mapping, extradata = df, ...) +
-             geom_point_interactive(color = blue, ...) +
+             geom_point_interactive(color = colors[["blue"]]) +
              scale_x_continuous(name = "Lane", breaks = 1:12,
                                 limits = c(1L, 12L)) +
              scale_y_continuous(name = "FOV Counted", labels = format_percent,
                                 limits = c(0, 1)) +
-             geom_hline(yintercept = 0.75, linetype = 2L, color = red)
+             geom_hline(yintercept = 0.75, linetype = 2L,
+                        color = colors[["red"]])
          },
          "mean-sd-features" =,
          "mean-sd-samples" = {
@@ -115,14 +128,14 @@ function(object, ...,
              p <- ggplot(posCtrl, mapping, extradata = extradata, ...) +
                geom_line_interactive() +
                geom_point_interactive() +
-               scale_color_manual(values = c(blue, red))
+               scale_color_manual(values = unname(colors[c("blue", "red")]))
            } else {
              mapping <-
                aes_string(x = "ControlConc", y = elt, group = "SampleName",
                           tooltip = "CustomTooltip")
              p <- ggplot(posCtrl, mapping, extradata = extradata, ...) +
-               geom_line_interactive(color = blue) +
-               geom_point_interactive(color = blue)
+               geom_line_interactive(color = colors[["blue"]]) +
+               geom_point_interactive(color = colors[["blue"]])
            }
            p <- p +
              scale_x_continuous(name = "Concentration (fM)", trans = "log2") +
