@@ -74,19 +74,32 @@ function(object, ...,
                         color = colors[["darkgray"]])
          },
          "lane-fov" = {
-           df <- pData(protocolData(object))
-           df <- data.frame(FOVCounted = df[["FovCounted"]] / df[["FovCount"]],
-                            row.names = rownames(df))
-           mapping <- aes_string(x = "LaneID", y = "FOVCounted",
-                                 tooltip = "SampleName")
-           p <- ggplot(object, mapping, extradata = df, ...) +
-             geom_point_interactive(color = colors[["blue"]]) +
+           extradata <- pData(protocolData(object))
+           extradata <-
+             data.frame(FOVCounted =
+                          extradata[["FovCounted"]] / extradata[["FovCount"]],
+                        row.names = rownames(extradata))
+           outlier <- extradata[["FOVCounted"]] < 0.75
+           if (any(outlier)) {
+             df[["Outlier"]] <- outlier
+             mapping <- aes_string(x = "LaneID", y = "FOVCounted",
+                                   tooltip = "SampleName", color = "Outlier")
+             p <- ggplot(object, mapping, extradata = extradata, ...) +
+               geom_point_interactive() +
+               scale_color_manual(values = unname(colors[c("blue", "red")]))
+           } else {
+             mapping <- aes_string(x = "LaneID", y = "FOVCounted",
+                                   tooltip = "SampleName")
+             p <- ggplot(object, mapping, extradata = extradata, ...) +
+               geom_point_interactive(color = colors[["blue"]])
+           }
+           p <- p +
              scale_x_continuous(name = "Lane", breaks = 1:12,
                                 limits = c(1L, 12L)) +
              scale_y_continuous(name = "FOV Counted", labels = format_percent,
                                 limits = c(0, 1)) +
              geom_hline(yintercept = 0.75, linetype = 2L,
-                        color = colors[["red"]])
+                        color = colors[["darkgray"]])
          },
          "mean-sd-features" =,
          "mean-sd-samples" = {
