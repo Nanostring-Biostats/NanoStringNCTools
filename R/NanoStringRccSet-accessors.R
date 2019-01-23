@@ -82,6 +82,10 @@ setGeneric("signatureScores", signature = "object",
            function(object, ...) standardGeneric("signatureScores"))
 setMethod("signatureScores", "NanoStringRccSet",
           function(object, elt = "exprs") {
+            if (length(signatureWeights(object)) == 0L) {
+              return(matrix(numeric(), nrow = 0L, ncol = ncol(object),
+                            dimnames = list(NULL, colnames(object))))
+            }
             exprs <- assayDataElement2(object, elt)
             rownames(exprs) <- featureData(object)[["GeneName"]]
             scores <- .sigCalc(exprs, signatureWeights(object))
