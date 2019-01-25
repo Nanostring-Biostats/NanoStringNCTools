@@ -166,6 +166,7 @@ protoheatmap <- function(scores, log2scale, group, object, ...)
 
   if (is.null(group)) {
     annotation_row <- NA
+    annotation_colors <- NA
   } else {
     annotation_row <- sData(object)[group]
     annotation_row[] <-
@@ -183,6 +184,21 @@ protoheatmap <- function(scores, log2scale, group, object, ...)
         x
       })
     rownames(annotation_row) <- rownames(scores)
+
+    colorPalette <-
+      c("#4E79A7", "#F28E2B", "#E15759", "#76B7B2", "#59A14F", "#EDC948",
+        "#B07AA1", "#FF9DA7", "#9C755F", "#BAB0AC")
+    annotation_colors <- cumsum(sapply(annotation_row, nlevels))
+    annotation_colors <- Map(`:`, c(1L, head(annotation_colors, -1L) + 1L),
+                             annotation_colors)
+    annotation_colors <- structure(lapply(annotation_colors, function(x) {
+      x <- x %% length(colorPalette)
+      x[x == 0L] <- length(colorPalette)
+      colorPalette[x]
+    }), names = colnames(annotation_row))
+    for (j in seq_len(ncol(annotation_row))) {
+      names(annotation_colors[[j]]) <- levels(annotation_row[[j]])
+    }
   }
 
   pheatmap(scores,
@@ -191,6 +207,7 @@ protoheatmap <- function(scores, log2scale, group, object, ...)
                                 rev(brewer.pal(n = 7L, name = "RdYlBu")),
                                 "darkred"))(100),
            annotation_row = annotation_row,
+           annotation_colors = annotation_colors,
            show_rownames = (nrow(scores) <= 64L),
            show_colnames = (ncol(scores) <= 64L),
            silent = TRUE,
