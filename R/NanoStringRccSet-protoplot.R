@@ -168,6 +168,20 @@ protoheatmap <- function(scores, log2scale, group, object, ...)
     annotation_row <- NA
   } else {
     annotation_row <- sData(object)[group]
+    annotation_row[] <-
+      lapply(annotation_row, function(x) {
+        if (is.factor(x)) {
+          levels(x) <- trimws(levels(x))
+          x[x == ""] <- NA
+          x <- x[drop = TRUE]
+        } else {
+          x <- trimws(x)
+          x[x == ""] <- NA
+        }
+        x <- addNA(x, ifany = TRUE)
+        levels(x)[is.na(levels(x))] <- "<N/A>"
+        x
+      })
     rownames(annotation_row) <- rownames(scores)
   }
 
