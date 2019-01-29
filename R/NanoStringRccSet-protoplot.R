@@ -15,7 +15,8 @@ function(object, ...,
          log2scale = TRUE,
          elt = "exprs",
          group = NULL,
-         tooltip_digits = 4L)
+         tooltipHeading = NULL,
+         tooltipDigits = 4L)
 {
   args <- list(...)
   colors <- c(blue = "#4E79A7", orange = "#F28E2B", red = "#E15759",
@@ -38,15 +39,15 @@ function(object, ...,
            object <- endogenousSubset(object)
            scores <- assayDataElement2(object, elt)
            rownames(scores) <- featureData(object)[["GeneName"]]
-           colnames(scores) <- protocolData(object)[["SampleID"]]
            p <- protoheatmap(scores, log2scale = log2scale, group = group,
-                             object = object, ...)
+                             object = object,  tooltipHeading = tooltipHeading,
+                             ...)
          },
          "heatmap-signatures" = {
            scores <- signatureScores(object, elt)
-           colnames(scores) <- protocolData(object)[["SampleID"]]
            p <- protoheatmap(scores, log2scale = log2scale, group = group,
-                             object = object, ...)
+                             object = object, tooltipHeading = tooltipHeading,
+                             ...)
          },
          "lane-bindingDensity" = {
            maxBD <- 2.25
@@ -116,8 +117,8 @@ function(object, ...,
            }
            df[["ToolTip"]] <-
              sprintf("%s<br>%s = %s<br>%s = %s", rownames(df),
-                     colnames(df)[1L], signif(df[,1L], tooltip_digits),
-                     colnames(df)[2L], signif(df[,2L], tooltip_digits))
+                     colnames(df)[1L], signif(df[,1L], tooltipDigits),
+                     colnames(df)[2L], signif(df[,2L], tooltipDigits))
            p <- ggplot(df, mapping, ...) + geom_point_interactive(...)
          },
          "positiveControl" = {
@@ -158,11 +159,23 @@ function(object, ...,
 })
 
 
-protoheatmap <- function(scores, log2scale, group, object, ...)
+protoheatmap <-
+function(scores, log2scale, group, object,
+         tooltipHeading = NULL,
+         scaleCutoff = 3,
+         groupPalette =
+           c("#4E79A7", "#F28E2B", "#E15759", "#76B7B2", "#59A14F",
+             "#EDC948", "#B07AA1", "#FF9DA7", "#9C755F", "#BAB0AC"),
+         ...)
 {
   if (log2scale)
     scores <- log2t(scores)
-  scores <- t(pmin(pmax(scale(scores), -3), 3))
+
+  if (!is.null(tooltipHeading))
+    colnames(scores) <- sData(object)[[tooltipHeading]]
+
+  scaleCutoff <- abs(scaleCutoff)
+  scores <- t(pmin(pmax(scale(scores), - scaleCutoff), scaleCutoff))
 
   if (is.null(group)) {
     annotation_row <- NA
@@ -185,16 +198,13 @@ protoheatmap <- function(scores, log2scale, group, object, ...)
       })
     rownames(annotation_row) <- rownames(scores)
 
-    colorPalette <-
-      c("#4E79A7", "#F28E2B", "#E15759", "#76B7B2", "#59A14F", "#EDC948",
-        "#B07AA1", "#FF9DA7", "#9C755F", "#BAB0AC")
     annotation_colors <- cumsum(sapply(annotation_row, nlevels))
     annotation_colors <- Map(`:`, c(1L, head(annotation_colors, -1L) + 1L),
                              annotation_colors)
     annotation_colors <- structure(lapply(annotation_colors, function(x) {
-      x <- x %% length(colorPalette)
-      x[x == 0L] <- length(colorPalette)
-      colorPalette[x]
+      x <- x %% length(groupPalette)
+      x[x == 0L] <- length(groupPalette)
+      groupPalette[x]
     }), names = colnames(annotation_row))
     for (j in seq_len(ncol(annotation_row))) {
       names(annotation_colors[[j]]) <- levels(annotation_row[[j]])
