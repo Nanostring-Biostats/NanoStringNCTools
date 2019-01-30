@@ -54,7 +54,15 @@ setReplaceMethod("signatureWeights", c("NanoStringRccSet", "NULL"),
                    object
                  })
 
-# signatureWeights Accessor and Replacer
+# signatureNames Accessor
+setGeneric("signatureNames", signature = "object",
+           function(object) standardGeneric("signatureNames"))
+setMethod("signatureNames", "NanoStringRccSet",
+          function(object) {
+            names(signatureWeights(object))
+          })
+
+# signatureLength Accessor
 setGeneric("signatureLength", signature = "object",
            function(object) standardGeneric("signatureLength"))
 setMethod("signatureLength", "NanoStringRccSet",

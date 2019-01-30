@@ -26,6 +26,8 @@
 \alias{signatureWeights<-,NanoStringRccSet,list-method}
 \alias{signatureWeights<-,NanoStringRccSet,NULL-method}
 \alias{signatureWeights<-,NanoStringRccSet,NumericList-method}
+\alias{signatureNames}
+\alias{signatureNames,NanoStringRccSet-method}
 \alias{signatureLength}
 \alias{signatureLength,NanoStringRccSet-method}
 \alias{signatureScores}
@@ -144,6 +146,9 @@ NanoStringRccSet(assayData,
     \item{}{
       \code{signatureWeights(object) <- value}: replaces the list of gene
       signature weights.
+    }
+    \item{}{
+      \code{signatureNames(object)}: returns the names of the signatures.
     }
     \item{}{
       \code{signatureLength(object)}: returns the number of genes for each
