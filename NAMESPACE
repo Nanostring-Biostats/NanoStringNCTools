@@ -17,8 +17,8 @@ importFrom(Biobase, assayDataElement, "assayDataElement<-",
            assayDataElementNames, assayDataNew, copyEnv, MIAME, multiassign)
 importFrom(Biostrings, BStringSet, DNAStringSet)
 importFrom(ggbeeswarm, position_beeswarm)
-importFrom(ggiraph, GeomInteractivePoint, geom_line_interactive,
-           geom_point_interactive)
+importFrom(ggiraph, GeomInteractivePoint, geom_boxplot_interactive,
+           geom_line_interactive, geom_point_interactive)
 importFrom(ggplot2, aes, aes_string, geom_boxplot, geom_hline, ggplot, layer,
            scale_color_manual, scale_x_continuous, scale_x_discrete,
            scale_y_continuous, stat_boxplot)
@@ -48,7 +48,7 @@ export(NanoStringRccSet,
        esBy,
        munge,
        setQCFlags,
-       protoplot, exprsplot)
+       protoplot)
 
 ### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ### Export S4 methods
@@ -65,7 +65,7 @@ exportMethods(NanoStringRccSet, show,
               esApply, esBy, with,
               munge, transform,
               setQCFlags, normalize,
-              protoplot, exprsplot)
+              protoplot)
 
 ### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ### Export non-generic functions

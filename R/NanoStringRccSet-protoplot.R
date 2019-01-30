@@ -3,7 +3,9 @@ setGeneric("protoplot", signature = "object",
 
 setMethod("protoplot", "NanoStringRccSet",
 function(object, ...,
-         type = c("bindingDensity-mean",
+         type = c("boxplot-feature",
+                  "boxplot-signature",
+                  "bindingDensity-mean",
                   "bindingDensity-sd",
                   "heatmap-genes",
                   "heatmap-signatures",
@@ -15,6 +17,7 @@ function(object, ...,
          log2scale = TRUE,
          elt = "exprs",
          group = NULL,
+         index = 1L,
          tooltipHeading = NULL,
          tooltipDigits = 4L)
 {
@@ -23,6 +26,37 @@ function(object, ...,
               darkgray = "#79706E")
   type <- match.arg(type)
   switch(type,
+         "boxplot-feature" =,
+         "boxplot-signature" = {
+           if (type == "boxplot-feature") {
+             scores <- assayDataElement2(object, elt)
+             name <- fData(object)[index, "GeneName"]
+           } else {
+             scores <- signatureScores(object, elt)
+             name <- rownames(scores)[index]
+           }
+           if (is.null(group)) {
+             x <- rep("", ncol(scores))
+           } else {
+             x <- sData(object)[[group]]
+           }
+           y <- scores[index, ]
+           if (is.null(group))
+             tooltip <- sprintf("%s<br>%s = %s", colnames(scores),
+                                name, signif(y, tooltipDigits))
+           else
+             tooltip <- sprintf("%s<br>%s = %s<br>%s = %s", colnames(scores),
+                                group, x, name, signif(y, tooltipDigits))
+           df <- data.frame(group = x, signature = y, tooltip = tooltip,
+                            stringsAsFactors = FALSE)
+           p <- ggplot(df, aes_string(x = "group", y = "signature")) +
+             stat_boxplot(geom = "errorbar", width = 0.5) +
+             geom_boxplot_interactive(aes_string(tooltip = "group"),
+                                      outlier.shape = NA) +
+             scale_x_discrete(name = group) + scale_y_continuous(name = name) +
+             geom_beeswarm_interactive(aes_string(tooltip = "tooltip"),
+                                       size = 2, color = colors[["blue"]])
+         },
          "bindingDensity-mean" =,
          "bindingDensity-sd" = {
            if (log2scale) {

@@ -22,7 +22,6 @@ Collate: RccMetadata.R
          NanoStringRccSet-munge.R
          NanoStringRccSet-ggplot.R
          NanoStringRccSet-protoplot.R
-         NanoStringRccSet-exprsplot.R
          readRccFile.R
          readRlfFile.R
          readNanoStringRccSet.R

@@ -80,8 +80,6 @@
 \alias{ggplot.NanoStringRccSet}
 \alias{protoplot}
 \alias{protoplot,NanoStringRccSet-method}
-\alias{exprsplot}
-\alias{exprsplot,NanoStringRccSet-method}
 
 \title{Class to Contain NanoString Expression Level Assays}
 
