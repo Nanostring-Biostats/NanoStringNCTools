@@ -80,8 +80,7 @@
 
 % plotting
 \alias{ggplot.NanoStringRccSet}
-\alias{protoplot}
-\alias{protoplot,NanoStringRccSet-method}
+\alias{autoplot.NanoStringRccSet}
 
 \title{Class to Contain NanoString Expression Level Assays}
 
@@ -309,7 +308,7 @@ NanoStringRccSet(assayData,
       the \code{NanoStringRccSet} method for \code{ggplot}.
     }
     \item{}{
-      \code{protoplot(object, \ldots, type, log2scale = TRUE, elt = "exprs", tooltip_digits = 4L)}:
+      \code{autoplot(object, type, log2scale = TRUE, elt = "exprs", group = NULL, index = 1L, tooltipHeading = NULL, tooltipDigits = 4L, \ldots)}:
     }
   }
 }

@@ -1,8 +1,5 @@
-setGeneric("protoplot", signature = "object",
-           function(object, ...) standardGeneric("protoplot"))
-
-setMethod("protoplot", "NanoStringRccSet",
-function(object, ...,
+autoplot.NanoStringRccSet <-
+function(object,
          type = c("boxplot-feature",
                   "boxplot-signature",
                   "bindingDensity-mean",
@@ -19,7 +16,8 @@ function(object, ...,
          group = NULL,
          index = 1L,
          tooltipHeading = NULL,
-         tooltipDigits = 4L)
+         tooltipDigits = 4L,
+         ...)
 {
   args <- list(...)
   colors <- c(blue = "#4E79A7", orange = "#F28E2B", red = "#E15759",
@@ -190,7 +188,7 @@ function(object, ...,
              scale_y_continuous(trans = "log2")
          })
   p
-})
+}
 
 
 protoheatmap <-

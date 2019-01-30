@@ -19,9 +19,9 @@ importFrom(Biostrings, BStringSet, DNAStringSet)
 importFrom(ggbeeswarm, position_beeswarm)
 importFrom(ggiraph, GeomInteractivePoint, geom_boxplot_interactive,
            geom_line_interactive, geom_point_interactive)
-importFrom(ggplot2, aes, aes_string, geom_boxplot, geom_hline, ggplot, layer,
-           scale_color_manual, scale_x_continuous, scale_x_discrete,
-           scale_y_continuous, stat_boxplot)
+importFrom(ggplot2, aes, aes_string, autoplot, geom_boxplot, geom_hline,
+           ggplot, layer, scale_color_manual, scale_x_continuous,
+           scale_x_discrete, scale_y_continuous, stat_boxplot)
 importFrom(grDevices, colorRampPalette)
 importFrom(IRanges, NumericList)
 importFrom(methods, as, callGeneric, callNextMethod, is, validObject)
@@ -47,8 +47,7 @@ export(NanoStringRccSet,
        controlSubset, nonControlSubset, signatureSubset,
        esBy,
        munge,
-       setQCFlags,
-       protoplot)
+       setQCFlags)
 
 ### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ### Export S4 methods
@@ -64,8 +63,7 @@ exportMethods(NanoStringRccSet, show,
               controlSubset, nonControlSubset, signatureSubset,
               esApply, esBy, with,
               munge, transform,
-              setQCFlags, normalize,
-              protoplot)
+              setQCFlags, normalize)
 
 ### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ### Export non-generic functions
@@ -87,3 +85,4 @@ export(readNanoStringRccSet,
 ### Export S3 methods
 
 S3method(ggplot, NanoStringRccSet)
+S3method(autoplot, NanoStringRccSet)
