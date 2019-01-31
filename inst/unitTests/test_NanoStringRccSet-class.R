@@ -16,7 +16,7 @@ rcc <-
          AnnotatedDataFrame(data.frame(BarcodeClass = c("Endogenous", "Positive", "Negative", "Housekeeping"),
                                        GeneName = letters[1:4],
                                        Accession = letters[1:4],
-                                       IsControl = c(FALSE, TRUE, TRUE, FALSE),
+                                       IsControl = c(FALSE, TRUE, TRUE, TRUE),
                                        ControlConc = c(NA_real_, 0.125, 0, NA_real_),
                                        row.names = letters[1:4],
                                        stringsAsFactors = FALSE),

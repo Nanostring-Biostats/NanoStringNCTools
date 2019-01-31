@@ -109,10 +109,10 @@ function(object)
         }
       }
       if (length(housekp) > 0L) {
-        if (!.allFALSE(isControl[housekp])) {
+        if (!.allTRUE(isControl[housekp])) {
           msg <-
             c(msg,
-              "'featureData': \"IsControl\" must all be FALSE when BarcodeClass == \"Housekeeping\"")
+              "'featureData': \"IsControl\" must all be TRUE when BarcodeClass == \"Housekeeping\"")
         }
         if (!.allNA(controlConc[housekp])) {
           msg <-

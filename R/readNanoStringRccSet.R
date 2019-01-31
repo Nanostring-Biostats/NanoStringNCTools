@@ -50,9 +50,11 @@ function(rccFiles,
   feature <- feature[[1L]]
   feature[["IsControl"]] <- NA
   feature[["IsControl"]][feature[["BarcodeClass"]] %in%
-                           c("Negative", "Positive")] <- TRUE
+                           .barcodeMetadata[.barcodeMetadata[["IsControl"]],
+                                            "BarcodeClass"]] <- TRUE
   feature[["IsControl"]][feature[["BarcodeClass"]] %in%
-                           c("Endogenous", "Housekeeping")] <- FALSE
+                           .barcodeMetadata[!.barcodeMetadata[["IsControl"]],
+                                            "BarcodeClass"]] <- FALSE
   feature[["ControlConc"]] <- NA_real_
   feature[["ControlConc"]][feature[["BarcodeClass"]] == "Negative"] <- 0
   feature[["ControlConc"]][feature[["BarcodeClass"]] == "Positive"] <-
@@ -78,7 +80,6 @@ function(rccFiles,
       stop("featureData mismatch between RLF and RCC files")
 
     rlfData <- rlfData[rownames(feature), , drop = FALSE]
-    feature[["IsControl"]] <- rlfData[["BarcodeClassActive"]] == 3L
 
     for (j in c("BarcodeClass", "GeneName", "Accession", "BarcodeClassActive")) {
       rlfData[[j]] <- NULL

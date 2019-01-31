@@ -69,6 +69,33 @@ rownames(.rccMetadata[["protocolData"]])[
   rownames(.rccMetadata[["protocolData"]]) == "ID1"] <- "LaneID"
 
 
+.barcodeMetadata <-
+  c("BarcodeClass,IsControl,Analyte",
+    "Endogenous,FALSE,gx|cnv|fusion",
+    "Housekeeping,TRUE,gx|fusion",
+    "Positive,TRUE,general",
+    "Negative,TRUE,general",
+    "Binding,TRUE,general",
+    "Purification,TRUE,general",
+    "Reserved,TRUE,general",
+    "SNV_INPUT_CTL,TRUE,SNV",
+    "SNV_NEG,TRUE,SNV",
+    "SNV_POS,TRUE,SNV",
+    "SNV_UDG_CTL,TRUE,SNV",
+    "SNV_PCR_CTL,TRUE,SNV",
+    "SNV_REF,FALSE,SNV",
+    "SNV_VAR,FALSE,SNV",
+    "PROTEIN,FALSE,protein",
+    "PROTEIN_NEG,TRUE,protein",
+    "PROTEIN_CELL_NORM,TRUE,protein",
+    "Restriction Site,TRUE,CNV",
+    "Invariant,TRUE,CNV")
+.barcodeMetadata <-
+  read.csv(textConnection(paste0(.barcodeMetadata, collapse = "\n")),
+           colClasses = c("character", "logical", "character"),
+           stringsAsFactors = FALSE)
+
+
 .validRccSchema <-
 function(x, fileVersion,
          section = c("Header", "Sample_Attributes", "Lane_Attributes",

@@ -11,7 +11,7 @@ test_readNanoStringRccSet_onearg <- function() {
                               c("TP53",
                                 "PIK3CA Ref (exon 10)|hg19|+|chr3:178936060-178936141"),
                             Accession = c("NM_000546.2", "nRef_00032.1"),
-                            IsControl = c(FALSE, NA),
+                            IsControl = c(FALSE, FALSE),
                             ControlConc = c(NA_real_, NA_real_),
                             row.names =
                               c("Endogenous_TP53_NM_000546.2",
