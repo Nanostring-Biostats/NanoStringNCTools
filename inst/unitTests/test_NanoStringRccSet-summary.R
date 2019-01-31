@@ -9,7 +9,7 @@ rcc <-
                                        stringsAsFactors = FALSE),
                             dimLabels = c("sampleNames", "sampleColumns")),
        featureData =
-         AnnotatedDataFrame(data.frame(BarcodeClass = c("Endogenous", "Positive", "Negative", "Housekeeping"),
+         AnnotatedDataFrame(data.frame(CodeClass = c("Endogenous", "Positive", "Negative", "Housekeeping"),
                                        GeneName = letters[1:4],
                                        Accession = letters[1:4],
                                        IsControl = c(FALSE, TRUE, TRUE, TRUE),
@@ -190,5 +190,5 @@ test_NanoStringRccSet_summary_GROUP <- function() {
                            Median = c(1, 5, 9),
                            Q3 = c(1, 5, 9),
                            Max = c(1, 5, 9))),
-              summary(rcc2, 2L, "BarcodeClass"))
+              summary(rcc2, 2L, "CodeClass"))
 }

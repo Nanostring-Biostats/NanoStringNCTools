@@ -6,7 +6,7 @@ test_readNanoStringRccSet_onearg <- function() {
                              full.names = TRUE))
   checkTrue(validObject(rcc))
   checkIdentical(c(Features = 397L, Samples = 12L), dim(rcc))
-  checkIdentical(data.frame(BarcodeClass = c("Endogenous", "SNV_REF"),
+  checkIdentical(data.frame(CodeClass = c("Endogenous", "SNV_REF"),
                             GeneName =
                               c("TP53",
                                 "PIK3CA Ref (exon 10)|hg19|+|chr3:178936060-178936141"),
@@ -51,7 +51,7 @@ test_readNanoStringRccSet_rlf <- function() {
                          file.path(datadir, "3D_SolidTumor_Sig.rlf"))
   checkTrue(validObject(rcc))
   checkIdentical(c(Features = 397L, Samples = 12L), dim(rcc))
-  checkIdentical(data.frame(BarcodeClass = c("Endogenous", "SNV_REF"),
+  checkIdentical(data.frame(CodeClass = c("Endogenous", "SNV_REF"),
                             GeneName =
                               c("TP53",
                                 "PIK3CA Ref (exon 10)|hg19|+|chr3:178936060-178936141"),
@@ -67,7 +67,7 @@ test_readNanoStringRccSet_rlf <- function() {
                                 "SNV_REF_PIK3CA Ref (exon 10)|hg19|+|chr3:178936060-178936141_nRef_00032.1"),
                             stringsAsFactors = FALSE),
                  fData(rcc)[c(1L, nrow(rcc)),
-                            c("BarcodeClass", "GeneName", "Accession",
+                            c("CodeClass", "GeneName", "Accession",
                               "IsControl", "ControlConc",
                               "Barcode", "ProbeID", "Species",
                               "BarcodeComments")])
@@ -105,7 +105,7 @@ test_readNanoStringRccSet_rlf_pheno <- function() {
                          file.path(datadir, "3D_SolidTumor_PhenoData.csv"))
   checkTrue(validObject(rcc))
   checkIdentical(c(Features = 397L, Samples = 12L), dim(rcc))
-  checkIdentical(data.frame(BarcodeClass = c("Endogenous", "SNV_REF"),
+  checkIdentical(data.frame(CodeClass = c("Endogenous", "SNV_REF"),
                             GeneName =
                               c("TP53",
                                 "PIK3CA Ref (exon 10)|hg19|+|chr3:178936060-178936141"),
@@ -120,7 +120,7 @@ test_readNanoStringRccSet_rlf_pheno <- function() {
                                 "SNV_REF_PIK3CA Ref (exon 10)|hg19|+|chr3:178936060-178936141_nRef_00032.1"),
                             stringsAsFactors = FALSE),
                  fData(rcc)[c(1L, nrow(rcc)),
-                            c("BarcodeClass", "GeneName", "Accession",
+                            c("CodeClass", "GeneName", "Accession",
                               "Barcode", "ProbeID", "Species",
                               "BarcodeComments", "IsControl")])
   checkIdentical(data.frame(Treatment = c("DMSO", "VEM"),
@@ -160,7 +160,7 @@ test_readNanoStringRccSet_rlf_pheno <- function() {
                          phenoDataColPrefix = "PHENO_")
   checkTrue(validObject(rcc))
   checkIdentical(c(Features = 397L, Samples = 12L), dim(rcc))
-  checkIdentical(data.frame(BarcodeClass = c("Endogenous", "SNV_REF"),
+  checkIdentical(data.frame(CodeClass = c("Endogenous", "SNV_REF"),
                             GeneName =
                               c("TP53",
                                 "PIK3CA Ref (exon 10)|hg19|+|chr3:178936060-178936141"),
@@ -175,7 +175,7 @@ test_readNanoStringRccSet_rlf_pheno <- function() {
                                 "SNV_REF_PIK3CA Ref (exon 10)|hg19|+|chr3:178936060-178936141_nRef_00032.1"),
                             stringsAsFactors = FALSE),
                  fData(rcc)[c(1L, nrow(rcc)),
-                            c("BarcodeClass", "GeneName", "Accession",
+                            c("CodeClass", "GeneName", "Accession",
                               "Barcode", "ProbeID", "Species",
                               "BarcodeComments", "IsControl")])
   checkIdentical(data.frame(PHENO_Treatment = c("DMSO", "VEM"),

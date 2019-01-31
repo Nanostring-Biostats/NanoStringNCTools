@@ -17,7 +17,7 @@ readRlfFile(file)
 
 \value{
   An instance of the \code{\linkS4class{DataFrame}} class containing columns:
-  \item{"BarcodeClass"}{barcode class}
+  \item{"CodeClass"}{code class}
   \item{"GeneName"}{gene name}
   \item{"Accession"}{accession number}
   \item{\ldots}{additional columns}

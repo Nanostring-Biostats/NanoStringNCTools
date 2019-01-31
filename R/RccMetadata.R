@@ -44,7 +44,7 @@
                              c(NA_character_, NA_character_, NA_character_,
                                NA_character_),
                            minVersion = numeric_version(c(rep("1.7", 4L))),
-                           row.names = c("BarcodeClass", "Name", "Accession", "Count"),
+                           row.names = c("CodeClass", "Name", "Accession", "Count"),
                            stringsAsFactors = FALSE),
               "Messages" = "character")
   )
@@ -69,8 +69,8 @@ rownames(.rccMetadata[["protocolData"]])[
   rownames(.rccMetadata[["protocolData"]]) == "ID1"] <- "LaneID"
 
 
-.barcodeMetadata <-
-  c("BarcodeClass,IsControl,Analyte",
+.codeClassMetadata <-
+  c("CodeClass,IsControl,Analyte",
     "Endogenous,FALSE,gx|cnv|fusion",
     "Housekeeping,TRUE,gx|fusion",
     "Positive,TRUE,general",
@@ -90,8 +90,8 @@ rownames(.rccMetadata[["protocolData"]])[
     "PROTEIN_CELL_NORM,TRUE,protein",
     "Restriction Site,TRUE,CNV",
     "Invariant,TRUE,CNV")
-.barcodeMetadata <-
-  read.csv(textConnection(paste0(.barcodeMetadata, collapse = "\n")),
+.codeClassMetadata <-
+  read.csv(textConnection(paste0(.codeClassMetadata, collapse = "\n")),
            colClasses = c("character", "logical", "character"),
            stringsAsFactors = FALSE)
 

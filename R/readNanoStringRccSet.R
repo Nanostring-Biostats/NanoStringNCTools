@@ -44,23 +44,22 @@ function(rccFiles,
 
   # Create featureData
   feature <- lapply(data, function(x) {
-    x[["Code_Summary"]][, c("BarcodeClass", "GeneName", "Accession")]
+    x[["Code_Summary"]][, c("CodeClass", "GeneName", "Accession")]
   })
   stopifnot(all(sapply(feature, function(x) identical(feature[[1L]], x))))
   feature <- feature[[1L]]
   feature[["IsControl"]] <- NA
-  feature[["IsControl"]][feature[["BarcodeClass"]] %in%
-                           .barcodeMetadata[.barcodeMetadata[["IsControl"]],
-                                            "BarcodeClass"]] <- TRUE
-  feature[["IsControl"]][feature[["BarcodeClass"]] %in%
-                           .barcodeMetadata[!.barcodeMetadata[["IsControl"]],
-                                            "BarcodeClass"]] <- FALSE
+  feature[["IsControl"]][feature[["CodeClass"]] %in%
+                           .codeClassMetadata[.codeClassMetadata[["IsControl"]],
+                                              "CodeClass"]] <- TRUE
+  feature[["IsControl"]][feature[["CodeClass"]] %in%
+                           .codeClassMetadata[!.codeClassMetadata[["IsControl"]],
+                                              "CodeClass"]] <- FALSE
   feature[["ControlConc"]] <- NA_real_
-  feature[["ControlConc"]][feature[["BarcodeClass"]] == "Negative"] <- 0
-  feature[["ControlConc"]][feature[["BarcodeClass"]] == "Positive"] <-
+  feature[["ControlConc"]][feature[["CodeClass"]] == "Negative"] <- 0
+  feature[["ControlConc"]][feature[["CodeClass"]] == "Positive"] <-
     as.numeric(sub("POS_\\w\\((.*)\\)", "\\1",
-                   feature[["GeneName"]][feature[["BarcodeClass"]] ==
-                                           "Positive"]))
+                   feature[["GeneName"]][feature[["CodeClass"]] == "Positive"]))
   if (is.null(rlfFile)) {
     rlfHeader <- list()
   } else if (!is.null(rlfFile)) {
@@ -70,10 +69,10 @@ function(rccFiles,
     rlfHeader[["RlfFileDate"]] <- as.character(rlfHeader[["RlfFileDate"]])
 
     rlfData <- as.data.frame(rlfData)
-    rlfData <- rlfData[rlfData[["BarcodeClassActive"]] %in% c(2L, 3L), ,
+    rlfData <- rlfData[rlfData[["CodeClassActive"]] %in% c(2L, 3L), ,
                        drop = FALSE]
     rownames(rlfData) <-
-      sprintf("%s_%s_%s", rlfData[["BarcodeClass"]], rlfData[["GeneName"]],
+      sprintf("%s_%s_%s", rlfData[["CodeClass"]], rlfData[["GeneName"]],
               rlfData[["Accession"]])
 
     if (!identical(sort(rownames(feature)), sort(rownames(rlfData))))
@@ -81,7 +80,7 @@ function(rccFiles,
 
     rlfData <- rlfData[rownames(feature), , drop = FALSE]
 
-    for (j in c("BarcodeClass", "GeneName", "Accession", "BarcodeClassActive")) {
+    for (j in c("CodeClass", "GeneName", "Accession", "CodeClassActive")) {
       rlfData[[j]] <- NULL
     }
     feature <- cbind(feature, rlfData)

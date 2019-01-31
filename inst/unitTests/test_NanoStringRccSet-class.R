@@ -13,7 +13,7 @@ rcc <-
                                        stringsAsFactors = FALSE),
                             dimLabels = c("sampleNames", "sampleColumns")),
        featureData =
-         AnnotatedDataFrame(data.frame(BarcodeClass = c("Endogenous", "Positive", "Negative", "Housekeeping"),
+         AnnotatedDataFrame(data.frame(CodeClass = c("Endogenous", "Positive", "Negative", "Housekeeping"),
                                        GeneName = letters[1:4],
                                        Accession = letters[1:4],
                                        IsControl = c(FALSE, TRUE, TRUE, TRUE),
@@ -253,7 +253,7 @@ test_NanoStringRccSet_exception_duplicate_names <- function() {
   checkException(validObject(y))
 
   y <- x
-  pData(y)[["BarcodeClass"]] <- 1L
+  pData(y)[["CodeClass"]] <- 1L
   checkException(validObject(y))
 
   y <- x
@@ -270,7 +270,7 @@ test_NanoStringRccSet_exception_duplicate_names <- function() {
   checkException(validObject(y))
 
   y <- x
-  pData(protocolData(y))[["BarcodeClass"]] <- 1L
+  pData(protocolData(y))[["CodeClass"]] <- 1L
   checkException(validObject(y))
 
   y <- x
@@ -353,5 +353,5 @@ test_NanoStringRccSet_exception_design <- function() {
                                   featureData = rcc$featureData,
                                   annotation = rcc$annotation,
                                   protocolData = rcc$protocolData,
-                                  design = ~ BarcodeClass))
+                                  design = ~ CodeClass))
 }

@@ -9,7 +9,7 @@ rcc <-
                                        stringsAsFactors = FALSE),
                             dimLabels = c("sampleNames", "sampleColumns")),
        featureData =
-         AnnotatedDataFrame(data.frame(BarcodeClass = c("Endogenous", "Positive", "Negative", "Housekeeping"),
+         AnnotatedDataFrame(data.frame(CodeClass = c("Endogenous", "Positive", "Negative", "Housekeeping"),
                                        GeneName = letters[1:4],
                                        Accession = letters[1:4],
                                        IsControl = c(FALSE, TRUE, TRUE, TRUE),
@@ -49,10 +49,10 @@ test_NanoStringRccSet_munge_exception_missing_mapping <- function() {
 }
 
 test_NanoStringRccSet_munge_exception_feature_and_sample_vars <- function() {
-  checkException(munge(rcc, ~ BarcodeClass + BindingDensity))
+  checkException(munge(rcc, ~ CodeClass + BindingDensity))
 
   rcc2 <- rcc
-  design(rcc2) <- ~ BarcodeClass + BindingDensity
+  design(rcc2) <- ~ CodeClass + BindingDensity
   checkException(munge(rcc2))
 }
 
@@ -70,30 +70,30 @@ test_NanoStringRccSet_munge_exception_ambiguous_summaries <- function() {
 
 test_NanoStringRccSet_munge_featureData <- function() {
   target <- data.frame(FeatureName = featureNames(rcc),
-                       BarcodeClass = c("Endogenous", "Positive", "Negative", "Housekeeping"),
+                       CodeClass = c("Endogenous", "Positive", "Negative", "Housekeeping"),
                        stringsAsFactors = FALSE)
-  checkIdentical(target, munge(rcc, ~ BarcodeClass))
+  checkIdentical(target, munge(rcc, ~ CodeClass))
 
   target <-
     data.frame(FeatureName = featureNames(rcc),
                MeanLog2 = c(1.333333333, 1.830617699, 2.302296865, 2.617249680),
-               BarcodeClass = c("Endogenous", "Positive", "Negative", "Housekeeping"),
+               CodeClass = c("Endogenous", "Positive", "Negative", "Housekeeping"),
                stringsAsFactors = FALSE)
-  checkEquals(target, munge(rcc, ~ MeanLog2 + BarcodeClass))
+  checkEquals(target, munge(rcc, ~ MeanLog2 + CodeClass))
 
   target <-
     data.frame(FeatureName = featureNames(rcc),
                Mean = 4:7,
-               BarcodeClass = c("Endogenous", "Positive", "Negative", "Housekeeping"),
+               CodeClass = c("Endogenous", "Positive", "Negative", "Housekeeping"),
                stringsAsFactors = FALSE)
-  checkEquals(target, munge(rcc, ~ Mean + BarcodeClass))
+  checkEquals(target, munge(rcc, ~ Mean + CodeClass))
 
   target <-
     data.frame(FeatureName = featureNames(rcc),
                Median = 4:7,
-               BarcodeClass = c("Endogenous", "Positive", "Negative", "Housekeeping"),
+               CodeClass = c("Endogenous", "Positive", "Negative", "Housekeeping"),
                stringsAsFactors = FALSE)
-  checkEquals(target, munge(rcc, ~ Median + BarcodeClass))
+  checkEquals(target, munge(rcc, ~ Median + CodeClass))
 }
 
 test_NanoStringRccSet_munge_sampleData <- function() {

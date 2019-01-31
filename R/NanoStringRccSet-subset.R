@@ -25,7 +25,7 @@ setGeneric("endogenousSubset", signature = "x",
 setMethod("endogenousSubset", "NanoStringRccSet",
           function(x, subset, select) {
             call <- match.call()
-            call$x <- x[which(featureData(x)[["BarcodeClass"]] == "Endogenous"), ]
+            call$x <- x[which(featureData(x)[["CodeClass"]] == "Endogenous"), ]
             call[[1L]] <- as.name("subset")
             eval(call, parent.frame())
           })
@@ -35,7 +35,7 @@ setGeneric("housekeepingSubset", signature = "x",
 setMethod("housekeepingSubset", "NanoStringRccSet",
           function(x, subset, select) {
             call <- match.call()
-            call$x <- x[which(featureData(x)[["BarcodeClass"]] == "Housekeeping"), ]
+            call$x <- x[which(featureData(x)[["CodeClass"]] == "Housekeeping"), ]
             call[[1L]] <- as.name("subset")
             eval(call, parent.frame())
           })
@@ -45,7 +45,7 @@ setGeneric("negativeControlSubset", signature = "x",
 setMethod("negativeControlSubset", "NanoStringRccSet",
           function(x, subset, select) {
             call <- match.call()
-            call$x <- x[which(featureData(x)[["BarcodeClass"]] == "Negative"), ]
+            call$x <- x[which(featureData(x)[["CodeClass"]] == "Negative"), ]
             call[[1L]] <- as.name("subset")
             eval(call, parent.frame())
           })
@@ -55,7 +55,7 @@ setGeneric("positiveControlSubset", signature = "x",
 setMethod("positiveControlSubset", "NanoStringRccSet",
           function(x, subset, select) {
             call <- match.call()
-            call$x <- x[which(featureData(x)[["BarcodeClass"]] == "Positive"), ]
+            call$x <- x[which(featureData(x)[["CodeClass"]] == "Positive"), ]
             call[[1L]] <- as.name("subset")
             eval(call, parent.frame())
           })

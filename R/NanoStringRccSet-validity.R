@@ -57,7 +57,7 @@ function(object)
   }
   if (dim(object)[["Features"]] > 0L) {
     # featureData
-    featureDataColNames <- c("BarcodeClass", "GeneName", "Accession",
+    featureDataColNames <- c("CodeClass", "GeneName", "Accession",
                              "IsControl", "ControlConc")
     if (!all(featureDataColNames %in% varLabels(featureData(object)))) {
       msg <-
@@ -65,59 +65,59 @@ function(object)
           sprintf("'featureData' must contain columns %s",
                   paste0("\"", featureDataColNames, "\"", collapse = ", ")))
     } else {
-      barcodeClass <- featureData(object)[["BarcodeClass"]]
+      codeClass <- featureData(object)[["CodeClass"]]
       isControl <- featureData(object)[["IsControl"]]
       controlConc <- featureData(object)[["ControlConc"]]
-      endogen <- which(barcodeClass == "Endogenous")
-      posCtrl <- which(barcodeClass == "Positive")
-      negCtrl <- which(barcodeClass == "Negative")
-      housekp <- which(barcodeClass == "Housekeeping")
+      endogen <- which(codeClass == "Endogenous")
+      posCtrl <- which(codeClass == "Positive")
+      negCtrl <- which(codeClass == "Negative")
+      housekp <- which(codeClass == "Housekeeping")
       if (length(endogen) > 0L) {
         if (!.allFALSE(isControl[endogen])) {
           msg <-
             c(msg,
-              "'featureData': \"IsControl\" must all be FALSE when BarcodeClass == \"Endogenous\"")
+              "'featureData': \"IsControl\" must all be FALSE when CodeClass == \"Endogenous\"")
         }
         if (!.allNA(controlConc[endogen])) {
           msg <-
             c(msg,
-              "'featureData': \"ControlConc\" must all be NA when BarcodeClass == \"Endogenous\"")
+              "'featureData': \"ControlConc\" must all be NA when CodeClass == \"Endogenous\"")
         }
       }
       if (length(posCtrl) > 0L) {
         if (!.allTRUE(isControl[posCtrl])) {
           msg <-
             c(msg,
-              "'featureData': \"IsControl\" must all be TRUE when BarcodeClass == \"Positive\"")
+              "'featureData': \"IsControl\" must all be TRUE when CodeClass == \"Positive\"")
         }
         if (!.validPositiveNumber(controlConc[posCtrl])) {
           msg <-
             c(msg,
-              "'featureData': \"ControlConc\" must be positive numbers when BarcodeClass == \"Positive\"")
+              "'featureData': \"ControlConc\" must be positive numbers when CodeClass == \"Positive\"")
         }
       }
       if (length(negCtrl) > 0L) {
         if (!.allTRUE(isControl[negCtrl])) {
           msg <-
             c(msg,
-              "'featureData': \"IsControl\" must all be TRUE when BarcodeClass == \"Negative\"")
+              "'featureData': \"IsControl\" must all be TRUE when CodeClass == \"Negative\"")
         }
         if (!.allZero(controlConc[negCtrl])) {
           msg <-
             c(msg,
-              "'featureData': \"ControlConc\" must all be zero when BarcodeClass == \"Negative\"")
+              "'featureData': \"ControlConc\" must all be zero when CodeClass == \"Negative\"")
         }
       }
       if (length(housekp) > 0L) {
         if (!.allTRUE(isControl[housekp])) {
           msg <-
             c(msg,
-              "'featureData': \"IsControl\" must all be TRUE when BarcodeClass == \"Housekeeping\"")
+              "'featureData': \"IsControl\" must all be TRUE when CodeClass == \"Housekeeping\"")
         }
         if (!.allNA(controlConc[housekp])) {
           msg <-
             c(msg,
-              "'featureData': \"ControlConc\" must all be NA when BarcodeClass == \"Housekeeping\"")
+              "'featureData': \"ControlConc\" must all be NA when CodeClass == \"Housekeeping\"")
         }
       }
     }

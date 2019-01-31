@@ -11,8 +11,8 @@ function(x, dir = getwd())
 
   # Extract common information
   geneRlf <- annotation(x)
-  features <- pData(featureData(x))[, c("BarcodeClass", "GeneName", "Accession")]
-  names(features)[1L:2L] <- c("CodeClass", "Name")
+  features <- pData(featureData(x))[, c("CodeClass", "GeneName", "Accession")]
+  names(features)[2L] <- "Name"
 
   # Create output templates
   header1.7 <- "<Header>\nFileVersion,%s\nSoftwareVersion,%s\n</Header>\n"

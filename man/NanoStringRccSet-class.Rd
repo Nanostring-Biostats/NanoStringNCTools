@@ -107,7 +107,7 @@ NanoStringRccSet(assayData,
   \item{phenoData}{An \code{\link{AnnotatedDataFrame}} containing the phenotypic
     data.}
   \item{featureData}{An \code{\link{AnnotatedDataFrame}} containing columns
-    \code{"BarcodeClass"}, \code{"GeneName"}, \code{"Accession"},
+    \code{"CodeClass"}, \code{"GeneName"}, \code{"Accession"},
     \code{"IsControl"}, and \code{"ControlConc"}.}
   \item{experimentData}{An optional \code{\link{MIAME}} instance with meta-data
     about the experiment.}
@@ -357,16 +357,16 @@ head(summary(solidTumor, 2)) # Marginal summaries along samples
 # Subsetting NanoStringRccSet objects
 # Extract the positive controls for wildtype BRAF
 dim(solidTumor)
-dim(subset(solidTumor, BarcodeClass == "Positive", BRAFGenotype == "wt/wt"))
+dim(subset(solidTumor, CodeClass == "Positive", BRAFGenotype == "wt/wt"))
 
 # Extract by barcode class
-with(solidTumor, table(BarcodeClass))
-with(endogenousSubset(solidTumor), table(BarcodeClass))
-with(housekeepingSubset(solidTumor), table(BarcodeClass))
-with(negativeControlSubset(solidTumor), table(BarcodeClass))
-with(positiveControlSubset(solidTumor), table(BarcodeClass))
-with(controlSubset(solidTumor), table(BarcodeClass))
-with(nonControlSubset(solidTumor), table(BarcodeClass))
+with(solidTumor, table(CodeClass))
+with(endogenousSubset(solidTumor), table(CodeClass))
+with(housekeepingSubset(solidTumor), table(CodeClass))
+with(negativeControlSubset(solidTumor), table(CodeClass))
+with(positiveControlSubset(solidTumor), table(CodeClass))
+with(controlSubset(solidTumor), table(CodeClass))
+with(nonControlSubset(solidTumor), table(CodeClass))
 
 
 # Looping over NanoStringRccSet assayData matrices
@@ -397,8 +397,7 @@ assayDataElementNames(solidTumor2)
 meanLog1pExprs <-
   with(solidTumor,
        {
-         means <- split(apply(exprs, 1, function(x) mean(log1p(x))),
-                        BarcodeClass)
+         means <- split(apply(exprs, 1, function(x) mean(log1p(x))), CodeClass)
          means <- means[order(sapply(means, median))]
          boxplot(means, horizontal = TRUE)
          means
