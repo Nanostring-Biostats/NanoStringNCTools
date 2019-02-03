@@ -23,14 +23,20 @@ function(data, mapping = update(design(data), exprs ~ .), extradata = NULL,
     hasSummaries <- TRUE
   hasAggregates <- hasLog2Summaries || hasSummaries
   hasAssayDataElts <- any(vars %in% assayDataElementNames(data))
+  useSignatures <- "SignatureName" %in% vars
   if (hasAggregates && hasAssayDataElts)
     stop("\"mapping\" argument cannot contain both aggregates and disaggregates")
   if (hasAggregates && hasFeatureVars && hasSampleVars)
     stop("\"mapping\" argument cannot aggregate using both feature and sample variables")
   if (hasAggregates && !hasFeatureVars && !hasSampleVars)
-    stop("\"mapping\" argument contains an ambiguous aggregate")
+    stop("\"mapping\" argument contains an ambiguous aggregation")
   if (hasLog2Summaries && hasSummaries)
-    stop("\"mapping\" argument cannot use both log2 and linear summary statistics")
+    stop("\"mapping\" argument cannot use both log2 and linear aggregations")
+  if (useSignatures && hasFeatureVars)
+    stop("\"mapping\" argument cannot use both signatures and feature variables")
+  if ((!hasAggregates && !hasAssayDataElts) &&
+      (hasFeatureVars || useSignatures) && hasSampleVars)
+    stop("\"mapping\" argument contains an ambiguous variable selection")
 
   copyRowNames <- function(df, key) {
     rn <- data.frame(rownames(df), stringsAsFactors = FALSE)
@@ -41,16 +47,28 @@ function(data, mapping = update(design(data), exprs ~ .), extradata = NULL,
   # Produce either disaggregate or aggregate results
   if (hasAssayDataElts) {
     assayDataElts <- intersect(vars, assayDataElementNames(data))
-    df <-
-      sapply(assayDataElts, function(elt) {
-        mat <- assayDataElement2(data, elt)
-        as.vector(mat)
-      })
-    df <-
-      data.frame(FeatureName = rep.int(featureNames(data), ncol(data)),
-                 SampleName = rep(sampleNames(data), each = nrow(data)),
-                 df,
-                 stringsAsFactors = FALSE)
+    if (useSignatures) {
+      df <-
+        sapply(assayDataElts, function(elt) {
+          as.vector(signatureScores(data, elt))
+        })
+      df <-
+        data.frame(SignatureName = rep.int(signatureNames(data), ncol(data)),
+                   SampleName = rep(sampleNames(data),
+                                    each = length(signatureNames(data))),
+                   df,
+                   stringsAsFactors = FALSE)
+    } else {
+      df <-
+        sapply(assayDataElts, function(elt) {
+          as.vector(assayDataElement2(data, elt))
+        })
+      df <-
+        data.frame(FeatureName = rep.int(featureNames(data), ncol(data)),
+                   SampleName = rep(sampleNames(data), each = nrow(data)),
+                   df,
+                   stringsAsFactors = FALSE)
+    }
   } else if (hasAggregates) {
     # Calculate marginal summaries
     MARGIN <- 1L + hasSampleVars
@@ -75,6 +93,11 @@ function(data, mapping = update(design(data), exprs ~ .), extradata = NULL,
     } else {
       df <- cbind(df, fdf[df[["FeatureName"]], , drop = FALSE])
     }
+  }
+
+  if (useSignatures && is.null(df)) {
+    df <- data.frame(SignatureName = signatureNames(data),
+                     stringsAsFactors = FALSE)
   }
 
   # Add sample variables, if requested
