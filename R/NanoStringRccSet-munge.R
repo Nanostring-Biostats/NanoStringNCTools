@@ -89,8 +89,7 @@ function(data, mapping = design(data), extradata = NULL, elt = "exprs", ...)
     }
     rownames(df) <- NULL
   } else {
-    df <- df[, setdiff(vars, c(assayDataElts, "FeatureName", "SampleName")),
-             drop = FALSE]
+    df <- df[, setdiff(vars, assayDataElts), drop = FALSE]
     transpose <- identical(rownames(df), sampleNames(data))
     stackedData <-
       sapply(assayDataElts, function(elt) {
