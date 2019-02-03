@@ -50,10 +50,6 @@ test_NanoStringRccSet_munge_exception_missing_mapping <- function() {
 
 test_NanoStringRccSet_munge_exception_feature_and_sample_vars <- function() {
   checkException(munge(rcc, ~ CodeClass + BindingDensity))
-
-  rcc2 <- rcc
-  design(rcc2) <- ~ CodeClass + BindingDensity
-  checkException(munge(rcc2))
 }
 
 test_NanoStringRccSet_munge_exception_mismatch_summaries <- function() {
@@ -97,16 +93,13 @@ test_NanoStringRccSet_munge_featureData <- function() {
 }
 
 test_NanoStringRccSet_munge_sampleData <- function() {
-  rcc2 <- rcc
-
-  design(rcc2) <- ~ Treatment + Age
-  target <- data.frame(SampleName = sampleNames(rcc2),
+  target <- data.frame(SampleName = sampleNames(rcc),
                        Treatment = c("A", "A", "B"),
                        Age = c(58L, 42L, 27L),
                        stringsAsFactors = FALSE)
-  checkIdentical(target, munge(rcc2))
+  checkIdentical(target, munge(rcc, ~ Treatment + Age))
 
-  target <- data.frame(SampleName = sampleNames(rcc2),
+  target <- data.frame(SampleName = sampleNames(rcc),
                        Treatment = c("A", "A", "B"),
                        LaneID = 1:3,
                        stringsAsFactors = FALSE)

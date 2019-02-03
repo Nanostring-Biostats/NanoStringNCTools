@@ -2,7 +2,8 @@ setGeneric("munge", signature = "data",
            function(data, ...) standardGeneric("munge"))
 
 setMethod("munge", "NanoStringRccSet",
-function(data, mapping = design(data), extradata = NULL, elt = "exprs", ...)
+function(data, mapping = update(design(data), exprs ~ .), extradata = NULL,
+         elt = "exprs", ...)
 {
   # Get list of variables
   if (is.null(mapping))
@@ -13,122 +14,110 @@ function(data, mapping = design(data), extradata = NULL, elt = "exprs", ...)
     vars <- unique(unlist(lapply(mapping, all.vars), use.names = FALSE))
 
   # Determine the types of variables
-  hasFeatureVars <- any(vars %in% c(fvarLabels(data), "FeatureName"))
-  hasSampleVars  <- any(vars %in% c(svarLabels(data), "SampleName"))
+  hasFeatureVars <- any(vars %in% fvarLabels(data))
+  hasSampleVars  <- any(vars %in% svarLabels(data))
   hasLog2Summaries <- any(vars %in% rownames(.summaryMetadata[["log2"]]))
   hasSummaries <- any(vars %in% rownames(.summaryMetadata[["moments"]]))
   hasQuantiles <- any(vars %in% rownames(.summaryMetadata[["quantiles"]]))
   if (hasQuantiles && !hasLog2Summaries)
     hasSummaries <- TRUE
-  if (hasFeatureVars && hasSampleVars)
-    stop("\"mapping\" argument cannot use both feature and sample variables")
+  hasAggregates <- hasLog2Summaries || hasSummaries
+  hasAssayDataElts <- any(vars %in% assayDataElementNames(data))
+  if (hasAggregates && hasAssayDataElts)
+    stop("\"mapping\" argument cannot contain both aggregates and disaggregates")
+  if (hasAggregates && hasFeatureVars && hasSampleVars)
+    stop("\"mapping\" argument cannot aggregate using both feature and sample variables")
+  if (hasAggregates && !hasFeatureVars && !hasSampleVars)
+    stop("\"mapping\" argument contains an ambiguous aggregate")
   if (hasLog2Summaries && hasSummaries)
     stop("\"mapping\" argument cannot use both log2 and linear summary statistics")
 
-  # Remove row and column names from variables list
-  vars <- setdiff(vars, c("FeatureName", "SampleName"))
+  copyRowNames <- function(df, key) {
+    rn <- data.frame(rownames(df), stringsAsFactors = FALSE)
+    colnames(rn) <- key
+    cbind(rn, df)
+  }
 
-  # Get marginal data if needed
-  if (hasFeatureVars)
-    df <- fData(data)
-  else if (hasSampleVars)
-    df <- sData(data)
-  else
+  # Produce either disaggregate or aggregate results
+  if (hasAssayDataElts) {
+    assayDataElts <- intersect(vars, assayDataElementNames(data))
+    df <-
+      sapply(assayDataElts, function(elt) {
+        mat <- assayDataElement2(data, elt)
+        as.vector(mat)
+      })
+    df <-
+      data.frame(FeatureName = rep.int(featureNames(data), ncol(data)),
+                 SampleName = rep(sampleNames(data), each = nrow(data)),
+                 df,
+                 stringsAsFactors = FALSE)
+  } else if (hasAggregates) {
+    # Calculate marginal summaries
+    MARGIN <- 1L + hasSampleVars
+    df <- summary(data, MARGIN = MARGIN, log2scale = hasLog2Summaries,
+                  elt = elt)
+    df <- df[, intersect(vars, colnames(df)), drop = FALSE]
+    if (MARGIN == 1L) {
+      df <- copyRowNames(df, "FeatureName")
+    } else {
+      df <- copyRowNames(df, "SampleName")
+    }
+  } else {
     df <- NULL
+  }
 
-  # Use extra data if appropriate
+  # Add feature variables, if requested
+  if (hasFeatureVars) {
+    fvars <- intersect(vars, fvarLabels(data))
+    fdf <- fData(data)[, fvars, drop = FALSE]
+    if (is.null(df)) {
+      df <- copyRowNames(fdf, "FeatureName")
+    } else {
+      df <- cbind(df, fdf[df[["FeatureName"]], , drop = FALSE])
+    }
+  }
+
+  # Add sample variables, if requested
+  if (hasSampleVars) {
+    svars <- intersect(vars, svarLabels(data))
+    sdf <- sData(data)[, svars, drop = FALSE]
+    if (is.null(df)) {
+      df <- copyRowNames(sdf, "SampleName")
+    } else {
+      df <- cbind(df, sdf[df[["SampleName"]], , drop = FALSE])
+    }
+  }
+
+  # Add extra data, if supplied
   if (!is.null(extradata)) {
     matchFeatureNames <- identical(rownames(extradata), featureNames(data))
     matchSampleNames  <- identical(rownames(extradata), sampleNames(data))
     if (!matchFeatureNames && !matchSampleNames) {
       stop("\"extradata\" 'rownames' do not match 'featureNames' or 'sampleNames'")
     }
-    if (is.null(df)) {
-      hasFeatureVars <- matchFeatureNames
-      hasSampleVars  <- matchSampleNames
-      df <- extradata
-      extradata <- NULL
-    } else if ((hasFeatureVars && matchFeatureNames) ||
-               (hasSampleVars && matchSampleNames)) {
-      df <- cbind(df, extradata)
-      extradata <- NULL
-    } else if (any(colnames(extradata) %in% vars)) {
-      extradata <- extradata[intersect(vars, colnames(extradata))]
-      vars <- setdiff(vars, colnames(extradata))
+    evars <- intersect(vars, colnames(extradata))
+    edf <- extradata[, evars, drop = FALSE]
+    if (matchFeatureNames) {
+      if (is.null(df)) {
+        df <- copyRowNames(edf, "FeatureName")
+      } else {
+        df <- cbind(df, edf[df[["FeatureName"]], , drop = FALSE])
+      }
+    } else {
+      if (is.null(df)) {
+        df <- copyRowNames(edf, "SampleName")
+      } else {
+        df <- cbind(df, edf[df[["SampleName"]], , drop = FALSE])
+      }
     }
   }
 
-  # Add marginal summaries if needed
-  if (hasLog2Summaries || hasSummaries) {
-    if (!hasFeatureVars && !hasSampleVars)
-      stop("\"mapping\" argument contains ambiguous summary statistics")
-    MARGIN <- 1L + hasSampleVars
-    if (hasLog2Summaries)
-      df <- cbind(df, summary(data, MARGIN = MARGIN, elt = elt))
-    else
-      df <- cbind(df, summary(data, MARGIN = MARGIN, log2scale = FALSE,
-                              elt = elt))
-  }
-
-  # Determine if assay data elements are needed
-  assayDataElts <- intersect(vars, assayDataElementNames(data))
-  if (length(assayDataElts) > 0L) {
-    vars <- setdiff(vars, assayDataElts)
-  }
+  # Check that all columns are present
   if (!all(vars %in% colnames(df))) {
     stop("\"mapping\" contains undefined variables")
   }
-  df <- df[, vars, drop = FALSE]
-
-  # Get assay data elements if needed
-  if (length(assayDataElts) == 0L) {
-    if (identical(rownames(df), featureNames(data))) {
-      df <- cbind(data.frame(FeatureName = rownames(df),
-                             stringsAsFactors = FALSE), df)
-    } else {
-      df <- cbind(data.frame(SampleName = rownames(df),
-                             stringsAsFactors = FALSE), df)
-    }
-    rownames(df) <- NULL
-  } else {
-    df <- df[, setdiff(vars, assayDataElts), drop = FALSE]
-    transpose <- identical(rownames(df), sampleNames(data))
-    stackedData <-
-      sapply(assayDataElts, function(elt) {
-        mat <- assayDataElement2(data, elt)
-        if (transpose)
-          mat <- t(mat)
-        as.vector(mat)
-      })
-    if (transpose) {
-      stackedData <-
-        data.frame(FeatureName = rep(featureNames(data), each = ncol(data)),
-                   SampleName = rep.int(sampleNames(data), nrow(data)),
-                   stackedData,
-                   stringsAsFactors = FALSE)
-      df <- df[stackedData[["SampleName"]], , drop = FALSE]
-    } else {
-      stackedData <-
-        data.frame(FeatureName = rep.int(featureNames(data), ncol(data)),
-                   SampleName = rep(sampleNames(data), each = nrow(data)),
-                   stackedData,
-                   stringsAsFactors = FALSE)
-      df <- df[stackedData[["FeatureName"]], , drop = FALSE]
-    }
-    rownames(df) <- NULL
-    df <- cbind(stackedData, df)
-  }
-
-  # Add any remaining extra data
-  if (!is.null(extradata)) {
-    if (matchFeatureNames) {
-      df <- cbind(df, extradata[df[["FeatureName"]], , drop = FALSE])
-    } else {
-      df <- cbind(df, extradata[df[["SampleName"]], , drop = FALSE])
-    }
-    rownames(df) <- NULL
-  }
 
   # Return result
+  rownames(df) <- NULL
   df
 })
