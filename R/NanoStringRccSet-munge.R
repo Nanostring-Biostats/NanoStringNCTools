@@ -11,11 +11,10 @@ function(data, mapping = design(data), extradata = NULL, elt = "exprs", ...)
     vars <- all.vars(mapping)
   else if (is.list(mapping))
     vars <- unique(unlist(lapply(mapping, all.vars), use.names = FALSE))
-  vars <- setdiff(vars, c("FeatureName", "SampleName"))
 
   # Determine the types of variables
-  hasFeatureVars <- any(vars %in% fvarLabels(data))
-  hasSampleVars  <- any(vars %in% svarLabels(data))
+  hasFeatureVars <- any(vars %in% c(fvarLabels(data), "FeatureName"))
+  hasSampleVars  <- any(vars %in% c(svarLabels(data), "SampleName"))
   hasLog2Summaries <- any(vars %in% rownames(.summaryMetadata[["log2"]]))
   hasSummaries <- any(vars %in% rownames(.summaryMetadata[["moments"]]))
   hasQuantiles <- any(vars %in% rownames(.summaryMetadata[["quantiles"]]))
@@ -25,6 +24,9 @@ function(data, mapping = design(data), extradata = NULL, elt = "exprs", ...)
     stop("\"mapping\" argument cannot use both feature and sample variables")
   if (hasLog2Summaries && hasSummaries)
     stop("\"mapping\" argument cannot use both log2 and linear summary statistics")
+
+  # Remove row and column names from variables list
+  vars <- setdiff(vars, c("FeatureName", "SampleName"))
 
   # Get marginal data if needed
   if (hasFeatureVars)
