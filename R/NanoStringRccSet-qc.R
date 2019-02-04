@@ -33,11 +33,12 @@ function(object,
             prData[["BindingDensity"]] < bindDenRange[1L] |
             prData[["BindingDensity"]] > bindDenRange[2L],
           Linearity =
-            esApply(posCtrl, 2L, function(y)
-              cor(x, log2t(y, 0.5))^2 < posCtrlRsqLB),
+            assayDataApply(posCtrl, 2L,
+                           function(y) cor(x, log2t(y, 0.5))^2 < posCtrlRsqLB),
           LoD =
             apply(exprs(posCtrl[controlConc == 0.5, ]), 2L, max) <=
-            esApply(negCtrl, 2L, function(x) mean(x) + negCtrlSDUB * sd(x)))
+            assayDataApply(negCtrl, 2L,
+                           function(x) mean(x) + negCtrlSDUB * sd(x)))
 
   protocolData(object) <- prData
 

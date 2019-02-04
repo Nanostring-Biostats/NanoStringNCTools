@@ -159,8 +159,8 @@ function(object,
            x <- log2(featureData(posCtrl)[["ControlConc"]])
            extradata <-
              data.frame(RSquared =
-                          esApply(posCtrl, 2L,
-                                  function(y) cor(x, log2t(y, 0.5))))
+                          assayDataApply(posCtrl, 2L,
+                                         function(y) cor(x, log2t(y, 0.5))))
            extradata[["Low R-Squared"]] <- extradata[["RSquared"]] < 0.95
            extradata[["CustomTooltip"]] <-
              sprintf("%s\nR-Squared = %.4f", rownames(extradata),

@@ -9,7 +9,7 @@ importClassesFrom(IRanges, NumericList)
 importClassesFrom(methods, ANY, character, environment, formula, list, matrix,
                   missing, "NULL", ".NULL")
 importMethodsFrom(Biobase, AnnotatedDataFrame, annotatedDataFrameFrom,
-                  assayData, "assayData<-", esApply, exprs, fData, featureData,
+                  assayData, "assayData<-", exprs, fData, featureData,
                   featureNames, fvarLabels, pData, preproc, "preproc<-",
                   protocolData, "protocolData<-", sampleNames, varLabels)
 importMethodsFrom(methods, initialize, show)
@@ -45,7 +45,7 @@ export(NanoStringRccSet,
        endogenousSubset, housekeepingSubset,
        negativeControlSubset, positiveControlSubset,
        controlSubset, nonControlSubset, signatureSubset,
-       esBy,
+       assayDataApply, signatureScoresApply, esBy,
        munge,
        setQCFlags)
 
@@ -61,7 +61,7 @@ exportMethods(NanoStringRccSet, show,
               endogenousSubset, housekeepingSubset,
               negativeControlSubset, positiveControlSubset,
               controlSubset, nonControlSubset, signatureSubset,
-              esApply, esBy, with,
+              assayDataApply, signatureScoresApply, esBy, with,
               munge, transform,
               setQCFlags, normalize)
 

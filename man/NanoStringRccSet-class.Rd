@@ -59,7 +59,10 @@
 \alias{signatureSubset,NanoStringRccSet-method}
 
 % looping
-\alias{esApply,NanoStringRccSet-method}
+\alias{assayDataApply}
+\alias{assayDataApply,NanoStringRccSet-method}
+\alias{signatureScoresApply}
+\alias{signatureScoresApply,NanoStringRccSet-method}
 \alias{esBy}
 \alias{esBy,NanoStringRccSet-method}
 
@@ -242,15 +245,16 @@ NanoStringRccSet(assayData,
 }
 
 \section{Looping}{
-  In the looping methods below, the \code{X}, \code{MARGIN}, \code{FUN}, and
-  \code{\ldots} arguments follow the definition in the
-  \code{\link[Biobase]{esApply}} generic. The additional \code{elt} argument
-  specifies which \code{assayData} matrix to loop over.
   \describe{
     \item{}{
-      \code{esApply(X, MARGIN, FUN, \ldots, elt = "exprs")}: Loop over the
-      feature (\code{MARGIN = 1}) or sample (\code{MARGIN = 2}) dimension
-      for all of \code{X}.
+      \code{assayDataApply(X, MARGIN, FUN, \ldots, elt = "exprs")}: Loop over
+      the feature (\code{MARGIN = 1}) or sample (\code{MARGIN = 2}) dimension
+      of \code{assayDataElement(X, elt)}.
+    }
+    \item{}{
+      \code{signatureScoresApply(X, MARGIN, FUN, \ldots, elt = "exprs")}: Loop
+      over the signature (\code{MARGIN = 1}) or sample (\code{MARGIN = 2})
+      dimension of \code{signatureScores(X, elt)}.
     }
     \item{}{
       \code{esBy(X, GROUP, FUN, \ldots, simplify = TRUE)}: Split
@@ -376,16 +380,16 @@ log1pCoefVar <- function(x){
 }
 
 # Log1p Coefficient of Variation along Features
-head(esApply(solidTumor, 1, log1pCoefVar))
+head(assayDataApply(solidTumor, 1, log1pCoefVar))
 
 # Log1p Coefficient of Variation along Samples
-head(esApply(solidTumor, 2, log1pCoefVar))
+head(assayDataApply(solidTumor, 2, log1pCoefVar))
 
 
 # Transforming NanoSetRccSet assayData matrices
 # Subtract max count from each sample
 # Create log1p transformation of adjusted counts
-thresh <- esApply(negativeControlSubset(solidTumor), 2, max)
+thresh <- assayDataApply(negativeControlSubset(solidTumor), 2, max)
 solidTumor2 <-
   transform(solidTumor,
             negCtrlZeroed = sweep(exprs, 2, thresh),

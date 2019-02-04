@@ -9,8 +9,8 @@ function(object, type = "PositiveControl-Log2Log2",
            # Get the coefficient estimates for log2-log2 regression
            posCtrl <- positiveControlSubset(object)
            y <- summary(posCtrl, 1L)[, "GeomMean"]
-           coefs <- esApply(posCtrl, 2L,
-                            function(x) coef(lm(log2t(y) ~ log2t(x))))
+           coefs <- assayDataApply(posCtrl, 2L,
+                                   function(x) coef(lm(log2t(y) ~ log2t(x))))
 
            # Regress expression values to the mean           
            mat <- assayDataElement2(object, fromElt)

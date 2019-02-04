@@ -44,16 +44,30 @@ rcc <-
          list(x = c(a = 1), y = c(b = 1/3, d = 2/3), z = c(a = 2, c = 4)))
 
 # Looping
-test_NanoStringRccSet_utils_esApply <- function() {
+test_NanoStringRccSet_utils_assayDataApply <- function() {
   rcc2 <- transform(rcc, log1p_exprs = log1p(exprs))
 
-  checkIdentical(apply(exprs(rcc2), 1L, mean), esApply(rcc2, 1L, mean))
-  checkIdentical(apply(exprs(rcc2), 2L, mean), esApply(rcc2, 2L, mean))
+  checkIdentical(apply(exprs(rcc2), 1L, mean), assayDataApply(rcc2, 1L, mean))
+  checkIdentical(apply(exprs(rcc2), 2L, mean), assayDataApply(rcc2, 2L, mean))
 
   checkIdentical(apply(assayDataElement(rcc2, "log1p_exprs"), 1L, mean),
-                 esApply(rcc2, 1L, mean, elt = "log1p_exprs"))
+                 assayDataApply(rcc2, 1L, mean, elt = "log1p_exprs"))
   checkIdentical(apply(assayDataElement(rcc2, "log1p_exprs"), 2L, mean),
-                 esApply(rcc2, 2L, mean, elt = "log1p_exprs"))
+                 assayDataApply(rcc2, 2L, mean, elt = "log1p_exprs"))
+}
+
+test_NanoStringRccSet_utils_signatureScoresApply <- function() {
+  rcc2 <- transform(rcc, log1p_exprs = log1p(exprs))
+
+  checkIdentical(apply(signatureScores(rcc2), 1L, mean),
+                 signatureScoresApply(rcc2, 1L, mean))
+  checkIdentical(apply(signatureScores(rcc2), 2L, mean),
+                 signatureScoresApply(rcc2, 2L, mean))
+
+  checkIdentical(apply(signatureScores(rcc2, "log1p_exprs"), 1L, mean),
+                 signatureScoresApply(rcc2, 1L, mean, elt = "log1p_exprs"))
+  checkIdentical(apply(signatureScores(rcc2, "log1p_exprs"), 2L, mean),
+                 signatureScoresApply(rcc2, 2L, mean, elt = "log1p_exprs"))
 }
 
 # Transforming
@@ -78,10 +92,10 @@ test_NanoStringRccSet_utils_with <- function() {
   checkIdentical(nms, with(rcc, ls()))
 
   # calculate means across Features
-  checkIdentical(esApply(rcc, 1L, mean),
+  checkIdentical(assayDataApply(rcc, 1L, mean),
                  with(rcc, apply(exprs, 1L, mean)))
 
   # calculate means across Samples
-  checkIdentical(esApply(rcc, 2L, mean),
+  checkIdentical(assayDataApply(rcc, 2L, mean),
                  with(rcc, apply(exprs, 2L, mean)))
 }

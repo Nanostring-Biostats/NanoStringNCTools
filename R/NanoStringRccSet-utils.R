@@ -7,7 +7,10 @@ setMethod("as.list", "NanoStringRccSet", function(x, ...) as(x, "list"))
 
 
 # Looping
-setMethod("esApply", "NanoStringRccSet",
+setGeneric("assayDataApply", signature = "X",
+           function(X, MARGIN, FUN, ...)
+             standardGeneric("assayDataApply"))
+setMethod("assayDataApply", "NanoStringRccSet",
 function(X, MARGIN, FUN, ..., elt = "exprs")
 {
   stopifnot(MARGIN %in% c(1L, 2L))
@@ -16,34 +19,63 @@ function(X, MARGIN, FUN, ..., elt = "exprs")
     kvs <- c(sData(X), list(design = design(X)))
   } else {
     df <- sData(X)
-    kvs <- c(fData(X), list(signatureWeights = signatureWeights(X)))
+    kvs <- fData(X)
   }
-
-  parent <- environment(FUN)
-  if (is.null(parent))
-    parent <- emptyenv()
-  e1 <- new.env(parent = parent)
-  multiassign(names(kvs), kvs, envir = e1)
-  environment(FUN) <- e1
-
   mat <- assayDataElement2(X, elt)
-  if (MARGIN == 1L) {
-    output <- vector("list", nrow(X))
-    for (i in seq_along(output)) {
-      multiassign(colnames(df), df[i, ], environment(FUN))
-      output[[i]] <- FUN(mat[i, ], ...)
-    }
-    names(output) <- featureNames(X)
-  } else {
-    output <- vector("list", ncol(X))
-    for (j in seq_along(output)) {
-      multiassign(colnames(df), df[j, ], environment(FUN))
-      output[[j]] <- FUN(mat[, j], ...)
-    }
-    names(output) <- sampleNames(X)
-  }
-  simplify2array(output, higher = FALSE)
+  .apply(X = mat, MARGIN = MARGIN, FUN = FUN, ..., .df = df, .kvs = kvs)
 })
+
+setGeneric("signatureScoresApply", signature = "X",
+           function(X, MARGIN, FUN, ...)
+             standardGeneric("signatureScoresApply"))
+setMethod("signatureScoresApply", "NanoStringRccSet",
+function(X, MARGIN, FUN, ..., elt = "exprs")
+{
+  stopifnot(MARGIN %in% c(1L, 2L))
+  if (MARGIN == 1L) {
+    df <- data.frame()
+    kvs <- c(sData(X), list(design = design(X)))
+  } else {
+    df <- sData(X)
+    kvs <- list()
+  }
+  mat <- signatureScores(X, elt)
+  .apply(X = mat, MARGIN = MARGIN, FUN = FUN, ..., .df = df, .kvs = kvs)
+})
+
+.apply <- function(X, MARGIN, FUN, ..., .df, .kvs)
+{
+  if (length(.kvs) > 0L) {
+    parent <- environment(FUN)
+    if (is.null(parent))
+      parent <- emptyenv()
+    e1 <- new.env(parent = parent)
+    multiassign(names(.kvs), .kvs, envir = e1)
+    environment(FUN) <- e1
+  }
+
+  if (length(.df) == 0L) {
+    apply(X, MARGIN = MARGIN, FUN = FUN, ...)
+  } else {
+    if (MARGIN == 1L) {
+      output <- vector("list", nrow(X))
+      for (i in seq_along(output)) {
+        multiassign(colnames(.df), .df[i, ], environment(FUN))
+        output[[i]] <- FUN(X[i, ], ...)
+      }
+      names(output) <- rownames(X)
+    } else {
+      output <- vector("list", ncol(X))
+      for (j in seq_along(output)) {
+        multiassign(colnames(.df), .df[j, ], environment(FUN))
+        output[[j]] <- FUN(X[, j], ...)
+      }
+      names(output) <- colnames(X)
+    }
+    simplify2array(output, higher = FALSE)
+  }
+}
+
 
 setGeneric("esBy", signature = "X",
            function(X, GROUP, FUN, ...) standardGeneric("esBy"))
