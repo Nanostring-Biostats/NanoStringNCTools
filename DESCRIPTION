@@ -14,6 +14,7 @@ Collate: RccMetadata.R
          NanoStringRccSet-class.R
          NanoStringRccSet-validity.R
          NanoStringRccSet-accessors.R
+         NanoStringRccSet-signatures.R
          NanoStringRccSet-subset.R
          NanoStringRccSet-utils.R
          NanoStringRccSet-summary.R
