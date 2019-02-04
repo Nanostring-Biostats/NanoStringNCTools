@@ -48,20 +48,34 @@ test_NanoStringRccSet_munge_exception_missing_mapping <- function() {
   checkException(munge(rcc))
 }
 
-test_NanoStringRccSet_munge_exception_feature_and_sample_vars <- function() {
-  checkException(munge(rcc, ~ CodeClass + BindingDensity))
+test_NanoStringRccSet_munge_exception_aggregate_disaggregate <- function() {
+  checkException(munge(rcc, ~ exprs + GeomMean))
 }
 
-test_NanoStringRccSet_munge_exception_mismatch_summaries <- function() {
+test_NanoStringRccSet_munge_exception_feature_and_sample_vars <- function() {
+  checkException(munge(rcc, GeomMean ~ CodeClass + BindingDensity))
+}
+
+test_NanoStringRccSet_munge_exception_ambiguous_aggregates <- function() {
+  checkException(munge(rcc, ~ GeomMean))
+
+  checkException(munge(rcc, ~ MeanLog2 + SDLog2))
+}
+
+test_NanoStringRccSet_munge_exception_log2_linear_aggregates <- function() {
   checkException(munge(rcc, ~ MeanLog2 + Mean + BindingDensity))
+}
+
+test_NanoStringRccSet_munge_exception_log2_linear_aggregates <- function() {
+  checkException(munge(rcc, ~ MeanLog2 + Mean + BindingDensity))
+}
+
+test_NanoStringRccSet_munge_exception_signatures_features <- function() {
+  checkException(munge(rcc, ~ SignatureName + GeneName))
 }
 
 test_NanoStringRccSet_munge_exception_mismatch_extradata <- function() {
   checkException(munge(rcc, ~ GNP, longley))
-}
-
-test_NanoStringRccSet_munge_exception_ambiguous_summaries <- function() {
-  checkException(munge(rcc, ~ MeanLog2 + SDLog2))
 }
 
 test_NanoStringRccSet_munge_featureData <- function() {
