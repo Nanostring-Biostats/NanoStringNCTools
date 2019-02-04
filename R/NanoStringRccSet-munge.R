@@ -6,7 +6,8 @@ function(data, mapping = update(design(data), exprs ~ .), extradata = NULL,
          elt = "exprs", ...)
 {
   # Get list of variables
-  if (is.null(mapping))
+  mapping <- try(mapping, silent = TRUE)
+  if (inherits(mapping, "try-error"))
     stop("\"mapping\" argument is missing")
   if (inherits(mapping, "formula"))
     vars <- all.vars(mapping)
