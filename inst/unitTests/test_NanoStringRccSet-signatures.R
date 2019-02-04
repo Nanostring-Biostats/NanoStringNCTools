@@ -43,11 +43,20 @@ rcc <-
        signatureWeights =
          list(x = c(a = 1), y = c(b = 1/3, d = 2/3), z = c(a = 2, c = 4)))
 
-# Accessing
-test_NanoStringRccSet_sData <- function() {
-  checkIdentical(cbind(pData(rcc), pData(protocolData(rcc))), sData(rcc))
+# Signatures
+test_NanoStringRccSet_signatureLength <- function() {
+  checkIdentical(c(x = 1L, y = 2L, z = 2L), signatureLength(rcc))
 }
 
-test_NanoStringRccSet_svarLabels <- function() {
-  checkIdentical(c(varLabels(rcc), varLabels(protocolData(rcc))), svarLabels(rcc))
+test_NanoStringRccSet_signatureScores <- function() {
+  checkEquals(matrix(c(0, 7, 24, 12, 19, 96, 24, 31, 168)/3,
+                     nrow = 3L, ncol = 3L,
+                     dimnames = list(c("x", "y", "z"), sampleNames(rcc))),
+                 signatureScores(rcc))
+
+  rcc2 <- transform(rcc, exprs3 = 3 * exprs)
+  checkEquals(matrix(c(0, 7, 24, 12, 19, 96, 24, 31, 168),
+                     nrow = 3L, ncol = 3L,
+                     dimnames = list(c("x", "y", "z"), sampleNames(rcc2))),
+              signatureScores(rcc2, "exprs3"))
 }
