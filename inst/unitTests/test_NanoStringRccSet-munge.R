@@ -153,3 +153,39 @@ test_NanoStringRccSet_munge_sampleData <- function() {
                        stringsAsFactors = FALSE)
   checkIdentical(target, munge(rcc, ~ Treatment + V1, newdata))
 }
+
+test_NanoStringRccSet_munge_assayData <- function() {
+  target <- data.frame(FeatureName = rep.int(featureNames(rcc), ncol(rcc)),
+                       SampleName = rep(sampleNames(rcc), each = nrow(rcc)),
+                       exprs = as.vector(exprs(rcc)),
+                       stringsAsFactors = FALSE)
+  checkIdentical(target, munge(rcc, ~ exprs))
+
+  target <- data.frame(FeatureName = rep.int(featureNames(rcc), ncol(rcc)),
+                       SampleName = rep(sampleNames(rcc), each = nrow(rcc)),
+                       exprs = as.vector(exprs(rcc)),
+                       Treatment = rep(pData(rcc)[["Treatment"]], each = nrow(rcc)),
+                       Age = rep(pData(rcc)[["Age"]], each = nrow(rcc)),
+                       stringsAsFactors = FALSE)
+  checkIdentical(target, munge(rcc, exprs ~ Treatment + Age))
+}
+
+test_NanoStringRccSet_munge_signatures <- function() {
+  target <- data.frame(SignatureName = signatureNames(rcc),
+                       stringsAsFactors = FALSE)
+  checkIdentical(target, munge(rcc, ~ SignatureName))
+
+  target <- data.frame(SignatureName = rep.int(signatureNames(rcc), ncol(rcc)),
+                       SampleName = rep(sampleNames(rcc), each = length(sampleNames(rcc))),
+                       exprs = c(0, 7, 24, 12, 19, 96, 24, 31, 168) / 3,
+                       stringsAsFactors = FALSE)
+  checkEquals(target, munge(rcc, exprs ~ SignatureName))
+
+  target <- data.frame(SignatureName = rep.int(signatureNames(rcc), ncol(rcc)),
+                       SampleName = rep(sampleNames(rcc), each = length(sampleNames(rcc))),
+                       exprs = c(0, 7, 24, 12, 19, 96, 24, 31, 168) / 3,
+                       Treatment = rep(pData(rcc)[["Treatment"]], each = ncol(rcc)),
+                       Age = rep(pData(rcc)[["Age"]], each = ncol(rcc)),
+                       stringsAsFactors = FALSE)
+  checkEquals(target, munge(rcc, exprs ~ SignatureName + Treatment + Age))
+}
