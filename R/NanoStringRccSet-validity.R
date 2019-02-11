@@ -137,27 +137,27 @@ function(object)
   }
   if (any(duplicated(c(fvarLabels(object), svarLabels(object),
                        assayDataElementNames(object),
-                       "signatureWeights", "design")))) {
+                       "signatures", "design")))) {
     msg <-
       c(msg,
-        "'fvarLabels', 'svarLabels', 'assayDataElementNames', \"signatureWeights\", and \"design\" must be unique")
+        "'fvarLabels', 'svarLabels', 'assayDataElementNames', \"signatures\", and \"design\" must be unique")
   }
-  if (length(signatureWeights(object)) > 0L) {
-    numGenes <- lengths(signatureWeights(object))
+  if (length(signatures(object)) > 0L) {
+    numGenes <- lengths(signatures(object))
     if (is.null(names(numGenes)) || any(nchar(names(numGenes)) == 0L)) {
-      msg <- c(msg, "'signatureWeights' must be a named NumericList")
+      msg <- c(msg, "'signatures' must be a named NumericList")
     }
     if (any(numGenes == 0L)) {
-      msg <- c(msg, "'signatureWeights' vectors must be non-empty")
+      msg <- c(msg, "'signatures' vectors must be non-empty")
     } else {
-      genes <- names(unlist(unname(signatureWeights(object))))
+      genes <- names(unlist(unname(weights(signatures(object)))))
       if (is.null(genes) || any(nchar(genes) == 0L)) {
-        msg <- c(msg, "'signatureWeights' vectors must be named")
+        msg <- c(msg, "'signatures' vectors must be named")
       } else if(!all(unique(genes) %in%
                      c("(Intercept)", featureData(object)[["GeneName"]]))) {
         msg <-
           c(msg,
-            "'signatureWeights' vectors must be named with values from 'featureData' \"GeneName\"")
+            "'signatures' vectors must be named with values from 'featureData' \"GeneName\"")
       }
     }
   }

@@ -19,17 +19,10 @@
 \alias{sData,NanoStringRccSet-method}
 \alias{svarLabels}
 \alias{svarLabels,NanoStringRccSet-method}
-\alias{signatureWeights}
-\alias{signatureWeights,NanoStringRccSet-method}
-\alias{signatureWeights<-}
-\alias{signatureWeights<-,NanoStringRccSet,ANY-method}
-\alias{signatureWeights<-,NanoStringRccSet,list-method}
-\alias{signatureWeights<-,NanoStringRccSet,NULL-method}
-\alias{signatureWeights<-,NanoStringRccSet,NumericList-method}
-\alias{signatureNames}
-\alias{signatureNames,NanoStringRccSet-method}
-\alias{signatureLength}
-\alias{signatureLength,NanoStringRccSet-method}
+\alias{signatures}
+\alias{signatures,NanoStringRccSet-method}
+\alias{signatures<-}
+\alias{signatures<-,NanoStringRccSet,SignatureSet-method}
 \alias{signatureScores}
 \alias{signatureScores,NanoStringRccSet-method}
 \alias{design,NanoStringRccSet-method}
@@ -100,7 +93,7 @@ NanoStringRccSet(assayData,
                  experimentData = MIAME(),
                  annotation = character(),
                  protocolData = annotatedDataFrameFrom(assayData, byrow = FALSE),
-                 signatureWeights = NumericList(),
+                 signatures = SignatureSet(),
                  design = NULL,
                  \ldots)
 }
@@ -122,8 +115,8 @@ NanoStringRccSet(assayData,
     \code{"LaneID"}, \code{"FovCount"}, \code{"FovCounted"}, \code{"ScannerID"},
     \code{"StagePosition"}, \code{"BindingDensity"}, \code{"CartridgeID"}, and
     \code{"CartridgeBarcode"}.}
-  \item{signatureWeights}{An optional named \code{\link{NumericList}}
-    containing named gene signature weights.}
+  \item{signatures}{An optional \code{\link{SignatureSet}} object containing
+    signature definitions.}
   \item{design}{An optional one-sided formula representing the experimental
     design based on columns from \code{\link[Biobase]{phenoData}}}
   \item{\ldots}{Additional arguments for \code{\link{ExpressionSet}}.}
@@ -142,19 +135,12 @@ NanoStringRccSet(assayData,
       \code{c(varLabels(object), varLabels(protocolData(object)))}
     }
     \item{}{
-      \code{signatureWeights(object)}: extracts the list of gene signature
-      weights.
+      \code{signatures(object)}: extracts the \code{\link{SignatureSet}} of the
+      \code{object}.
     }
     \item{}{
-      \code{signatureWeights(object) <- value}: replaces the list of gene
-      signature weights.
-    }
-    \item{}{
-      \code{signatureNames(object)}: returns the names of the signatures.
-    }
-    \item{}{
-      \code{signatureLength(object)}: returns the number of genes for each
-      signature.
+      \code{signatures(object) <- value}: replaces the
+      \code{\link{SignatureSet}} of the \code{object}.
     }
     \item{}{
       \code{signatureScores(object, elt = "exprs")}: extracts the matrix
@@ -238,7 +224,7 @@ NanoStringRccSet(assayData,
     }
     \item{}{
       \code{signatureSubset(x, subset, select)}: Extracts the feature subset
-      representing the genes in the \code{signatureWeights} of \code{x} with
+      representing the genes in the \code{signatures} of \code{x} with
       optional additional subsetting using \code{subset} and \code{select}.
     }
   }

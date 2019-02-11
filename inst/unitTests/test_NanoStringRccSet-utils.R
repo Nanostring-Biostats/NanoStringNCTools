@@ -40,8 +40,10 @@ rcc <-
                                        stringsAsFactors = FALSE),
                             NanoStringNCTools:::.rccMetadata[["protocolData"]],
                             dimLabels = c("sampleNames", "sampleColumns")),
-       signatureWeights =
-         list(x = c(a = 1), y = c(b = 1/3, d = 2/3), z = c(a = 2, c = 4)))
+       signatures =
+         SignatureSet(weights = list(x = c(a = 1),
+                                     y = c(b = 1/3, d = 2/3),
+                                     z = c(a = 2, c = 4))))
 
 # Looping
 test_NanoStringRccSet_utils_assayDataApply <- function() {
@@ -88,7 +90,7 @@ test_NanoStringRccSet_utils_transform <- function() {
 # Evaluating
 test_NanoStringRccSet_utils_with <- function() {
   nms <- sort(c(assayDataElementNames(rcc), fvarLabels(rcc), svarLabels(rcc),
-                "signatureWeights", "design"))
+                "signatures", "design"))
   checkIdentical(nms, with(rcc, ls()))
 
   # calculate means across Features

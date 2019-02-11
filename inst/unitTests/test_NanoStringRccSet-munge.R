@@ -40,8 +40,10 @@ rcc <-
                                        stringsAsFactors = FALSE),
                             NanoStringNCTools:::.rccMetadata[["protocolData"]],
                             dimLabels = c("sampleNames", "sampleColumns")),
-       signatureWeights =
-         list(x = c(a = 1), y = c(b = 1/3, d = 2/3), z = c(a = 2, c = 4)))
+       signatures =
+         SignatureSet(weights = list(x = c(a = 1),
+                                     y = c(b = 1/3, d = 2/3),
+                                     z = c(a = 2, c = 4))))
 
 # Munging data for plotting
 test_NanoStringRccSet_munge_exception_missing_mapping <- function() {
@@ -171,17 +173,17 @@ test_NanoStringRccSet_munge_assayData <- function() {
 }
 
 test_NanoStringRccSet_munge_signatures <- function() {
-  target <- data.frame(SignatureName = signatureNames(rcc),
+  target <- data.frame(SignatureName = names(signatures(rcc)),
                        stringsAsFactors = FALSE)
   checkIdentical(target, munge(rcc, ~ SignatureName))
 
-  target <- data.frame(SignatureName = rep.int(signatureNames(rcc), ncol(rcc)),
+  target <- data.frame(SignatureName = rep.int(names(signatures(rcc)), ncol(rcc)),
                        SampleName = rep(sampleNames(rcc), each = length(sampleNames(rcc))),
                        exprs = c(0, 7, 24, 12, 19, 96, 24, 31, 168) / 3,
                        stringsAsFactors = FALSE)
   checkEquals(target, munge(rcc, exprs ~ SignatureName))
 
-  target <- data.frame(SignatureName = rep.int(signatureNames(rcc), ncol(rcc)),
+  target <- data.frame(SignatureName = rep.int(names(signatures(rcc)), ncol(rcc)),
                        SampleName = rep(sampleNames(rcc), each = length(sampleNames(rcc))),
                        exprs = c(0, 7, 24, 12, 19, 96, 24, 31, 168) / 3,
                        Treatment = rep(pData(rcc)[["Treatment"]], each = ncol(rcc)),

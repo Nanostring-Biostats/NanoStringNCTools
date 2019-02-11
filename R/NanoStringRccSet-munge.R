@@ -54,9 +54,9 @@ function(data, mapping = update(design(data), exprs ~ .), extradata = NULL,
           as.vector(signatureScores(data, elt))
         })
       df <-
-        data.frame(SignatureName = rep.int(signatureNames(data), ncol(data)),
+        data.frame(SignatureName = rep.int(names(signatures(data)), ncol(data)),
                    SampleName = rep(sampleNames(data),
-                                    each = length(signatureNames(data))),
+                                    each = length(signatures(data))),
                    df,
                    stringsAsFactors = FALSE)
     } else {
@@ -97,7 +97,7 @@ function(data, mapping = update(design(data), exprs ~ .), extradata = NULL,
   }
 
   if (useSignatures && is.null(df)) {
-    df <- data.frame(SignatureName = signatureNames(data),
+    df <- data.frame(SignatureName = names(signatures(data)),
                      stringsAsFactors = FALSE)
   }
 

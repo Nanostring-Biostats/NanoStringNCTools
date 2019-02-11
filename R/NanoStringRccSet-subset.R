@@ -2,12 +2,12 @@ setMethod("[", "NanoStringRccSet",
 function(x, i, j, ..., drop = FALSE)
 {
   x <- callNextMethod()
-  weights <- signatureWeights(x)
+  weights <- weights(signatures(x))
   if (length(weights) > 0L) {
     genes <- featureData(x)[["GeneName"]]
     keep <- unlist(lapply(weights, function(y) all(names(y) %in% genes)))
     if (!all(keep)) {
-      signatureWeights(x) <- weights[keep]
+      weights(signatures(x)) <- weights[keep]
     }
   }
   x
@@ -84,7 +84,7 @@ setGeneric("signatureSubset", signature = "x",
            function(x, subset, select) standardGeneric("signatureSubset"))
 setMethod("signatureSubset", "NanoStringRccSet",
           function(x, subset, select) {
-            genes <- unique(names(unlist(unname(signatureWeights(x)))))
+            genes <- unique(names(unlist(unname(weights(signatures(x))))))
             call <- match.call()
             call$x <- x[which(featureData(x)[["GeneName"]] %in% genes), ]
             call[[1L]] <- as.name("subset")

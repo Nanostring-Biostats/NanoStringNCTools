@@ -3,33 +3,24 @@ setClassUnion("formulaOrNULL", c("formula", "NULL"))
 # Class definition
 setClass("NanoStringRccSet",
          contains = "ExpressionSet",
-         slots = c(signatureWeights = "NumericList",
+         slots = c(signatures = "SignatureSet",
                    design = "formulaOrNULL"),
          prototype = prototype(
            new("VersionedBiobase",
                versions = c(classVersion("ExpressionSet"),
                             NanoStringRccSet = "1.0.0")),
-           signatureWeights = NumericList(),
+           signatures = SignatureSet(),
            design = NULL))
-
-# Initialization method
-setMethod("initialize", "NanoStringRccSet",
-function(.Object, signatureWeights = NumericList(), ...)
-{
-  callNextMethod(.Object,
-                 signatureWeights = as(signatureWeights, "NumericList"),
-                 ...)
-})
 
 # Show method
 setMethod("show", signature = "NanoStringRccSet",
 function(object) {
   callNextMethod(object)
-  cat("signatureWeights: ")
-  if (length(signatureWeights(object)) == 0L)
+  cat("signature: ")
+  if (length(signatures(object)) == 0L)
     cat("none\n")
   else
-    cat("use 'signatureWeights(object)'")
+    cat("use 'signatures(object)'")
 })
 
 # Constructors
@@ -40,7 +31,7 @@ function(assayData,
          experimentData = MIAME(),
          annotation = character(),
          protocolData = annotatedDataFrameFrom(assayData, byrow = FALSE),
-         signatureWeights = NumericList(),
+         signatures = SignatureSet(),
          design = NULL,
          ...)
   standardGeneric("NanoStringRccSet"),
@@ -53,7 +44,7 @@ function(assayData,
          experimentData = MIAME(),
          annotation = character(),
          protocolData = annotatedDataFrameFrom(assayData, byrow = FALSE),
-         signatureWeights = NumericList(),
+         signatures = SignatureSet(),
          design = NULL,
          ...)
 {
@@ -61,7 +52,7 @@ function(assayData,
   callGeneric(assayData = assayData, phenoData = phenoData,
               featureData = featureData, experimentData = experimentData,
               annotation = annotation, protocolData = protocolData,
-              signatureWeights = signatureWeights, design = design, ...)
+              signatures = signatures, design = design, ...)
 })
 
 setMethod("NanoStringRccSet", "environment",
@@ -71,7 +62,7 @@ function(assayData,
          experimentData = MIAME(),
          annotation = character(),
          protocolData = annotatedDataFrameFrom(assayData, byrow = FALSE),
-         signatureWeights = NumericList(),
+         signatures = SignatureSet(),
          design = NULL,
          ...)
 {
@@ -82,7 +73,7 @@ function(assayData,
        experimentData = experimentData,
        annotation = annotation,
        protocolData = protocolData,
-       signatureWeights = signatureWeights,
+       signatures = signatures,
        design = design,
        ...)
 })
@@ -94,7 +85,7 @@ function(assayData,
          experimentData = MIAME(),
          annotation = character(),
          protocolData = annotatedDataFrameFrom(assayData, byrow = FALSE),
-         signatureWeights = NumericList(),
+         signatures = SignatureSet(),
          design = NULL,
          ...)
 {
@@ -102,7 +93,7 @@ function(assayData,
   callGeneric(assayData = assayData, phenoData = phenoData,
               featureData = featureData, experimentData = experimentData,
               annotation = annotation, protocolData = protocolData,
-              signatureWeights = signatureWeights, design = design, ...)
+              signatures = signatures, design = design, ...)
 })
 
 setMethod("NanoStringRccSet", "NanoStringRccSet",
@@ -112,7 +103,7 @@ function(assayData,
          experimentData = MIAME(),
          annotation = character(),
          protocolData = annotatedDataFrameFrom(assayData, byrow = FALSE),
-         signatureWeights = NumericList(),
+         signatures = SignatureSet(),
          design = NULL,
          ...)
 {
@@ -122,7 +113,7 @@ function(assayData,
               experimentData = Biobase::experimentData(assayData),
               annotation = Biobase::annotation(assayData),
               protocolData = Biobase::protocolData(assayData),
-              signatureWeights = signatureWeights,
+              signatures = signatures,
               design = design,
               ...)
 })

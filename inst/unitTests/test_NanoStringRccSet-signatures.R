@@ -40,12 +40,14 @@ rcc <-
                                        stringsAsFactors = FALSE),
                             NanoStringNCTools:::.rccMetadata[["protocolData"]],
                             dimLabels = c("sampleNames", "sampleColumns")),
-       signatureWeights =
-         list(x = c(a = 1), y = c(b = 1/3, d = 2/3), z = c(a = 2, c = 4)))
+       signatures =
+         SignatureSet(weights = list(x = c(a = 1),
+                                     y = c(b = 1/3, d = 2/3),
+                                     z = c(a = 2, c = 4))))
 
 # Signatures
-test_NanoStringRccSet_signatureLength <- function() {
-  checkIdentical(c(x = 1L, y = 2L, z = 2L), signatureLength(rcc))
+test_NanoStringRccSet_signatures_lengths <- function() {
+  checkIdentical(c(x = 1L, y = 2L, z = 2L), lengths(signatures(rcc)))
 }
 
 test_NanoStringRccSet_signatureScores <- function() {

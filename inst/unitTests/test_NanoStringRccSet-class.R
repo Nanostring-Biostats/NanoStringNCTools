@@ -240,7 +240,7 @@ test_NanoStringRccSet_exception_duplicate_names <- function() {
   checkException(validObject(y))
 
   y <- x
-  fData(y)[["signatureWeights"]] <- 1L
+  fData(y)[["signatures"]] <- 1L
   checkException(validObject(y))
 
   y <- x
@@ -257,7 +257,7 @@ test_NanoStringRccSet_exception_duplicate_names <- function() {
   checkException(validObject(y))
 
   y <- x
-  pData(y)[["signatureWeights"]] <- 1L
+  pData(y)[["signatures"]] <- 1L
   checkException(validObject(y))
 
   y <- x
@@ -274,7 +274,7 @@ test_NanoStringRccSet_exception_duplicate_names <- function() {
   checkException(validObject(y))
 
   y <- x
-  pData(protocolData(y))[["signatureWeights"]] <- 1L
+  pData(protocolData(y))[["signatures"]] <- 1L
   checkException(validObject(y))
 
   y <- x
@@ -282,47 +282,54 @@ test_NanoStringRccSet_exception_duplicate_names <- function() {
   checkException(validObject(y))
 }
 
-test_NanoStringRccSet_valid_signatureWeights <- function() {
-  weights <- list(a = c(b = 1, d = 3), b = c(a = 2, c = 4))
+test_NanoStringRccSet_valid_signatures <- function() {
+  wts <- list(a = c(b = 1, d = 3), b = c(a = 2, c = 4))
+  sigs <- SignatureSet(weights = wts)
   x <- NanoStringRccSet(rcc$assayData,
                         phenoData = rcc$phenoData,
                         featureData = rcc$featureData,
                         annotation = rcc$annotation,
                         protocolData = rcc$protocolData,
-                        signatureWeights = weights)
+                        signatures = sigs)
   checkTrue(validObject(x))
-  checkIdentical(signatureWeights(x), as(weights, "NumericList"))
+  checkIdentical(weights(signatures(x)), as(wts, "NumericList"))
 
-  signatureWeights(x) <- weights[[1L]]
+  weights(signatures(x)) <- wts[1L]
   checkTrue(validObject(x))
-  checkIdentical(signatureWeights(x), as(weights[[1L]], "NumericList"))
+  checkIdentical(weights(signatures(x)), as(wts[1L], "NumericList"))
 }
 
-test_NanoStringRccSet_exception_signatureWeights_unnamed <- function() {
+test_NanoStringRccSet_exception_signatures_unnamed <- function() {
   checkException(NanoStringRccSet(rcc$assayData,
                                   phenoData = rcc$phenoData,
                                   featureData = rcc$featureData,
                                   annotation = rcc$annotation,
                                   protocolData = rcc$protocolData,
-                                  signatureWeights = list(c(b = 1, d = 3))))
+                                  signatures =
+                                    SignatureSet(weights =
+                                                   list(c(b = 1, d = 3)))))
 }
 
-test_NanoStringRccSet_exception_signatureWeights_empty <- function() {
+test_NanoStringRccSet_exception_signatures_empty <- function() {
   checkException(NanoStringRccSet(rcc$assayData,
                                   phenoData = rcc$phenoData,
                                   featureData = rcc$featureData,
                                   annotation = rcc$annotation,
                                   protocolData = rcc$protocolData,
-                                  signatureWeights = list(a = numeric())))
+                                  signatures =
+                                    SignatureSet(weights =
+                                                   list(a = numeric()))))
 }
 
-test_NanoStringRccSet_exception_signatureWeights_GeneName <- function() {
+test_NanoStringRccSet_exception_signatures_GeneName <- function() {
   checkException(NanoStringRccSet(rcc$assayData,
                                   phenoData = rcc$phenoData,
                                   featureData = rcc$featureData,
                                   annotation = rcc$annotation,
                                   protocolData = rcc$protocolData,
-                                  signatureWeights = list(a = c(x = 1, y = 3))))
+                                  signatures =
+                                    SignatureSet(weights =
+                                                   list(a = c(x = 1, y = 3)))))
 }
 
 test_NanoStringRccSet_valid_design <- function() {

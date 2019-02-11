@@ -1,7 +1,7 @@
 # Coercion
 setAs("NanoStringRccSet", "list",
       function(from) c(as.list(assayData(from)), fData(from), sData(from),
-                       list(signatureWeights = signatureWeights(from),
+                       list(signatures = signatures(from),
                             design = design(from))))
 setMethod("as.list", "NanoStringRccSet", function(x, ...) as(x, "list"))
 

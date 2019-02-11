@@ -10,7 +10,8 @@ Imports: BiocGenerics, Biostrings, ggbeeswarm, ggiraph, grDevices, IRanges,
          methods, pheatmap, RColorBrewer, S4Vectors, stats, utils
 Suggests: biovizBase, ggbio, RUnit
 License: Artistic-2.0
-Collate: RccMetadata.R
+Collate: SignatureSet-class.R
+         RccMetadata.R
          NanoStringRccSet-class.R
          NanoStringRccSet-validity.R
          NanoStringRccSet-accessors.R
