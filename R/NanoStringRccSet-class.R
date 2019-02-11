@@ -135,8 +135,8 @@ function(assayData,
               experimentData = Biobase::experimentData(assayData),
               annotation = Biobase::annotation(assayData),
               protocolData = Biobase::protocolData(assayData),
-              signatures = signatures,
-              design = design,
+              signatures = signatures(assayData),
+              design = design(assayData),
               ...)
 })
 
