@@ -7,9 +7,13 @@
 % constructors
 \alias{NanoStringRccSet}
 \alias{NanoStringRccSet,environment-method}
+\alias{NanoStringRccSet,ExpressionSet-method}
 \alias{NanoStringRccSet,matrix-method}
 \alias{NanoStringRccSet,missing-method}
 \alias{NanoStringRccSet,NanoStringRccSet-method}
+
+% coercion
+\alias{coerce,ExpressionSet,NanoStringRccSet-method}
 
 % show
 \alias{show,NanoStringRccSet-method}

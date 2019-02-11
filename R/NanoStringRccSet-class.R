@@ -96,6 +96,28 @@ function(assayData,
               signatures = signatures, design = design, ...)
 })
 
+setMethod("NanoStringRccSet", "ExpressionSet",
+function(assayData,
+         phenoData = annotatedDataFrameFrom(assayData, byrow = FALSE),
+         featureData = annotatedDataFrameFrom(assayData, byrow = TRUE),
+         experimentData = MIAME(),
+         annotation = character(),
+         protocolData = annotatedDataFrameFrom(assayData, byrow = FALSE),
+         signatures = SignatureSet(),
+         design = NULL,
+         ...)
+{
+  callGeneric(assayData = copyEnv(assayData(assayData)),
+              phenoData = Biobase::phenoData(assayData),
+              featureData = Biobase::featureData(assayData),
+              experimentData = Biobase::experimentData(assayData),
+              annotation = Biobase::annotation(assayData),
+              protocolData = Biobase::protocolData(assayData),
+              signatures = signatures,
+              design = design,
+              ...)
+})
+
 setMethod("NanoStringRccSet", "NanoStringRccSet",
 function(assayData,
          phenoData = annotatedDataFrameFrom(assayData, byrow = FALSE),
@@ -117,3 +139,7 @@ function(assayData,
               design = design,
               ...)
 })
+
+# Coersion
+setAs("ExpressionSet", "NanoStringRccSet",
+      function(from) NanoStringRccSet(from))
