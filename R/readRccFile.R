@@ -94,11 +94,19 @@ function(file)
                             Accession = "character", Count = "numeric"))
   output[["Code_Summary"]][["Count"]] <-
     as.integer(round(output[["Code_Summary"]][["Count"]]))
-  rownames(output[["Code_Summary"]]) <-
-    sprintf("%s_%s_%s",
-            output[["Code_Summary"]][["CodeClass"]],
-            output[["Code_Summary"]][["GeneName"]],
-            output[["Code_Summary"]][["Accession"]])
+  rn <- sprintf("%s_%s_%s",
+                output[["Code_Summary"]][["CodeClass"]],
+                output[["Code_Summary"]][["GeneName"]],
+                output[["Code_Summary"]][["Accession"]])
+  if ((ndups <- anyDuplicated(rn)) > 0L) {
+    warning(sprintf("remove %d rows from \"Code_Summary\" due to duplicate rownames",
+                    ndups))
+    ok <- which(!duplicated(rn, fromLast = FALSE) &
+                !duplicated(rn, fromLast = TRUE))
+    rn <- rn[ok]
+    output[["Code_Summary"]] <- output[["Code_Summary"]][ok, , drop = FALSE]
+  }
+  rownames(output[["Code_Summary"]]) <- rn
 
   output
 }
