@@ -99,7 +99,7 @@ function(file)
                 output[["Code_Summary"]][["GeneName"]],
                 output[["Code_Summary"]][["Accession"]])
   if ((ndups <- anyDuplicated(rn)) > 0L) {
-    warning(sprintf("remove %d rows from \"Code_Summary\" due to duplicate rownames",
+    warning(sprintf("removed %d rows from \"Code_Summary\" due to duplicate rownames",
                     ndups))
     ok <- which(!duplicated(rn, fromLast = FALSE) &
                 !duplicated(rn, fromLast = TRUE))
