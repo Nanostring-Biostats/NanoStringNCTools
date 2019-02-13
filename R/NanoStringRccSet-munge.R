@@ -14,6 +14,26 @@ function(data, mapping = update(design(data), exprs ~ .), extradata = NULL,
   else if (is.list(mapping))
     vars <- unique(unlist(lapply(mapping, all.vars), use.names = FALSE))
 
+  # Handle GeneMatrix / SignatureMatrix special case
+  hasGeneMatrix <- "GeneMatrix" %in% vars
+  hasSignatureMatrix <- "SignatureMatrix" %in% vars
+  if (hasGeneMatrix || hasSignatureMatrix) {
+    df <- sData(data)
+    if (!is.null(extradata) && any(vars %in% colnames(extradata)))
+      df <- cbind(df, extradata)
+    if (hasGeneMatrix) {
+      mat <- t(assayDataElement2(data, elt))
+      colnames(mat) <- featureData(data)[["GeneName"]]
+      df[["GeneMatrix"]] <- mat
+    }
+    if (hasSignatureMatrix)
+      df[["SignatureMatrix"]] <- t(signatureScores(data, elt))
+    formula <- eval(parse(text = sprintf("~ %s", paste(vars, collapse = "+"))))
+    df <- model.frame(formula, df)
+    attr(df, "terms") <- NULL
+    return(as(df, "DataFrame"))
+  }
+
   # Determine the types of variables
   hasFeatureVars <- any(vars %in% fvarLabels(data))
   hasSampleVars  <- any(vars %in% svarLabels(data))

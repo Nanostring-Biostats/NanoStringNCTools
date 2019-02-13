@@ -5,9 +5,9 @@ Version: 0.0.1
 Encoding: UTF-8
 Author: Patrick Aboyoun
 Maintainer: Patrick Aboyoun <paboyoun@nanostring.com>
-Depends: R (>= 3.3.0), Biobase, ggplot2
+Depends: R (>= 3.3.0), Biobase, S4Vectors, ggplot2
 Imports: BiocGenerics, Biostrings, ggbeeswarm, ggiraph, grDevices, IRanges,
-         methods, pheatmap, RColorBrewer, S4Vectors, stats, utils
+         methods, pheatmap, RColorBrewer, stats, utils
 Suggests: biovizBase, ggbio, RUnit
 License: Artistic-2.0
 Collate: SignatureSet-class.R
