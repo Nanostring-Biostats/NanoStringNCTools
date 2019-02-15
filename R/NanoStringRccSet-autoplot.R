@@ -77,7 +77,7 @@ function(object,
          },
          "heatmap-signatures" = {
            scores <- signatureScores(object, elt)
-           if (anyMissing(scores)) {
+           if (anyNA(scores)) {
              whichNA <- which(is.na(rowSums(scores)))
              warning(sprintf("dropped %d signatures due to missing values",
                              length(whichNA)))
