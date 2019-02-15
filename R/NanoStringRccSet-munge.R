@@ -28,10 +28,7 @@ function(data, mapping = update(design(data), exprs ~ .), extradata = NULL,
     }
     if (hasSignatureMatrix)
       df[["SignatureMatrix"]] <- t(signatureScores(data, elt))
-    formula <- eval(parse(text = sprintf("~ %s", paste(vars, collapse = "+"))))
-    df <- model.frame(formula, df)
-    attr(df, "terms") <- NULL
-    return(as(df, "DataFrame"))
+    return(as(df[vars], "DataFrame"))
   }
 
   # Determine the types of variables
