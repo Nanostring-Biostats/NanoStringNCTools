@@ -77,6 +77,12 @@ function(object,
          },
          "heatmap-signatures" = {
            scores <- signatureScores(object, elt)
+           if (anyMissing(scores)) {
+             whichNA <- which(is.na(rowSums(scores)))
+             warning(sprintf("dropped %d signatures due to missing values",
+                             length(whichNA)))
+             scores <- scores[- whichNA, , drop = FALSE]
+           }
            p <- protoheatmap(scores, log2scale = log2scale, group = group,
                              object = object, tooltipHeading = tooltipHeading,
                              ...)
