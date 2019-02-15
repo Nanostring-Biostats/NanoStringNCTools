@@ -28,6 +28,9 @@ function(data, mapping = update(design(data), exprs ~ .), extradata = NULL,
     }
     if (hasSignatureMatrix)
       df[["SignatureMatrix"]] <- t(signatureScores(data, elt))
+    if (!all(vars %in% colnames(df))) {
+      stop("\"mapping\" contains undefined variables")
+    }
     return(as(df[vars], "DataFrame"))
   }
 
