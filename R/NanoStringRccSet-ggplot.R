@@ -1,5 +1,5 @@
 ggplot.NanoStringRccSet <-
-function(data, mapping = aes(), ..., extradata = NULL,
+function(data, mapping = aes(), ..., extradata = NULL, elt = "exprs",
          tooltip_digits = 4L, environment = parent.frame())
 {
   if (length(mapping) == 0L) {
@@ -7,7 +7,7 @@ function(data, mapping = aes(), ..., extradata = NULL,
     if (is.null(mapping))
       stop("\"mapping\" argument is missing")
   }
-  df <- munge(data, mapping = mapping, extradata = extradata)
+  df <- munge(data, mapping = mapping, extradata = extradata, elt = elt)
   if ("tooltip" %in% names(mapping)) {
     tooltip <- as.character(mapping[["tooltip"]][[2L]])
     for (j in c("x", "y")) {
