@@ -89,22 +89,28 @@ test_NanoStringRccSet_munge_featureData <- function() {
   target <-
     data.frame(FeatureName = featureNames(rcc),
                MeanLog2 = c(1.333333333, 1.830617699, 2.302296865, 2.617249680),
-               CodeClass = c("Endogenous", "Positive", "Negative", "Housekeeping"),
                stringsAsFactors = FALSE)
+  checkEquals(target, munge(rcc, MeanLog2 ~ FeatureName))
+
+  target[["CodeClass"]] <- c("Endogenous", "Positive", "Negative", "Housekeeping")
   checkEquals(target, munge(rcc, ~ MeanLog2 + CodeClass))
 
   target <-
     data.frame(FeatureName = featureNames(rcc),
                Mean = 4:7,
-               CodeClass = c("Endogenous", "Positive", "Negative", "Housekeeping"),
                stringsAsFactors = FALSE)
+  checkEquals(target, munge(rcc, Mean ~ FeatureName))
+
+  target[["CodeClass"]] <- c("Endogenous", "Positive", "Negative", "Housekeeping")
   checkEquals(target, munge(rcc, ~ Mean + CodeClass))
 
   target <-
     data.frame(FeatureName = featureNames(rcc),
                Median = 4:7,
-               CodeClass = c("Endogenous", "Positive", "Negative", "Housekeeping"),
                stringsAsFactors = FALSE)
+  checkEquals(target, munge(rcc, Median ~ FeatureName))
+
+  target[["CodeClass"]] <- c("Endogenous", "Positive", "Negative", "Housekeeping")
   checkEquals(target, munge(rcc, ~ Median + CodeClass))
 }
 
@@ -124,22 +130,28 @@ test_NanoStringRccSet_munge_sampleData <- function() {
   target <-
     data.frame(SampleName = sampleNames(rcc),
                MeanLog2 = c(0.3962406252, 2.4285613794, 3.2378211787),
-               Treatment = c("A", "A", "B"),
                stringsAsFactors = FALSE)
+  checkEquals(target, munge(rcc, MeanLog2 ~ SampleName))
+
+  target[["Treatment"]] <- c("A", "A", "B")
   checkEquals(target, munge(rcc, ~ MeanLog2 + Treatment))
 
   target <-
     data.frame(SampleName = sampleNames(rcc),
                Mean = c(1.5, 5.5, 9.5),
-               Treatment = c("A", "A", "B"),
                stringsAsFactors = FALSE)
+  checkEquals(target, munge(rcc, Mean ~ SampleName))
+
+  target[["Treatment"]] <- c("A", "A", "B")
   checkEquals(target, munge(rcc, ~ Mean + Treatment))
 
   target <-
     data.frame(SampleName = sampleNames(rcc),
                Median = c(1.5, 5.5, 9.5),
-               Treatment = c("A", "A", "B"),
                stringsAsFactors = FALSE)
+  checkEquals(target, munge(rcc, Median ~ SampleName))
+
+  target[["Treatment"]] <- c("A", "A", "B")
   checkEquals(target, munge(rcc, ~ Median + Treatment))
 
   newdata <- data.frame(V1 = 11:13, row.names = sampleNames(rcc))

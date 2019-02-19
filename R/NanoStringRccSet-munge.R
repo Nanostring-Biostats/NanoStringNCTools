@@ -45,12 +45,20 @@ function(data, mapping = update(design(data), exprs ~ .), extradata = NULL,
   hasAggregates <- hasLog2Summaries || hasSummaries
   hasAssayDataElts <- any(vars %in% assayDataElementNames(data))
   useSignatures <- "SignatureName" %in% vars
-  if (hasAggregates && hasAssayDataElts)
-    stop("\"mapping\" argument cannot contain both aggregates and disaggregates")
-  if (hasAggregates && hasFeatureVars && hasSampleVars)
-    stop("\"mapping\" argument cannot aggregate using both feature and sample variables")
-  if (hasAggregates && !hasFeatureVars && !hasSampleVars)
-    stop("\"mapping\" argument contains an ambiguous aggregation")
+  if (hasAggregates) {
+    if (hasAssayDataElts)
+      stop("\"mapping\" argument cannot contain both aggregates and disaggregates")
+    if (hasFeatureVars && hasSampleVars)
+      stop("\"mapping\" argument cannot aggregate using both feature and sample variables")
+    if (!hasFeatureVars && !hasSampleVars) {
+      if (("FeatureName" %in% vars) && !("SampleName" %in% vars))
+        hasFeatureVars <- TRUE
+      else if (!("FeatureName" %in% vars) && ("SampleName" %in% vars))
+        hasSampleVars <- TRUE
+      else
+        stop("\"mapping\" argument contains an ambiguous aggregation")
+    }
+  }
   if (hasLog2Summaries && hasSummaries)
     stop("\"mapping\" argument cannot use both log2 and linear aggregations")
   if (useSignatures && hasFeatureVars)
