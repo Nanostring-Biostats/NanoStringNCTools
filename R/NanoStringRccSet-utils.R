@@ -45,13 +45,13 @@ function(X, MARGIN, FUN, ..., elt = "exprs")
 
 .apply <- function(X, MARGIN, FUN, ..., .df, .kvs)
 {
+  parent <- environment(FUN)
+  if (is.null(parent))
+    parent <- emptyenv()
+  environment(FUN) <- new.env(parent = parent)
+
   if (length(.kvs) > 0L) {
-    parent <- environment(FUN)
-    if (is.null(parent))
-      parent <- emptyenv()
-    e1 <- new.env(parent = parent)
-    multiassign(names(.kvs), .kvs, envir = e1)
-    environment(FUN) <- e1
+    multiassign(names(.kvs), .kvs, environment(FUN))
   }
 
   if (length(.df) == 0L) {
