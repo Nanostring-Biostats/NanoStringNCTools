@@ -13,47 +13,121 @@ function(object,
                   "positiveControl"),
          log2scale = TRUE,
          elt = "exprs",
-         group = NULL,
          index = 1L,
+         geom = list(),
          tooltipHeading = NULL,
          tooltipDigits = 4L,
+         heatmapGroup = NULL,
          ...)
 {
-  args <- list(...)
-  colors <- c(blue = "#4E79A7", orange = "#F28E2B", red = "#E15759",
-              darkgray = "#79706E")
+  processGeom <- function(lst, nm, default_aes = aes()) {
+    if (nm %in% names(lst)) {
+      if ("color" %in% names(lst[[nm]])) {
+        lst[[nm]][["colour"]] <- lst[[nm]][["color"]]
+        lst[[nm]][["color"]] <- NULL
+      }
+    } else {
+      lst[[nm]] <- aes()
+    }
+    if (length(default_aes) > 0L) {
+      args <- setdiff(names(default_aes), c("tooltip", "onclick", "data_id"))
+      lst[[nm]] <- lst[[nm]][names(lst[[nm]]) %in% args]
+      lst[[nm]] <- c(lst[[nm]], default_aes[setdiff(args, names(lst[[nm]]))])
+      oldClass(lst[[nm]]) <- "uneval"
+    }
+    lst
+  }
+  geom <- as.list(geom)
+  geom <- processGeom(geom, "base")
+  geom <- processGeom(geom, "point", GeomInteractivePoint$default_aes)
+  geom <- processGeom(geom, "line", GeomInteractiveLine$default_aes)
+  geom <- processGeom(geom, "boxplot", GeomInteractiveBoxplot$default_aes)
+
+  ggpoint <- function(mapping, ...) {
+    for (arg in names(geom[["point"]])) {
+      if (is.name(geom[["point"]][[arg]])) {
+        mapping[[arg]] <- geom[["point"]][[arg]]
+        geom[["point"]][[arg]] <- NULL
+      }
+    }
+    ggplot(object, mapping, elt = elt, ...) +
+      do.call(geom_point_interactive, geom[["point"]])
+  }
+
+  ggline <- function(object, mapping, ...) {
+    for (i in c("line", "point")) {
+      for (arg in names(geom[[i]])) {
+        if (is.name(geom[[i]][[arg]])) {
+          mapping[[arg]] <- geom[[i]][[arg]]
+          geom[[i]][[arg]] <- NULL
+        }
+      }
+    }
+    ggplot(object, mapping, elt = elt, ...) +
+      do.call(geom_line_interactive, geom[["line"]]) +
+      do.call(geom_point_interactive, geom[["point"]])
+  }
+
   type <- match.arg(type)
   switch(type,
          "boxplot-feature" =,
          "boxplot-signature" = {
            if (type == "boxplot-feature") {
              scores <- assayDataElement2(object, elt)
-             name <- fData(object)[index, "GeneName"]
+             ytitle <- fData(object)[index, "GeneName"]
            } else {
              scores <- signatureScores(object, elt)
-             name <- rownames(scores)[index]
-           }
-           if (is.null(group)) {
-             x <- rep("", ncol(scores))
-           } else {
-             x <- sData(object)[[group]]
+             ytitle <- rownames(scores)[index]
            }
            y <- scores[index, ]
-           if (is.null(group))
-             tooltip <- sprintf("%s<br>%s = %s", colnames(scores),
-                                name, signif(y, tooltipDigits))
-           else
-             tooltip <- sprintf("%s<br>%s = %s<br>%s = %s", colnames(scores),
-                                group, x, name, signif(y, tooltipDigits))
-           df <- data.frame(group = x, signature = y, tooltip = tooltip,
+           if (!is.name(geom[["base"]][["x"]])) {
+             x <- rep.int("", ncol(scores))
+             xtitle <- ""
+           } else {
+             x <- eval(geom[["base"]][["x"]], sData(object))
+             xtitle <- as.character(geom[["base"]][["x"]])
+           }
+           if (!is.name(geom[["point"]][["color"]])) {
+             color <- NULL
+             colortitle <- ""
+           } else {
+             color <- eval(geom[["point"]][["color"]], sData(object))
+             colortitle <- as.character(geom[["point"]][["color"]])
+           }
+           tooltip <- colnames(scores)
+           if (is.name(geom[["base"]][["x"]])) {
+             tooltip <- sprintf("%s<br>%s = %s", tooltip, xtitle, x)
+           }
+           tooltip <- sprintf("%s<br>%s = %s", tooltip, ytitle,
+                              signif(y, tooltipDigits))
+           if (is.name(geom[["point"]][["color"]])) {
+             tooltip <- sprintf("%s<br>%s = %s", tooltip, colortitle, color)
+           }
+           df <- data.frame(x = x, score = y, tooltip = tooltip,
                             stringsAsFactors = FALSE)
-           p <- ggplot(df, aes_string(x = "group", y = "signature")) +
-             stat_boxplot(geom = "errorbar", width = 0.5) +
-             geom_boxplot_interactive(aes_string(tooltip = "group"),
-                                      outlier.shape = NA) +
-             scale_x_discrete(name = group) + scale_y_continuous(name = name) +
-             geom_beeswarm_interactive(aes_string(tooltip = "tooltip"),
-                                       size = 2, color = colors[["blue"]])
+           df[["color"]] <- color
+           p <- ggplot(df, aes_string(x = "x", y = "score")) +
+             stat_boxplot(geom = "errorbar",
+                          width = geom[["boxplot"]][["size"]],
+                          color = geom[["boxplot"]][["colour"]]) +
+             do.call(geom_boxplot_interactive,
+                     c(list(aes_string(tooltip = "x")),
+                       geom[["boxplot"]],
+                       outlier.shape = NA)) +
+             scale_x_discrete(name = xtitle) + scale_y_continuous(name = ytitle)
+           if (is.null(color)) {
+             p <- p +
+               do.call(geom_beeswarm_interactive,
+                       c(list(aes_string(tooltip = "tooltip")),
+                         geom[["point"]]))
+           } else {
+             p <- p +
+               do.call(geom_beeswarm_interactive,
+                       c(list(aes_string(color = "color", tooltip = "tooltip")),
+                         geom[["point"]])) +
+               guides(color = guide_legend(title = colortitle))
+           }
+           p
          },
          "bindingDensity-mean" =,
          "bindingDensity-sd" = {
@@ -64,16 +138,17 @@ function(object,
            }
            mapping <- aes_string(x = "BindingDensity", y = y,
                                  tooltip = "SampleName")
-           p <- ggplot(object, mapping, ...) + geom_point_interactive(...) +
+           p <- ggpoint(mapping, ...) +
              scale_x_continuous(name = "Binding Density")
          },
          "heatmap-genes" = {
            object <- endogenousSubset(object)
            scores <- assayDataElement2(object, elt)
            rownames(scores) <- featureData(object)[["GeneName"]]
-           p <- protoheatmap(scores, log2scale = log2scale, group = group,
-                             object = object,  tooltipHeading = tooltipHeading,
-                             ...)
+           p <-
+             protoheatmap(scores, log2scale = log2scale, group = heatmapGroup,
+                          object = object,  tooltipHeading = tooltipHeading,
+                          ...)
          },
          "heatmap-signatures" = {
            scores <- signatureScores(object, elt)
@@ -83,34 +158,37 @@ function(object,
                              length(whichNA)))
              scores <- scores[- whichNA, , drop = FALSE]
            }
-           p <- protoheatmap(scores, log2scale = log2scale, group = group,
-                             object = object, tooltipHeading = tooltipHeading,
-                             ...)
+           p <-
+             protoheatmap(scores, log2scale = log2scale, group = heatmapGroup,
+                          object = object, tooltipHeading = tooltipHeading,
+                          ...)
          },
          "lane-bindingDensity" = {
            maxBD <- 2.25
-           outlier <- protocolData(object)[["BindingDensity"]] > maxBD
-           if (any(outlier)) {
-             extradata <- data.frame(Outlier = outlier,
-                                     row.names = sampleNames(object))
-             mapping <- aes_string(x = "LaneID", y = "BindingDensity",
-                                   tooltip = "SampleName", color = "Outlier")
-             p <- ggplot(object, mapping, extradata = extradata, ...) +
-               geom_point_interactive() +
-               scale_color_manual(values = unname(colors[c("blue", "red")]))
-           } else {
-             mapping <- aes_string(x = "LaneID", y = "BindingDensity",
-                                   tooltip = "SampleName")
-             p <- ggplot(object, mapping, ...) +
-               geom_point_interactive(color = colors[["blue"]])
+           extradata <-
+             data.frame(Outlier =
+                          protocolData(object)[["BindingDensity"]] > maxBD,
+                        row.names = sampleNames(object))
+           mapping <- aes_string(x = "LaneID", y = "BindingDensity",
+                                 tooltip = "SampleName")
+           if (any(extradata[["Outlier"]])) {
+             geom[["point"]] <- unclass(geom[["point"]])
+             if (!is.name(geom[["point"]][["colour"]])) {
+               mapping[["colour"]] <- as.name("Outlier")
+               geom[["point"]][["colour"]] <- NULL
+             } else if (!is.name(geom[["point"]][["shape"]])) {
+               mapping[["shape"]] <- as.name("Outlier")
+               geom[["point"]][["shape"]] <- NULL
+             }
+             oldClass(geom[["point"]]) <- "uneval"
            }
-           p <- p +
+           p <- ggpoint(mapping, extradata = extradata, ...) +
              scale_x_continuous(name = "Lane", breaks = 1:12,
                                 limits = c(1L, 12L)) +
              scale_y_continuous(name = "Binding Density",
                                 limits = c(0, NA_real_)) +
              geom_hline(yintercept = c(0.1, maxBD), linetype = 2L,
-                        color = colors[["darkgray"]])
+                        color = "darkgray")
          },
          "lane-fov" = {
            extradata <- pData(protocolData(object))
@@ -118,46 +196,45 @@ function(object,
              data.frame(FOVCounted =
                           extradata[["FovCounted"]] / extradata[["FovCount"]],
                         row.names = rownames(extradata))
-           outlier <- extradata[["FOVCounted"]] < 0.75
-           if (any(outlier)) {
-             df[["Outlier"]] <- outlier
-             mapping <- aes_string(x = "LaneID", y = "FOVCounted",
-                                   tooltip = "SampleName", color = "Outlier")
-             p <- ggplot(object, mapping, extradata = extradata, ...) +
-               geom_point_interactive() +
-               scale_color_manual(values = unname(colors[c("blue", "red")]))
-           } else {
-             mapping <- aes_string(x = "LaneID", y = "FOVCounted",
-                                   tooltip = "SampleName")
-             p <- ggplot(object, mapping, extradata = extradata, ...) +
-               geom_point_interactive(color = colors[["blue"]])
+           extradata[["Outlier"]] <- extradata[["FOVCounted"]] < 0.75
+           mapping <- aes_string(x = "LaneID", y = "FOVCounted",
+                                 tooltip = "SampleName")
+           if (any(extradata[["Outlier"]])) {
+             geom[["point"]] <- unclass(geom[["point"]])
+             if (!is.name(geom[["point"]][["colour"]])) {
+               mapping[["colour"]] <- as.name("Outlier")
+               geom[["point"]][["colour"]] <- NULL
+             } else if (!is.name(geom[["point"]][["shape"]])) {
+               mapping[["shape"]] <- as.name("Outlier")
+               geom[["point"]][["shape"]] <- NULL
+             }
+             oldClass(geom[["point"]]) <- "uneval"
            }
-           p <- p +
+           p <- ggpoint(mapping, extradata = extradata, ...) +
              scale_x_continuous(name = "Lane", breaks = 1:12,
                                 limits = c(1L, 12L)) +
              scale_y_continuous(name = "FOV Counted", labels = format_percent,
                                 limits = c(0, 1)) +
              geom_hline(yintercept = 0.75, linetype = 2L,
-                        color = colors[["darkgray"]])
+                        color = "darkgray")
          },
-         "mean-sd-features" =,
-         "mean-sd-samples" = {
-           MARGIN <- 1L + (type == "mean-sd-samples")
-           stats <- summary(object, MARGIN = MARGIN, log2scale = log2scale,
-                            elt = elt)
-           if (log2scale) {
+         "mean-sd-features" = {
+           if (log2scale)
              mapping <- aes_string(x = "MeanLog2", y = "SDLog2",
-                                   tooltip = "ToolTip")
-             df <- as.data.frame(stats[,c("MeanLog2", "SDLog2")])
-           } else {
-             mapping <- aes_string(x = "Mean", y = "SD", tooltip = "ToolTip")
-             df <- as.data.frame(stats[,c("Mean", "SD")])
-           }
-           df[["ToolTip"]] <-
-             sprintf("%s<br>%s = %s<br>%s = %s", rownames(df),
-                     colnames(df)[1L], signif(df[,1L], tooltipDigits),
-                     colnames(df)[2L], signif(df[,2L], tooltipDigits))
-           p <- ggplot(df, mapping, ...) + geom_point_interactive(...)
+                                   tooltip = "FeatureName")
+           else
+             mapping <- aes_string(x = "Mean", y = "SD",
+                                   tooltip = "FeatureName")
+           p <- ggpoint(mapping, ...)
+         },
+         "mean-sd-samples" = {
+           if (log2scale)
+             mapping <- aes_string(x = "MeanLog2", y = "SDLog2",
+                                   tooltip = "SampleName")
+           else
+             mapping <- aes_string(x = "Mean", y = "SD",
+                                   tooltip = "SampleName")
+           p <- ggpoint(mapping, ...)
          },
          "positiveControl" = {
            posCtrl <- positiveControlSubset(object)
@@ -166,30 +243,25 @@ function(object,
            extradata <-
              data.frame(RSquared =
                           assayDataApply(posCtrl, 2L,
-                                         function(y) cor(x, log2t(y, 0.5))))
+                                         function(y) cor(x, log2t(y, 0.5)),
+                                         elt = elt))
            extradata[["Low R-Squared"]] <- extradata[["RSquared"]] < 0.95
            extradata[["CustomTooltip"]] <-
              sprintf("%s\nR-Squared = %.4f", rownames(extradata),
                      extradata[["RSquared"]])
 
+           mapping <-
+             aes_string(x = "ControlConc", y = elt, group = "SampleName",
+                        tooltip = "CustomTooltip")
            if (any(extradata[["Low R-Squared"]])) {
-             mapping <-
-               aes_string(x = "ControlConc", y = elt, group = "SampleName",
-                          tooltip = "CustomTooltip",
-                          color = as.name("Low R-Squared"))
-             p <- ggplot(posCtrl, mapping, extradata = extradata, ...) +
-               geom_line_interactive() +
-               geom_point_interactive() +
-               scale_color_manual(values = unname(colors[c("blue", "red")]))
-           } else {
-             mapping <-
-               aes_string(x = "ControlConc", y = elt, group = "SampleName",
-                          tooltip = "CustomTooltip")
-             p <- ggplot(posCtrl, mapping, extradata = extradata, ...) +
-               geom_line_interactive(color = colors[["blue"]]) +
-               geom_point_interactive(color = colors[["blue"]])
+             mapping[["colour"]] <- as.name("Low R-Squared")
+             for (i in c("line", "point")) {
+               geom[[i]] <- unclass(geom[[i]])
+               geom[[i]][["colour"]] <- NULL
+               oldClass(geom[[i]]) <- "uneval"
+             }
            }
-           p <- p +
+           p <- ggline(posCtrl, mapping, extradata = extradata, ...) +
              scale_x_continuous(name = "Concentration (fM)", trans = "log2") +
              scale_y_continuous(trans = "log2")
          })
