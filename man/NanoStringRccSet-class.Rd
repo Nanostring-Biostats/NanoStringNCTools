@@ -166,10 +166,14 @@ NanoStringRccSet(assayData,
 \section{Summarizing}{
   \describe{
     \item{}{
-      \code{summary(object, MARGIN = 2L, GROUP = NULL, log2scale = TRUE, elt = "exprs")}:
-      Marginal summaries of the \code{elt} \code{\link[Biobase]{assayData}}
-      matrix along either the feature (\code{MARGIN = 1}) or sample
-      (\code{MARGIN = 2}) dimension.
+      \code{summary(object, MARGIN = 2L, GROUP = NULL, log2scale = TRUE, elt = "exprs", signatureScores = FALSE)}:
+      When \code{signatureScores = FALSE}, the marginal summaries of the
+      \code{elt} \code{\link[Biobase]{assayData}} matrix along either the
+      feature (\code{MARGIN = 1}) or sample (\code{MARGIN = 2}) dimension.
+
+      When \code{signatureScores = TRUE}, the marginal summaries of the
+      \code{elt} \code{signatureScores} matrix along either the
+      signature (\code{MARGIN = 1}) or sample (\code{MARGIN = 2}) dimension.
 
       When \code{log2scale = FALSE}, the summary statistics are Mean, Standard
       Deviation, Skewness, Excess Kurtosis, Minimum, First Quartile, Median,
@@ -258,7 +262,7 @@ NanoStringRccSet(assayData,
 \section{Transforming}{
   \describe{
     \item{}{
-      \code{munge(data, mapping = design(data), extradata = NULL, elt = "exprs", \ldots)}:
+      \code{munge(data, mapping = update(design(data), exprs ~ .), extradata = NULL, elt = "exprs", \ldots)}:
       munge argument \code{data} into a data.frame object for modeling and
       visualization using the \code{mapping} argument. Supplemental data can be
       specified using the \code{extradata} argument.
@@ -302,7 +306,7 @@ NanoStringRccSet(assayData,
       the \code{NanoStringRccSet} method for \code{ggplot}.
     }
     \item{}{
-      \code{autoplot(object, type, log2scale = TRUE, elt = "exprs", group = NULL, index = 1L, tooltipHeading = NULL, tooltipDigits = 4L, \ldots)}:
+      \code{autoplot(object, type, log2scale = TRUE, elt = "exprs", index = 1L, geom = list(), tooltipHeading = NULL, tooltipDigits = 4L, heatmapGroup = NULL, \ldots)}:
     }
   }
 }

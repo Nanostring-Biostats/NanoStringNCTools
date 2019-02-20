@@ -189,6 +189,18 @@ test_NanoStringRccSet_munge_signatures <- function() {
                        stringsAsFactors = FALSE)
   checkIdentical(target, munge(rcc, ~ SignatureName))
 
+  target <-
+    data.frame(SignatureName = c("x", "y", "z"),
+               MeanLog2 = c(1.333333333, 2.418197081, 4.602451641),
+               stringsAsFactors = FALSE)
+  checkEquals(target, munge(rcc, MeanLog2 ~ SignatureName))
+
+  target <-
+    data.frame(SignatureName = c("x", "y", "z"),
+               Mean = c(4, 19 / 3, 32),
+               stringsAsFactors = FALSE)
+  checkEquals(target, munge(rcc, Mean ~ SignatureName))
+
   target <- data.frame(SignatureName = rep.int(names(signatures(rcc)), ncol(rcc)),
                        SampleName = rep(sampleNames(rcc), each = length(sampleNames(rcc))),
                        exprs = c(0, 7, 24, 12, 19, 96, 24, 31, 168) / 3,

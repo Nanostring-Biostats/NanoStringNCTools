@@ -194,3 +194,53 @@ test_NanoStringRccSet_summary_GROUP <- function() {
                            Max = c(1, 5, 9))),
               summary(rcc2, 2L, "CodeClass"))
 }
+
+test_NanoStringRccSet_summary_signatureScores <- function() {
+  rcc2 <- transform(rcc, log2_exprs = log2t(exprs))
+
+  # Marginal summaries by Signature
+  checkEquals(cbind(GeomMean = c(2.519842100, 5.345026428, 24.292711775),
+                    SizeFactor = c(0.3656848208, 0.7756815523, 3.5254097679),
+                    MeanLog2 = c(1.333333333, 2.418197081, 4.602451641),
+                    SDLog2 = c(2.081665999, 1.094150580, 1.445283342),
+                    Min = structure(c(0, 7/3, 8), names = letters[24:26]),
+                    Q1 = c(2, 13/3, 20),
+                    Median = c(4, 19/3, 32),
+                    Q3 = c(6, 25/3, 44),
+                    Max = c(8, 31/3, 56)),
+              summary(rcc2, 1L, signatureScores = TRUE))
+  checkEquals(cbind(Mean = c(1.333333333, 2.355039020, 11.875854127),
+                    SD = c(2.081665999, 1.180269678, 8.903353671),
+                    Skewness = c(-1.293342781, -1.040509939, -1.149988205),
+                    Kurtosis = NA_real_,
+                    Min = structure(c(-1, 1.056641667, 2), names = letters[24:26]),
+                    Q1 = c(0.5, 1.851093823, 8.169925001),
+                    Median = c(2.00000000, 2.64554598, 14.33985000),
+                    Q3 = c(2.5, 3.004237696, 16.813781191),
+                    Max = c(3, 3.362929413, 19.287712380)),
+              summary(rcc2, 1L, elt = "log2_exprs", log2scale = FALSE,
+                      signatureScores = TRUE))
+
+  # Marginal summaries by Sample
+  checkEquals(cbind(GeomMean = c(2.105453199, 9.324254210, 16.666311104),
+                    SizeFactor = c(0.3055478262, 1.3531555132, 2.4186503550),
+                    MeanLog2 = c(1.074130807, 3.220988338, 4.058862911),
+                    SDLog2 = c(2.004117294, 1.575925926, 1.525451290),
+                    Min = structure(c(0, 4, 8), names = sampleNames(rcc)),
+                    Q1 = c(7, 31, 55) / 6,
+                    Median = c(7, 19, 31) / 3,
+                    Q3 = c(31, 115, 199) / 6,
+                    Max = c(8, 32, 56)),
+              summary(rcc2, 2L, signatureScores = TRUE))
+  checkEquals(cbind(Mean = c(0.6855472224, 6.3284653275, 8.5502139308),
+                    SD = c(1.534041497, 6.945566623, 9.300716862),
+                    Skewness = c(-1.024876550, 1.715233325, 1.729084230),
+                    Kurtosis = NA_real_,
+                    Min = structure(c(-1, 2, 3), names = sampleNames(rcc)),
+                    Q1 = c(0.02832083357, 2.32277298983, 3.18146470645),
+                    Median = c(1.056641667, 2.645545980, 3.362929413),
+                    Q3 = c(1.528320834, 8.492697991, 11.325320896),
+                    Max = c(2, 14.33985000, 19.28771238)),
+              summary(rcc2, 2L, elt = "log2_exprs", log2scale = FALSE,
+                      signatureScores = TRUE))
+}

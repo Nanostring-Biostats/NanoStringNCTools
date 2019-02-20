@@ -122,12 +122,18 @@ function(x, na.rm = FALSE)
 
 # Summary
 setMethod("summary", "NanoStringRccSet",
-function(object, MARGIN = 2L, GROUP = NULL, log2scale = TRUE, elt = "exprs", ...)
+function(object, MARGIN = 2L, GROUP = NULL, log2scale = TRUE, elt = "exprs",
+         signatureScores = FALSE, ...)
 {
   stopifnot(MARGIN %in% c(1L, 2L))
   FUN <- function(x) {
-    stats <- t(assayDataApply(x, MARGIN = MARGIN, FUN = .marginalSummary,
-                              log2scale = log2scale, elt = elt))
+    if (signatureScores) {
+      applyFUN <- signatureScoresApply
+    } else {
+      applyFUN <- assayDataApply
+    }
+    stats <- t(applyFUN(x, MARGIN = MARGIN, FUN = .marginalSummary,
+                        log2scale = log2scale, elt = elt))
     if (log2scale) {
       stats[,"SizeFactor"] <- 2^(stats[,"MeanLog2"] - mean(stats[,"MeanLog2"]))
     }

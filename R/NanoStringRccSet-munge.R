@@ -52,7 +52,11 @@ function(data, mapping = update(design(data), exprs ~ .), extradata = NULL,
       stop("\"mapping\" argument cannot contain both aggregates and disaggregates")
     if (hasFeatureVars && hasSampleVars)
       stop("\"mapping\" argument cannot aggregate using both feature and sample variables")
-    if (!hasFeatureVars && !hasSampleVars)
+    if (useSignatures && hasFeatureVars)
+      stop("\"mapping\" argument cannot aggregate using both signatures and feature variables")
+    if (useSignatures && hasSampleVars)
+      stop("\"mapping\" argument cannot aggregate using both signatures and sample variables")
+    if (!hasFeatureVars && !hasSampleVars && !useSignatures)
       stop("\"mapping\" argument contains an ambiguous aggregation")
   }
   if (hasLog2Summaries && hasSummaries)
@@ -96,14 +100,21 @@ function(data, mapping = update(design(data), exprs ~ .), extradata = NULL,
     }
   } else if (hasAggregates) {
     # Calculate marginal summaries
-    MARGIN <- 1L + hasSampleVars
-    df <- summary(data, MARGIN = MARGIN, log2scale = hasLog2Summaries,
-                  elt = elt)
-    df <- df[, intersect(vars, colnames(df)), drop = FALSE]
-    if (MARGIN == 1L) {
-      df <- copyRowNames(df, "FeatureName")
+    if (useSignatures) {
+      df <- summary(data, MARGIN = 1L, log2scale = hasLog2Summaries,
+                    elt = elt, signatureScores = TRUE)
+      df <- df[, intersect(vars, colnames(df)), drop = FALSE]
+      df <- copyRowNames(df, "SignatureName")
     } else {
-      df <- copyRowNames(df, "SampleName")
+      MARGIN <- 1L + hasSampleVars
+      df <- summary(data, MARGIN = MARGIN, log2scale = hasLog2Summaries,
+                    elt = elt)
+      df <- df[, intersect(vars, colnames(df)), drop = FALSE]
+      if (MARGIN == 1L) {
+        df <- copyRowNames(df, "FeatureName")
+      } else {
+        df <- copyRowNames(df, "SampleName")
+      }
     }
   } else {
     df <- NULL
