@@ -87,12 +87,15 @@ function(object,
              x <- eval(geom[["base"]][["x"]], sData(object))
              xtitle <- as.character(geom[["base"]][["x"]])
            }
-           if (!is.name(geom[["point"]][["color"]])) {
-             color <- NULL
-             colortitle <- ""
+           if (!is.name(geom[["point"]][["colour"]])) {
+             colour <- NULL
+             colourtitle <- ""
            } else {
-             color <- eval(geom[["point"]][["color"]], sData(object))
-             colortitle <- as.character(geom[["point"]][["color"]])
+             colour <- eval(geom[["point"]][["colour"]], sData(object))
+             colourtitle <- as.character(geom[["point"]][["colour"]])
+             geom[["point"]] <- unclass(geom[["point"]])
+             geom[["point"]][["colour"]] <- NULL
+             oldClass(geom[["point"]]) <- "uneval"
            }
            tooltip <- colnames(scores)
            if (is.name(geom[["base"]][["x"]])) {
@@ -100,22 +103,22 @@ function(object,
            }
            tooltip <- sprintf("%s<br>%s = %s", tooltip, ytitle,
                               signif(y, tooltipDigits))
-           if (is.name(geom[["point"]][["color"]])) {
-             tooltip <- sprintf("%s<br>%s = %s", tooltip, colortitle, color)
+           if (is.name(geom[["point"]][["colour"]])) {
+             tooltip <- sprintf("%s<br>%s = %s", tooltip, colourtitle, colour)
            }
            df <- data.frame(x = x, score = y, tooltip = tooltip,
                             stringsAsFactors = FALSE)
-           df[["color"]] <- color
+           df[["colour"]] <- colour
            p <- ggplot(df, aes_string(x = "x", y = "score")) +
              stat_boxplot(geom = "errorbar",
                           width = geom[["boxplot"]][["size"]],
-                          color = geom[["boxplot"]][["colour"]]) +
+                          colour = geom[["boxplot"]][["colour"]]) +
              do.call(geom_boxplot_interactive,
                      c(list(aes_string(tooltip = "x")),
                        geom[["boxplot"]],
                        outlier.shape = NA)) +
              scale_x_discrete(name = xtitle) + scale_y_continuous(name = ytitle)
-           if (is.null(color)) {
+           if (is.null(colour)) {
              p <- p +
                do.call(geom_beeswarm_interactive,
                        c(list(aes_string(tooltip = "tooltip")),
@@ -123,9 +126,10 @@ function(object,
            } else {
              p <- p +
                do.call(geom_beeswarm_interactive,
-                       c(list(aes_string(color = "color", tooltip = "tooltip")),
+                       c(list(aes_string(tooltip = "tooltip",
+                                         colour = "colour")),
                          geom[["point"]])) +
-               guides(color = guide_legend(title = colortitle))
+               guides(colour = guide_legend(title = colourtitle))
            }
            p
          },
@@ -188,7 +192,7 @@ function(object,
              scale_y_continuous(name = "Binding Density",
                                 limits = c(0, NA_real_)) +
              geom_hline(yintercept = c(0.1, maxBD), linetype = 2L,
-                        color = "darkgray")
+                        colour = "darkgray")
          },
          "lane-fov" = {
            extradata <- pData(protocolData(object))
@@ -216,7 +220,7 @@ function(object,
              scale_y_continuous(name = "FOV Counted", labels = format_percent,
                                 limits = c(0, 1)) +
              geom_hline(yintercept = 0.75, linetype = 2L,
-                        color = "darkgray")
+                        colour = "darkgray")
          },
          "mean-sd-features" = {
            if (log2scale)
