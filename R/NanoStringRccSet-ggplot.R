@@ -41,3 +41,22 @@ function(mapping = NULL, data = NULL,
 format_percent <- function(x) {
   sprintf("%s%%", format(100 * x, digits = 2L))
 }
+
+
+update_geom_params <- function(geom, new, old = aes()) {
+  if (geom %in% names(new)) {
+    if ("color" %in% names(new[[geom]])) {
+      new[[geom]][["colour"]] <- new[[geom]][["color"]]
+      new[[geom]][["color"]] <- NULL
+    }
+  } else {
+    new[[geom]] <- aes()
+  }
+  if (length(old) > 0L) {
+    args <- setdiff(names(old), c("tooltip", "onclick", "data_id"))
+    new[[geom]] <- new[[geom]][names(new[[geom]]) %in% args]
+    new[[geom]] <- c(new[[geom]], old[setdiff(args, names(new[[geom]]))])
+    oldClass(new[[geom]]) <- "uneval"
+  }
+  new
+}

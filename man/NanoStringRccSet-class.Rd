@@ -81,6 +81,7 @@
 % plotting
 \alias{ggplot.NanoStringRccSet}
 \alias{autoplot.NanoStringRccSet}
+\alias{update_geom_params}
 
 \title{Class to Contain NanoString Expression Level Assays}
 

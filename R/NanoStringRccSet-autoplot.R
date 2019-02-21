@@ -14,58 +14,41 @@ function(object,
          log2scale = TRUE,
          elt = "exprs",
          index = 1L,
-         geom = list(),
+         geomParams = list(),
          tooltipHeading = NULL,
          tooltipDigits = 4L,
          heatmapGroup = NULL,
          ...)
 {
-  processGeom <- function(lst, nm, default_aes = aes()) {
-    if (nm %in% names(lst)) {
-      if ("color" %in% names(lst[[nm]])) {
-        lst[[nm]][["colour"]] <- lst[[nm]][["color"]]
-        lst[[nm]][["color"]] <- NULL
-      }
-    } else {
-      lst[[nm]] <- aes()
-    }
-    if (length(default_aes) > 0L) {
-      args <- setdiff(names(default_aes), c("tooltip", "onclick", "data_id"))
-      lst[[nm]] <- lst[[nm]][names(lst[[nm]]) %in% args]
-      lst[[nm]] <- c(lst[[nm]], default_aes[setdiff(args, names(lst[[nm]]))])
-      oldClass(lst[[nm]]) <- "uneval"
-    }
-    lst
-  }
-  geom <- as.list(geom)
-  geom <- processGeom(geom, "base")
-  geom <- processGeom(geom, "point", GeomInteractivePoint$default_aes)
-  geom <- processGeom(geom, "line", GeomInteractiveLine$default_aes)
-  geom <- processGeom(geom, "boxplot", GeomInteractiveBoxplot$default_aes)
+  geomParams <- as.list(geomParams)
+  geomParams <- update_geom_params("base", geomParams)
+  geomParams <- update_geom_params("point", geomParams, GeomInteractivePoint$default_aes)
+  geomParams <- update_geom_params("line", geomParams, GeomInteractiveLine$default_aes)
+  geomParams <- update_geom_params("boxplot", geomParams, GeomInteractiveBoxplot$default_aes)
 
   ggpoint <- function(mapping, ...) {
-    for (arg in names(geom[["point"]])) {
-      if (is.name(geom[["point"]][[arg]])) {
-        mapping[[arg]] <- geom[["point"]][[arg]]
-        geom[["point"]][[arg]] <- NULL
+    for (arg in names(geomParams[["point"]])) {
+      if (is.name(geomParams[["point"]][[arg]])) {
+        mapping[[arg]] <- geomParams[["point"]][[arg]]
+        geomParams[["point"]][[arg]] <- NULL
       }
     }
     ggplot(object, mapping, elt = elt, ...) +
-      do.call(geom_point_interactive, geom[["point"]])
+      do.call(geom_point_interactive, geomParams[["point"]])
   }
 
   ggline <- function(object, mapping, ...) {
     for (i in c("line", "point")) {
-      for (arg in names(geom[[i]])) {
-        if (is.name(geom[[i]][[arg]])) {
-          mapping[[arg]] <- geom[[i]][[arg]]
-          geom[[i]][[arg]] <- NULL
+      for (arg in names(geomParams[[i]])) {
+        if (is.name(geomParams[[i]][[arg]])) {
+          mapping[[arg]] <- geomParams[[i]][[arg]]
+          geomParams[[i]][[arg]] <- NULL
         }
       }
     }
     ggplot(object, mapping, elt = elt, ...) +
-      do.call(geom_line_interactive, geom[["line"]]) +
-      do.call(geom_point_interactive, geom[["point"]])
+      do.call(geom_line_interactive, geomParams[["line"]]) +
+      do.call(geom_point_interactive, geomParams[["point"]])
   }
 
   type <- match.arg(type)
@@ -80,30 +63,30 @@ function(object,
              ytitle <- rownames(scores)[index]
            }
            y <- scores[index, ]
-           if (!is.name(geom[["base"]][["x"]])) {
+           if (!is.name(geomParams[["base"]][["x"]])) {
              x <- rep.int("", ncol(scores))
              xtitle <- ""
            } else {
-             x <- eval(geom[["base"]][["x"]], sData(object))
-             xtitle <- as.character(geom[["base"]][["x"]])
+             x <- eval(geomParams[["base"]][["x"]], sData(object))
+             xtitle <- as.character(geomParams[["base"]][["x"]])
            }
-           if (!is.name(geom[["point"]][["colour"]])) {
+           if (!is.name(geomParams[["point"]][["colour"]])) {
              colour <- NULL
              colourtitle <- ""
            } else {
-             colour <- eval(geom[["point"]][["colour"]], sData(object))
-             colourtitle <- as.character(geom[["point"]][["colour"]])
-             geom[["point"]] <- unclass(geom[["point"]])
-             geom[["point"]][["colour"]] <- NULL
-             oldClass(geom[["point"]]) <- "uneval"
+             colour <- eval(geomParams[["point"]][["colour"]], sData(object))
+             colourtitle <- as.character(geomParams[["point"]][["colour"]])
+             geomParams[["point"]] <- unclass(geomParams[["point"]])
+             geomParams[["point"]][["colour"]] <- NULL
+             oldClass(geomParams[["point"]]) <- "uneval"
            }
            tooltip <- colnames(scores)
-           if (is.name(geom[["base"]][["x"]])) {
+           if (is.name(geomParams[["base"]][["x"]])) {
              tooltip <- sprintf("%s<br>%s = %s", tooltip, xtitle, x)
            }
            tooltip <- sprintf("%s<br>%s = %s", tooltip, ytitle,
                               signif(y, tooltipDigits))
-           if (is.name(geom[["point"]][["colour"]])) {
+           if (is.name(geomParams[["point"]][["colour"]])) {
              tooltip <- sprintf("%s<br>%s = %s", tooltip, colourtitle, colour)
            }
            df <- data.frame(x = x, score = y, tooltip = tooltip,
@@ -111,24 +94,24 @@ function(object,
            df[["colour"]] <- colour
            p <- ggplot(df, aes_string(x = "x", y = "score")) +
              stat_boxplot(geom = "errorbar",
-                          width = geom[["boxplot"]][["size"]],
-                          colour = geom[["boxplot"]][["colour"]]) +
+                          width = geomParams[["boxplot"]][["size"]],
+                          colour = geomParams[["boxplot"]][["colour"]]) +
              do.call(geom_boxplot_interactive,
                      c(list(aes_string(tooltip = "x")),
-                       geom[["boxplot"]],
+                       geomParams[["boxplot"]],
                        outlier.shape = NA)) +
              scale_x_discrete(name = xtitle) + scale_y_continuous(name = ytitle)
            if (is.null(colour)) {
              p <- p +
                do.call(geom_beeswarm_interactive,
                        c(list(aes_string(tooltip = "tooltip")),
-                         geom[["point"]]))
+                         geomParams[["point"]]))
            } else {
              p <- p +
                do.call(geom_beeswarm_interactive,
                        c(list(aes_string(tooltip = "tooltip",
                                          colour = "colour")),
-                         geom[["point"]])) +
+                         geomParams[["point"]])) +
                guides(colour = guide_legend(title = colourtitle))
            }
            p
@@ -176,15 +159,15 @@ function(object,
            mapping <- aes_string(x = "LaneID", y = "BindingDensity",
                                  tooltip = "SampleName")
            if (any(extradata[["Outlier"]])) {
-             geom[["point"]] <- unclass(geom[["point"]])
-             if (!is.name(geom[["point"]][["colour"]])) {
+             geomParams[["point"]] <- unclass(geomParams[["point"]])
+             if (!is.name(geomParams[["point"]][["colour"]])) {
                mapping[["colour"]] <- as.name("Outlier")
-               geom[["point"]][["colour"]] <- NULL
-             } else if (!is.name(geom[["point"]][["shape"]])) {
+               geomParams[["point"]][["colour"]] <- NULL
+             } else if (!is.name(geomParams[["point"]][["shape"]])) {
                mapping[["shape"]] <- as.name("Outlier")
-               geom[["point"]][["shape"]] <- NULL
+               geomParams[["point"]][["shape"]] <- NULL
              }
-             oldClass(geom[["point"]]) <- "uneval"
+             oldClass(geomParams[["point"]]) <- "uneval"
            }
            p <- ggpoint(mapping, extradata = extradata, ...) +
              scale_x_continuous(name = "Lane", breaks = 1:12,
@@ -204,15 +187,15 @@ function(object,
            mapping <- aes_string(x = "LaneID", y = "FOVCounted",
                                  tooltip = "SampleName")
            if (any(extradata[["Outlier"]])) {
-             geom[["point"]] <- unclass(geom[["point"]])
-             if (!is.name(geom[["point"]][["colour"]])) {
+             geomParams[["point"]] <- unclass(geomParams[["point"]])
+             if (!is.name(geomParams[["point"]][["colour"]])) {
                mapping[["colour"]] <- as.name("Outlier")
-               geom[["point"]][["colour"]] <- NULL
-             } else if (!is.name(geom[["point"]][["shape"]])) {
+               geomParams[["point"]][["colour"]] <- NULL
+             } else if (!is.name(geomParams[["point"]][["shape"]])) {
                mapping[["shape"]] <- as.name("Outlier")
-               geom[["point"]][["shape"]] <- NULL
+               geomParams[["point"]][["shape"]] <- NULL
              }
-             oldClass(geom[["point"]]) <- "uneval"
+             oldClass(geomParams[["point"]]) <- "uneval"
            }
            p <- ggpoint(mapping, extradata = extradata, ...) +
              scale_x_continuous(name = "Lane", breaks = 1:12,
@@ -260,9 +243,9 @@ function(object,
            if (any(extradata[["Low R-Squared"]])) {
              mapping[["colour"]] <- as.name("Low R-Squared")
              for (i in c("line", "point")) {
-               geom[[i]] <- unclass(geom[[i]])
-               geom[[i]][["colour"]] <- NULL
-               oldClass(geom[[i]]) <- "uneval"
+               geomParams[[i]] <- unclass(geomParams[[i]])
+               geomParams[[i]][["colour"]] <- NULL
+               oldClass(geomParams[[i]]) <- "uneval"
              }
            }
            p <- ggline(posCtrl, mapping, extradata = extradata, ...) +

@@ -82,7 +82,7 @@ export(SignatureSet,
        fAbove, fBelow, fAtLeast, fAtMost,
        sAbove, sBelow, sAtLeast, sAtMost,
        logt, log2t,
-       geom_beeswarm_interactive)
+       geom_beeswarm_interactive, update_geom_params)
 
 ### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ### Export S3 methods
