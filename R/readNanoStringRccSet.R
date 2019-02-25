@@ -96,7 +96,8 @@ function(rccFiles,
   # Create annotation
   annotation <- sapply(data, function(x) x[["Sample_Attributes"]][["GeneRLF"]])
   annotation <- unique(annotation)
-  stopifnot(length(annotation) == 1L)
+  if (length(annotation) > 1L)
+    stop("RCC files do not have the same GeneRLF attribute")
 
   # Create protocolData
   protocol <-
