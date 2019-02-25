@@ -23,6 +23,8 @@
 \alias{sData,NanoStringRccSet-method}
 \alias{svarLabels}
 \alias{svarLabels,NanoStringRccSet-method}
+\alias{dimLabels,NanoStringRccSet-method}
+\alias{dimLabels<-,NanoStringRccSet,character-method}
 \alias{signatures}
 \alias{signatures,NanoStringRccSet-method}
 \alias{signatures<-}
@@ -98,6 +100,7 @@ NanoStringRccSet(assayData,
                  experimentData = MIAME(),
                  annotation = character(),
                  protocolData = annotatedDataFrameFrom(assayData, byrow = FALSE),
+                 dimLabels = c("GeneName", "SampleID"),
                  signatures = SignatureSet(),
                  design = NULL,
                  \ldots)
@@ -112,7 +115,7 @@ NanoStringRccSet(assayData,
     \code{"IsControl"}, and \code{"ControlConc"}.}
   \item{experimentData}{An optional \code{\link{MIAME}} instance with meta-data
     about the experiment.}
-  \item{annotation}{A character string for the \code{"GeneRLF"}.}
+  \item{annotation}{A \code{character} string for the \code{"GeneRLF"}.}
   \item{protocolData}{An \code{\link{AnnotatedDataFrame}} containing columns
     \code{"FileVersion"}, \code{"SoftwareVersion"}, \code{"SystemType"},
     \code{"SampleID"}, \code{"SampleOwner"}, \code{"SampleComments"},
@@ -120,6 +123,9 @@ NanoStringRccSet(assayData,
     \code{"LaneID"}, \code{"FovCount"}, \code{"FovCounted"}, \code{"ScannerID"},
     \code{"StagePosition"}, \code{"BindingDensity"}, \code{"CartridgeID"}, and
     \code{"CartridgeBarcode"}.}
+  \item{dimLabels}{A \code{character} vector of length 2 that provides the
+    column names to use as labels for the features and samples respectively
+    in the \code{autoplot} method.}
   \item{signatures}{An optional \code{\link{SignatureSet}} object containing
     signature definitions.}
   \item{design}{An optional one-sided formula representing the experimental
@@ -133,15 +139,23 @@ NanoStringRccSet(assayData,
   \describe{
     \item{}{
       \code{sData(object)}: extracts the \code{data.frame} containing the
-      sample data, \code{cbind(pData(object), pData(protocolData(object)))}
+      sample data, \code{cbind(pData(object), pData(protocolData(object)))}.
     }
     \item{}{
       \code{svarLabels(object)}: extracts the sample data column names,
-      \code{c(varLabels(object), varLabels(protocolData(object)))}
+      \code{c(varLabels(object), varLabels(protocolData(object)))}.
     }
     \item{}{
-      \code{signatures(object)}: extracts the \code{\link{SignatureSet}} of the
-      \code{object}.
+      \code{dimLabels(object)}: extracts the column names to use as labels
+      for the features and samples in the \code{autoplot} method.
+    }
+    \item{}{
+      \code{dimLabels(object) <- value}: replaces the \code{dimLabels} of
+      the \code{object}.
+    }
+    \item{}{
+      \code{signatures(object)}: extracts the \code{\link{SignatureSet}}
+      of the \code{object}.
     }
     \item{}{
       \code{signatures(object) <- value}: replaces the
@@ -307,7 +321,7 @@ NanoStringRccSet(assayData,
       the \code{NanoStringRccSet} method for \code{ggplot}.
     }
     \item{}{
-      \code{autoplot(object, type, log2scale = TRUE, elt = "exprs", index = 1L, geom = list(), tooltipHeading = NULL, tooltipDigits = 4L, heatmapGroup = NULL, \ldots)}:
+      \code{autoplot(object, type, log2scale = TRUE, elt = "exprs", index = 1L, geomParams = list(), tooltipDigits = 4L, heatmapGroup = NULL, \ldots)}:
     }
   }
 }

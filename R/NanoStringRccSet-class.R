@@ -3,7 +3,8 @@ setClassUnion("formulaOrNULL", c("formula", "NULL"))
 # Class definition
 setClass("NanoStringRccSet",
          contains = "ExpressionSet",
-         slots = c(signatures = "SignatureSet",
+         slots = c(dimLabels = "character",
+                   signatures = "SignatureSet",
                    design = "formulaOrNULL"),
          prototype = prototype(
            new("VersionedBiobase",
@@ -31,6 +32,7 @@ function(assayData,
          experimentData = MIAME(),
          annotation = character(),
          protocolData = annotatedDataFrameFrom(assayData, byrow = FALSE),
+         dimLabels = c("GeneName", "SampleID"),
          signatures = SignatureSet(),
          design = NULL,
          ...)
@@ -44,6 +46,7 @@ function(assayData,
          experimentData = MIAME(),
          annotation = character(),
          protocolData = annotatedDataFrameFrom(assayData, byrow = FALSE),
+         dimLabels = c("GeneName", "SampleID"),
          signatures = SignatureSet(),
          design = NULL,
          ...)
@@ -52,7 +55,8 @@ function(assayData,
   callGeneric(assayData = assayData, phenoData = phenoData,
               featureData = featureData, experimentData = experimentData,
               annotation = annotation, protocolData = protocolData,
-              signatures = signatures, design = design, ...)
+              dimLabels = dimLabels, signatures = signatures, design = design,
+              ...)
 })
 
 setMethod("NanoStringRccSet", "environment",
@@ -62,6 +66,7 @@ function(assayData,
          experimentData = MIAME(),
          annotation = character(),
          protocolData = annotatedDataFrameFrom(assayData, byrow = FALSE),
+         dimLabels = c("GeneName", "SampleID"),
          signatures = SignatureSet(),
          design = NULL,
          ...)
@@ -73,6 +78,7 @@ function(assayData,
        experimentData = experimentData,
        annotation = annotation,
        protocolData = protocolData,
+       dimLabels = dimLabels,
        signatures = signatures,
        design = design,
        ...)
@@ -85,6 +91,7 @@ function(assayData,
          experimentData = MIAME(),
          annotation = character(),
          protocolData = annotatedDataFrameFrom(assayData, byrow = FALSE),
+         dimLabels = c("GeneName", "SampleID"),
          signatures = SignatureSet(),
          design = NULL,
          ...)
@@ -93,7 +100,8 @@ function(assayData,
   callGeneric(assayData = assayData, phenoData = phenoData,
               featureData = featureData, experimentData = experimentData,
               annotation = annotation, protocolData = protocolData,
-              signatures = signatures, design = design, ...)
+              dimLabels = dimLabels, signatures = signatures, design = design,
+              ...)
 })
 
 setMethod("NanoStringRccSet", "ExpressionSet",
@@ -103,6 +111,7 @@ function(assayData,
          experimentData = MIAME(),
          annotation = character(),
          protocolData = annotatedDataFrameFrom(assayData, byrow = FALSE),
+         dimLabels = c("GeneName", "SampleID"),
          signatures = SignatureSet(),
          design = NULL,
          ...)
@@ -113,6 +122,7 @@ function(assayData,
               experimentData = Biobase::experimentData(assayData),
               annotation = Biobase::annotation(assayData),
               protocolData = Biobase::protocolData(assayData),
+              dimLabels = dimLabels,
               signatures = signatures,
               design = design,
               ...)
@@ -125,6 +135,7 @@ function(assayData,
          experimentData = MIAME(),
          annotation = character(),
          protocolData = annotatedDataFrameFrom(assayData, byrow = FALSE),
+         dimLabels = c("GeneName", "SampleID"),
          signatures = SignatureSet(),
          design = NULL,
          ...)
@@ -135,6 +146,7 @@ function(assayData,
               experimentData = Biobase::experimentData(assayData),
               annotation = Biobase::annotation(assayData),
               protocolData = Biobase::protocolData(assayData),
+              dimLabels = dimLabels(assayData),
               signatures = signatures(assayData),
               design = design(assayData),
               ...)

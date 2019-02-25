@@ -15,7 +15,6 @@ function(object,
          elt = "exprs",
          index = 1L,
          geomParams = list(),
-         tooltipHeading = NULL,
          tooltipDigits = 4L,
          heatmapGroup = NULL,
          ...)
@@ -57,11 +56,12 @@ function(object,
          "boxplot-signature" = {
            if (type == "boxplot-feature") {
              scores <- assayDataElement2(object, elt)
-             ytitle <- fData(object)[index, "GeneName"]
+             ytitle <- fData(object)[index, dimLabels(object)[1L]]
            } else {
              scores <- signatureScores(object, elt)
              ytitle <- rownames(scores)[index]
            }
+           colnames(scores) <- sData(object)[[dimLabels(object)[2L]]]
            y <- scores[index, ]
            if (!is.name(geomParams[["base"]][["x"]])) {
              x <- rep.int("", ncol(scores))
@@ -129,26 +129,37 @@ function(object,
              scale_x_continuous(name = "Binding Density")
          },
          "heatmap-genes" = {
+           sampleLabels <- sData(object)[[dimLabels(object)[2L]]]
+           if (anyNA(sampleLabels)) {
+             object <- object[, !is.na(sampleLabels)]
+             sampleLabels <- sData(object)[[dimLabels(object)[2L]]]
+           }
            object <- endogenousSubset(object)
            scores <- assayDataElement2(object, elt)
            rownames(scores) <- featureData(object)[["GeneName"]]
-           p <-
-             protoheatmap(scores, log2scale = log2scale, group = heatmapGroup,
-                          object = object,  tooltipHeading = tooltipHeading,
-                          ...)
+           colnames(scores) <- sampleLabels
+           if (anyNA(colnames(scores))) {
+             scores <- scores[, !is.na(colnames(scores)), drop = FALSE]
+           }
+           p <- protoheatmap(scores, log2scale = log2scale,
+                             group = heatmapGroup, object = object, ...)
          },
          "heatmap-signatures" = {
+           sampleLabels <- sData(object)[[dimLabels(object)[2L]]]
+           if (anyNA(sampleLabels)) {
+             object <- object[, !is.na(sampleLabels)]
+             sampleLabels <- sData(object)[[dimLabels(object)[2L]]]
+           }
            scores <- signatureScores(object, elt)
+           colnames(scores) <- sampleLabels
            if (anyNA(scores)) {
              whichNA <- which(is.na(rowSums(scores)))
              warning(sprintf("dropped %d signatures due to missing values",
                              length(whichNA)))
              scores <- scores[- whichNA, , drop = FALSE]
            }
-           p <-
-             protoheatmap(scores, log2scale = log2scale, group = heatmapGroup,
-                          object = object, tooltipHeading = tooltipHeading,
-                          ...)
+           p <- protoheatmap(scores, log2scale = log2scale,
+                             group = heatmapGroup, object = object, ...)
          },
          "lane-bindingDensity" = {
            maxBD <- 2.25
@@ -208,19 +219,19 @@ function(object,
          "mean-sd-features" = {
            if (log2scale)
              mapping <- aes_string(x = "MeanLog2", y = "SDLog2",
-                                   tooltip = "FeatureName")
+                                   tooltip = dimLabels(object)[1L])
            else
              mapping <- aes_string(x = "Mean", y = "SD",
-                                   tooltip = "FeatureName")
+                                   tooltip = dimLabels(object)[1L])
            p <- ggpoint(mapping, ...)
          },
          "mean-sd-samples" = {
            if (log2scale)
              mapping <- aes_string(x = "MeanLog2", y = "SDLog2",
-                                   tooltip = "SampleName")
+                                   tooltip = dimLabels(object)[2L])
            else
              mapping <- aes_string(x = "Mean", y = "SD",
-                                   tooltip = "SampleName")
+                                   tooltip = dimLabels(object)[2L])
            p <- ggpoint(mapping, ...)
          },
          "positiveControl" = {
@@ -258,7 +269,6 @@ function(object,
 
 protoheatmap <-
 function(scores, log2scale, group, object,
-         tooltipHeading = NULL,
          scaleCutoff = 3,
          groupPalette =
            c("#4E79A7", "#F28E2B", "#E15759", "#76B7B2", "#59A14F",
@@ -267,9 +277,6 @@ function(scores, log2scale, group, object,
 {
   if (log2scale)
     scores <- log2t(scores)
-
-  if (!is.null(tooltipHeading))
-    colnames(scores) <- sData(object)[[tooltipHeading]]
 
   scaleCutoff <- abs(scaleCutoff)
   scores <- t(pmin(pmax(scale(scores), - scaleCutoff), scaleCutoff))
@@ -293,7 +300,7 @@ function(scores, log2scale, group, object,
         levels(x)[is.na(levels(x))] <- "<N/A>"
         x
       })
-    rownames(annotation_row) <- rownames(scores)
+    rownames(annotation_row) <- make.unique(rownames(scores), sep = "_")
 
     annotation_colors <- cumsum(sapply(annotation_row, nlevels))
     annotation_colors <- Map(`:`, c(1L, head(annotation_colors, -1L) + 1L),

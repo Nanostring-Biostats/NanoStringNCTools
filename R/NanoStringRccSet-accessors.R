@@ -18,6 +18,14 @@ setGeneric("svarLabels", signature = "object",
 setMethod("svarLabels", "NanoStringRccSet",
           function(object) c(varLabels(object), varLabels(protocolData(object))))
 
+# dimLabels Accessor and Replacer
+setMethod("dimLabels", "NanoStringRccSet", function(object) object@dimLabels)
+setReplaceMethod("dimLabels", c("NanoStringRccSet", "character"),
+                 function(object, value) {
+                   object@dimLabels <- value
+                   object
+                 })
+
 # design Accessor and Replacer
 setMethod("design", "NanoStringRccSet", function(object) object@design)
 setReplaceMethod("design", c("NanoStringRccSet", "formula"),

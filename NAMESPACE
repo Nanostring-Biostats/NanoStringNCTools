@@ -9,9 +9,10 @@ importClassesFrom(IRanges, NumericList)
 importClassesFrom(methods, ANY, character, environment, formula, list, matrix,
                   missing, "NULL", ".NULL")
 importMethodsFrom(Biobase, AnnotatedDataFrame, annotatedDataFrameFrom,
-                  assayData, "assayData<-", exprs, fData, featureData,
-                  featureNames, fvarLabels, pData, preproc, "preproc<-",
-                  protocolData, "protocolData<-", sampleNames, varLabels)
+                  assayData, "assayData<-", dimLabels, "dimLabels<-", exprs,
+                  fData, featureData, featureNames, fvarLabels, pData, preproc,
+                  "preproc<-", protocolData, "protocolData<-", sampleNames,
+                  varLabels)
 importMethodsFrom(methods, initialize, show)
 importFrom(Biobase, assayDataElement, "assayDataElement<-",
            assayDataElementNames, assayDataNew, copyEnv, MIAME, multiassign)
@@ -56,7 +57,7 @@ export("weights<-",
 exportMethods(show,
               weights, "weights<-", length, names, lengths,
               NanoStringRccSet,
-              sData, svarLabels,
+              sData, svarLabels, dimLabels, "dimLabels<-",
               signatures, "signatures<-", signatureScores,
               design, "design<-",
               summary, "[", subset,

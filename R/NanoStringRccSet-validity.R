@@ -134,6 +134,17 @@ function(object)
     if (!.validNonNegativeInteger(exprs(object))) {
       msg <- c(msg, "'exprs' does not contain non-negative integer values")
     }
+    # dimLabels
+    if (length(dimLabels(object)) != 2L) {
+      msg <- c(msg, "dimLabels must be a character vector of length 2")
+    } else {
+      if (!(dimLabels(object)[1L] %in% fvarLabels(object))) {
+        msg <- c(msg, "dimLabels[1] must be in 'fvarLabels'")
+      }
+      if (!(dimLabels(object)[2L] %in% svarLabels(object))) {
+        msg <- c(msg, "dimLabels[2] must be in 'svarLabels'")
+      }
+    }
   }
   if (any(duplicated(c(fvarLabels(object), svarLabels(object),
                        assayDataElementNames(object),
