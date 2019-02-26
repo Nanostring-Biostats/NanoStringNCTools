@@ -65,6 +65,22 @@ test_NanoStringRccSet_subset <- function() {
                                         Treatment == "A"))))
 }
 
+test_NanoStringRccSet_subset_in_function <- function() {
+  subsetFUN1 <- function(object, x) subset(object, CodeClass == x)
+  checkEquals(rcc[featureData(rcc)[["CodeClass"]] == "Endogenous", ],
+              subsetFUN1(rcc, "Endogenous"))
+
+  subsetFUN2 <- function(object, x) subset(object, select = Treatment == x)
+  checkEquals(rcc[, phenoData(rcc)[["Treatment"]] == "A"],
+              subsetFUN2(rcc, "A"))
+
+  subsetFUN3 <-
+    function(object, x, y) subset(object, CodeClass == x, Treatment == y)
+  checkEquals(rcc[featureData(rcc)[["CodeClass"]] == "Endogenous",
+                  phenoData(rcc)[["Treatment"]] == "A"],
+              subsetFUN3(rcc, "Endogenous", "A"))
+}
+
 test_NanoStringRccSet_endogenousSubset <- function() {
   checkEquals(rcc[featureData(rcc)[["CodeClass"]] == "Endogenous", ],
               endogenousSubset(rcc))

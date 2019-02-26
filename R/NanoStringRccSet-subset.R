@@ -16,8 +16,13 @@ function(x, i, j, ..., drop = FALSE)
 setMethod("subset", "NanoStringRccSet",
 function(x, subset, select, ...)
 {
-  kvs <- c(sData(x), fData(x))
-  eval(substitute(with(kvs, x[subset, select])))
+  if (!missing(subset)) {
+    x <- x[eval(substitute(subset), fData(x), parent.frame(2L)), ]
+  }
+  if (!missing(select)) {
+    x <- x[, eval(substitute(select), sData(x), parent.frame(2L))]
+  }
+  x
 })
 
 setGeneric("endogenousSubset", signature = "x",
