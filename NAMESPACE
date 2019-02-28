@@ -3,19 +3,11 @@
 
 import(BiocGenerics)
 import(S4Vectors)
-importClassesFrom(Biobase, AnnotatedDataFrame, AssayData, ExpressionSet, MIAME,
-                  VersionedBiobase, Versions)
+import(Biobase)
 importClassesFrom(IRanges, NumericList)
 importClassesFrom(methods, ANY, character, environment, formula, list, matrix,
                   missing, "NULL", ".NULL")
-importMethodsFrom(Biobase, AnnotatedDataFrame, annotatedDataFrameFrom,
-                  assayData, "assayData<-", dimLabels, "dimLabels<-", exprs,
-                  fData, featureData, featureNames, fvarLabels, pData, preproc,
-                  "preproc<-", protocolData, "protocolData<-", sampleNames,
-                  varLabels)
 importMethodsFrom(methods, initialize, show)
-importFrom(Biobase, assayDataElement, "assayDataElement<-",
-           assayDataElementNames, assayDataNew, copyEnv, MIAME, multiassign)
 importFrom(Biostrings, BStringSet, DNAStringSet)
 importFrom(ggbeeswarm, position_beeswarm)
 importFrom(ggiraph, geom_boxplot_interactive, geom_line_interactive,
