@@ -10,7 +10,7 @@ function(object,
          "Housekeeping-Log2" = {
            # Center the data on the log2 scale
            hkGenes <- housekeepingSubset(object)
-           stats <- log2(summary(hkGenes, 2L)[, "SizeFactor"])
+           stats <- log2(summary(hkGenes, 2L, elt = fromElt)[, "SizeFactor"])
            mat <- log2t(assayDataElement2(object, fromElt))
            mat <- .safe.as.integer(2 ^ sCenter(mat, stats))
          },
@@ -18,7 +18,7 @@ function(object,
            # Get the coefficient estimates for log2-log2 regression
            posCtrl <- positiveControlSubset(object)
            posCtrl <- posCtrl[featureData(posCtrl)[["ControlConc"]] >= 0.5, ]
-           y <- summary(posCtrl, 1L)[, "GeomMean"]
+           y <- summary(posCtrl, 1L, elt = fromElt)[, "GeomMean"]
            coefs <- assayDataApply(posCtrl, 2L,
                                    function(x) coef(lm(log2t(y) ~ log2t(x))))
 
