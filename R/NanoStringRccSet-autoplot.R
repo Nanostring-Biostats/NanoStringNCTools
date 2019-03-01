@@ -322,8 +322,8 @@ function(scores, log2scale, group, object,
                                 "darkred"))(100),
            annotation_row = annotation_row,
            annotation_colors = annotation_colors,
-           show_rownames = (nrow(scores) <= 64L),
-           show_colnames = (ncol(scores) <= 64L),
+           show_rownames = (nrow(scores) <= 36L),
+           show_colnames = (ncol(scores) <= 36L),
            silent = TRUE,
            ...)
 }
