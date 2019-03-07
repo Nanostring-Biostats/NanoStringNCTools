@@ -82,12 +82,12 @@ function(object,
            }
            tooltip <- colnames(scores)
            if (is.name(geomParams[["base"]][["x"]])) {
-             tooltip <- sprintf("%s<br>%s = %s", tooltip, xtitle, x)
+             tooltip <- sprintf("%s, %s&nbsp;=&nbsp;%s", tooltip, xtitle, x)
            }
-           tooltip <- sprintf("%s<br>%s = %s", tooltip, ytitle,
+           tooltip <- sprintf("%s, %s&nbsp;=&nbsp;%s", tooltip, ytitle,
                               signif(y, tooltipDigits))
            if (is.name(geomParams[["point"]][["colour"]])) {
-             tooltip <- sprintf("%s<br>%s = %s", tooltip, colourtitle, colour)
+             tooltip <- sprintf("%s, %s&nbsp;=&nbsp;%s", tooltip, colourtitle, colour)
            }
            df <- data.frame(x = x, score = y, tooltip = tooltip,
                             stringsAsFactors = FALSE)

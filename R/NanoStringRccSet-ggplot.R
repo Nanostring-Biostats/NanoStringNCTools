@@ -14,7 +14,7 @@ function(data, mapping = aes(), ..., extradata = NULL, elt = "exprs",
       if (j %in% names(mapping)) {
         mf <- model.frame(mapping[[j]], df)
         df[[tooltip]] <-
-          sprintf("%s<br>%s = %s", df[[tooltip]], names(mf)[1L],
+          sprintf("%s, %s&nbsp;=&nbsp;%s", df[[tooltip]], names(mf)[1L],
                   signif(mf[[1L]], digits = tooltip_digits))
       }
     }
