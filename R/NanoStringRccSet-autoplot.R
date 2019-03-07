@@ -297,7 +297,7 @@ function(scores, log2scale, group, object,
           x[x == ""] <- NA
         }
         x <- addNA(x, ifany = TRUE)
-        levels(x)[is.na(levels(x))] <- "<N/A>"
+        levels(x)[is.na(levels(x))] <- "N/A"
         x
       })
     rownames(annotation_row) <- make.unique(rownames(scores), sep = "_")
