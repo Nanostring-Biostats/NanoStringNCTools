@@ -105,13 +105,15 @@ function(object,
              p <- p +
                do.call(geom_beeswarm_interactive,
                        c(list(aes_string(tooltip = "tooltip")),
-                         geomParams[["point"]]))
+                         geomParams[["point"]],
+                         geomParams[["beeswarm"]]))
            } else {
              p <- p +
                do.call(geom_beeswarm_interactive,
                        c(list(aes_string(tooltip = "tooltip",
                                          colour = "colour")),
-                         geomParams[["point"]])) +
+                         geomParams[["point"]],
+                         geomParams[["beeswarm"]])) +
                guides(colour = guide_legend(title = colourtitle))
            }
            p
@@ -279,15 +281,15 @@ function(scores, log2scale, group, object,
     scores <- log2t(scores)
 
   scaleCutoff <- abs(scaleCutoff)
-  scores <- t(pmin(pmax(scale(scores), - scaleCutoff), scaleCutoff))
+  scores <- pmin(pmax(scale(scores), - scaleCutoff), scaleCutoff)
 
   if (is.null(group)) {
-    annotation_row <- NA
+    annotation_col <- NA
     annotation_colors <- NA
   } else {
-    annotation_row <- sData(object)[group]
-    annotation_row[] <-
-      lapply(annotation_row, function(x) {
+    annotation_col <- sData(object)[group]
+    annotation_col[] <-
+      lapply(annotation_col, function(x) {
         if (is.factor(x)) {
           levels(x) <- trimws(levels(x))
           x[x == ""] <- NA
@@ -300,18 +302,18 @@ function(scores, log2scale, group, object,
         levels(x)[is.na(levels(x))] <- "N/A"
         x
       })
-    rownames(annotation_row) <- make.unique(rownames(scores), sep = "_")
+    rownames(annotation_col) <- make.unique(colnames(scores), sep = "_")
 
-    annotation_colors <- cumsum(sapply(annotation_row, nlevels))
+    annotation_colors <- cumsum(sapply(annotation_col, nlevels))
     annotation_colors <- Map(`:`, c(1L, head(annotation_colors, -1L) + 1L),
                              annotation_colors)
     annotation_colors <- structure(lapply(annotation_colors, function(x) {
       x <- x %% length(groupPalette)
       x[x == 0L] <- length(groupPalette)
       groupPalette[x]
-    }), names = colnames(annotation_row))
-    for (j in seq_len(ncol(annotation_row))) {
-      names(annotation_colors[[j]]) <- levels(annotation_row[[j]])
+    }), names = colnames(annotation_col))
+    for (j in seq_len(ncol(annotation_col))) {
+      names(annotation_colors[[j]]) <- levels(annotation_col[[j]])
     }
   }
 
@@ -320,7 +322,7 @@ function(scores, log2scale, group, object,
              colorRampPalette(c("darkblue",
                                 rev(brewer.pal(n = 7L, name = "RdYlBu")),
                                 "darkred"))(100),
-           annotation_row = annotation_row,
+           annotation_col = annotation_col,
            annotation_colors = annotation_colors,
            show_rownames = (nrow(scores) <= 36L),
            show_colnames = (ncol(scores) <= 36L),
