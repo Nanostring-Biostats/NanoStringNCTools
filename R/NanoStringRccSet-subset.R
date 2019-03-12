@@ -4,8 +4,8 @@ function(x, i, j, ..., drop = FALSE)
   x <- callNextMethod()
   weights <- weights(signatures(x))
   if (length(weights) > 0L) {
-    genes <- featureData(x)[["GeneName"]]
-    keep <- unlist(lapply(weights, function(y) all(names(y) %in% genes)))
+    valid <- c("(Intercept)", featureData(x)[["GeneName"]])
+    keep <- unlist(lapply(weights, function(y) all(names(y) %in% valid)))
     if (!all(keep)) {
       weights(signatures(x)) <- weights[keep]
     }
