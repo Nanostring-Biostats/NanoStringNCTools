@@ -281,7 +281,7 @@ function(scores, log2scale, group, object,
     scores <- log2t(scores)
 
   scaleCutoff <- abs(scaleCutoff)
-  scores <- pmin(pmax(scale(scores), - scaleCutoff), scaleCutoff)
+  scores <- pmin(pmax(t(scale(t(scores))), - scaleCutoff), scaleCutoff)
 
   if (is.null(group)) {
     annotation_col <- NA
