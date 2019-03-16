@@ -18,7 +18,9 @@ function(data, mapping = update(design(data), exprs ~ .), extradata = NULL,
   hasGeneMatrix <- "GeneMatrix" %in% vars
   hasSignatureMatrix <- "SignatureMatrix" %in% vars
   if (hasGeneMatrix || hasSignatureMatrix) {
-    df <- sData(data)
+    df <- data.frame(SampleName = sampleNames(data),
+                     sData(data),
+                     stringsAsFactors = FALSE)
     if (!is.null(extradata) && any(vars %in% colnames(extradata)))
       df <- cbind(df, extradata)
     if (hasGeneMatrix) {

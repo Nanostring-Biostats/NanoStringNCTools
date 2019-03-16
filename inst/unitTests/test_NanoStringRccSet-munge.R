@@ -224,6 +224,13 @@ test_NanoStringRccSet_munge_GeneMatrix <- function() {
   target[["GeneMatrix"]] <- exprs
   checkEquals(target, munge(rcc, ~ GeneMatrix))
 
+  target <- DataFrame(GeneMatrix = exprs[,1L],
+                      SampleName = sampleNames(rcc))
+  target[["GeneMatrix"]] <- exprs
+  checkEquals(target, munge(rcc, GeneMatrix ~ SampleName))
+
+  target <- DataFrame(GeneMatrix = exprs[,1L])
+  target[["GeneMatrix"]] <- exprs
   target <- cbind(target, pData(rcc)[, c("Treatment", "Age")])
   checkEquals(target, munge(rcc, GeneMatrix ~ Treatment + Age))
 }
@@ -237,6 +244,13 @@ test_NanoStringRccSet_munge_SignatureMatrix <- function() {
   target[["SignatureMatrix"]] <- sigs
   checkEquals(target, munge(rcc, ~ SignatureMatrix))
 
+  target <- DataFrame(SignatureMatrix = sigs[,1L],
+                      SampleName = sampleNames(rcc))
+  target[["SignatureMatrix"]] <- sigs
+  checkEquals(target, munge(rcc, SignatureMatrix ~ SampleName))
+
+  target <- DataFrame(SignatureMatrix = sigs[,1L])
+  target[["SignatureMatrix"]] <- sigs
   target <- cbind(target, pData(rcc)[, c("Treatment", "Age")])
   checkEquals(target, munge(rcc, SignatureMatrix ~ Treatment + Age))
 
