@@ -20,6 +20,7 @@ function(data, mapping = update(design(data), exprs ~ .), extradata = NULL,
   if (hasGeneMatrix || hasSignatureMatrix) {
     df <- data.frame(SampleName = sampleNames(data),
                      sData(data),
+                     check.names = FALSE,
                      stringsAsFactors = FALSE)
     if (!is.null(extradata) && any(vars %in% colnames(extradata)))
       df <- cbind(df, extradata)
@@ -88,6 +89,7 @@ function(data, mapping = update(design(data), exprs ~ .), extradata = NULL,
                    SampleName = rep(sampleNames(data),
                                     each = length(signatures(data))),
                    df,
+                   check.names = FALSE,
                    stringsAsFactors = FALSE)
     } else {
       df <-
@@ -98,6 +100,7 @@ function(data, mapping = update(design(data), exprs ~ .), extradata = NULL,
         data.frame(FeatureName = rep.int(featureNames(data), ncol(data)),
                    SampleName = rep(sampleNames(data), each = nrow(data)),
                    df,
+                   check.names = FALSE,
                    stringsAsFactors = FALSE)
     }
   } else if (hasAggregates) {
