@@ -4,13 +4,15 @@ function(object,
                   "boxplot-signature",
                   "bindingDensity-mean",
                   "bindingDensity-sd",
+                  "ercc-linearity",
+                  "ercc-lod",
                   "heatmap-genes",
                   "heatmap-signatures",
                   "lane-bindingDensity",
                   "lane-fov",
+                  "lod",
                   "mean-sd-features",
-                  "mean-sd-samples",
-                  "positiveControl"),
+                  "mean-sd-samples"),
          log2scale = TRUE,
          elt = "exprs",
          index = 1L,
@@ -139,6 +141,88 @@ function(object,
            p <- ggpoint(object, mapping, ...) +
              scale_x_continuous(name = "Binding Density")
          },
+         "ercc-linearity" = {
+           posCtrl <- positiveControlSubset(object)
+           posCtrl <- posCtrl[featureData(posCtrl)[["ControlConc"]] >= 0.5, ]
+           x <- log2(featureData(posCtrl)[["ControlConc"]])
+           extradata <-
+             data.frame(RSquared =
+                          assayDataApply(posCtrl, 2L,
+                                         function(y) cor(x, log2t(y, 0.5)),
+                                         elt = elt))
+           extradata[["Low R-Squared"]] <- extradata[["RSquared"]] < 0.95
+           extradata[["CustomTooltip"]] <-
+             sprintf("%s\nR-Squared = %.4f", rownames(extradata),
+                     extradata[["RSquared"]])
+
+           mapping <-
+             aes_string(x = "ControlConc", y = elt, group = "SampleName",
+                        tooltip = "CustomTooltip")
+           if (any(extradata[["Low R-Squared"]])) {
+             mapping[["colour"]] <- as.name("Low R-Squared")
+             for (i in c("line", "point")) {
+               geomParams[[i]] <- unclass(geomParams[[i]])
+               geomParams[[i]][["colour"]] <- NULL
+               oldClass(geomParams[[i]]) <- "uneval"
+             }
+           }
+           p <- ggline(posCtrl, mapping, extradata = extradata, ...) +
+             scale_x_continuous(name = "Concentration (fM)", trans = "log2") +
+             scale_y_continuous(trans = "log2")
+         },
+         "ercc-lod" = {
+           negCtrl <- munge(negativeControlSubset(object),
+                            mapping = aes_(exprs = as.name(elt)))
+           negCtrl[["x"]] <- ""
+           if (log2scale) {
+             cutoff <- log2t(negCtrl[["exprs"]])
+             cutoff <- 2^(mean(cutoff, na.rm = TRUE) +
+                            qnorm(0.975) * sd(cutoff, na.rm = TRUE))
+           } else {
+             cutoff <- negCtrl[["exprs"]]
+             cutoff <- mean(cutoff, na.rm = TRUE) +
+               qnorm(0.975) * sd(cutoff, na.rm = TRUE)
+           }
+           posCtrl <- positiveControlSubset(object)
+           posCtrl <- subset(posCtrl,
+                             featureData(posCtrl)[["ControlConc"]] == 0.5)
+           posCtrl <- munge(posCtrl, mapping = aes_(exprs = as.name(elt)))
+           posCtrl[["tooltip"]] <-
+             sprintf("%s | POS_E(0.5)&nbsp;=&nbsp;%s", posCtrl[["SampleName"]],
+                     signif(posCtrl[["exprs"]], tooltipDigits))
+           posCtrl[["x"]] <- ""
+           posCtrl[["Outlier"]] <- posCtrl[["exprs"]] < cutoff
+           mapping <- aes_string(x = "x", y = elt, tooltip = "tooltip")
+           if (any(posCtrl[["Outlier"]])) {
+             geomParams[["point"]] <- unclass(geomParams[["point"]])
+             if (!is.name(geomParams[["point"]][["colour"]])) {
+               mapping[["colour"]] <- as.name("Outlier")
+               geomParams[["point"]][["colour"]] <- NULL
+             } else if (!is.name(geomParams[["point"]][["shape"]])) {
+               mapping[["shape"]] <- as.name("Outlier")
+               geomParams[["point"]][["shape"]] <- NULL
+             }
+             oldClass(geomParams[["point"]]) <- "uneval"
+           }
+           p <- ggplot(negCtrl, aes_string(x = "x", y = "exprs")) +
+             stat_boxplot(geom = "errorbar",
+                          width = geomParams[["boxplot"]][["size"]],
+                          colour = geomParams[["boxplot"]][["colour"]]) +
+             do.call(geom_boxplot_interactive,
+                     c(geomParams[["boxplot"]],
+                       outlier.shape = NA)) +
+             do.call(geom_beeswarm_interactive,
+                     c(list(posCtrl, mapping = mapping),
+                       geomParams[["point"]],
+                       geomParams[["beeswarm"]])) +
+             geom_hline(yintercept = cutoff, linetype = 2L,
+                        colour = "darkgray") +
+             scale_x_discrete(name = "") +
+             scale_y_continuous(name = elt, trans = "log2") +
+             theme(axis.text.x  = element_blank(),
+                   axis.ticks.x = element_blank(),
+                   axis.title.x = element_blank())
+         },
          "heatmap-genes" = {
            sampleLabels <- sData(object)[[dimLabels(object)[2L]]]
            if (anyNA(sampleLabels)) {
@@ -244,35 +328,6 @@ function(object,
              mapping <- aes_string(x = "Mean", y = "SD",
                                    tooltip = dimLabels(object)[2L])
            p <- ggpoint(object, mapping, ...)
-         },
-         "positiveControl" = {
-           posCtrl <- positiveControlSubset(object)
-           posCtrl <- posCtrl[featureData(posCtrl)[["ControlConc"]] >= 0.5, ]
-           x <- log2(featureData(posCtrl)[["ControlConc"]])
-           extradata <-
-             data.frame(RSquared =
-                          assayDataApply(posCtrl, 2L,
-                                         function(y) cor(x, log2t(y, 0.5)),
-                                         elt = elt))
-           extradata[["Low R-Squared"]] <- extradata[["RSquared"]] < 0.95
-           extradata[["CustomTooltip"]] <-
-             sprintf("%s\nR-Squared = %.4f", rownames(extradata),
-                     extradata[["RSquared"]])
-
-           mapping <-
-             aes_string(x = "ControlConc", y = elt, group = "SampleName",
-                        tooltip = "CustomTooltip")
-           if (any(extradata[["Low R-Squared"]])) {
-             mapping[["colour"]] <- as.name("Low R-Squared")
-             for (i in c("line", "point")) {
-               geomParams[[i]] <- unclass(geomParams[[i]])
-               geomParams[[i]][["colour"]] <- NULL
-               oldClass(geomParams[[i]]) <- "uneval"
-             }
-           }
-           p <- ggline(posCtrl, mapping, extradata = extradata, ...) +
-             scale_x_continuous(name = "Concentration (fM)", trans = "log2") +
-             scale_y_continuous(trans = "log2")
          })
   p
 }
