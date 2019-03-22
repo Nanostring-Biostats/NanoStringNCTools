@@ -14,7 +14,7 @@ function(data, mapping = aes(), ..., extradata = NULL, elt = "exprs",
       if (j %in% names(mapping)) {
         mf <- model.frame(mapping[[j]], df)
         df[[tooltip]] <-
-          sprintf("%s, %s&nbsp;=&nbsp;%s", df[[tooltip]], names(mf)[1L],
+          sprintf("%s | %s&nbsp;=&nbsp;%s", df[[tooltip]], names(mf)[1L],
                   signif(mf[[1L]], digits = tooltip_digits))
       }
     }
@@ -38,11 +38,6 @@ function(mapping = NULL, data = NULL,
 }
 
 
-format_percent <- function(x) {
-  sprintf("%s%%", format(100 * x, digits = 2L))
-}
-
-
 update_geom_params <- function(geom, new, old = aes()) {
   if (geom %in% names(new)) {
     if ("color" %in% names(new[[geom]])) {
@@ -59,4 +54,9 @@ update_geom_params <- function(geom, new, old = aes()) {
     oldClass(new[[geom]]) <- "uneval"
   }
   new
+}
+
+
+format_percent <- function(x) {
+  sprintf("%s%%", format(100 * x, digits = 2L))
 }

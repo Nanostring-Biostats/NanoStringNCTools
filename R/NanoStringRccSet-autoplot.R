@@ -25,7 +25,7 @@ function(object,
   geomParams <- update_geom_params("line", geomParams, GeomInteractiveLine$default_aes)
   geomParams <- update_geom_params("boxplot", geomParams, GeomInteractiveBoxplot$default_aes)
 
-  ggpoint <- function(mapping, ...) {
+  ggpoint <- function(object, mapping, ...) {
     for (arg in names(geomParams[["point"]])) {
       if (is.name(geomParams[["point"]][[arg]])) {
         mapping[[arg]] <- geomParams[["point"]][[arg]]
@@ -82,12 +82,12 @@ function(object,
            }
            tooltip <- colnames(scores)
            if (is.name(geomParams[["base"]][["x"]])) {
-             tooltip <- sprintf("%s, %s&nbsp;=&nbsp;%s", tooltip, xtitle, x)
+             tooltip <- sprintf("%s | %s&nbsp;=&nbsp;%s", tooltip, xtitle, x)
            }
-           tooltip <- sprintf("%s, %s&nbsp;=&nbsp;%s", tooltip, ytitle,
+           tooltip <- sprintf("%s | %s&nbsp;=&nbsp;%s", tooltip, ytitle,
                               signif(y, tooltipDigits))
            if (is.name(geomParams[["point"]][["colour"]])) {
-             tooltip <- sprintf("%s, %s&nbsp;=&nbsp;%s", tooltip, colourtitle, colour)
+             tooltip <- sprintf("%s | %s&nbsp;=&nbsp;%s", tooltip, colourtitle, colour)
            }
            df <- data.frame(x = x, score = y, tooltip = tooltip,
                             stringsAsFactors = FALSE)
@@ -136,7 +136,7 @@ function(object,
            }
            mapping <- aes_string(x = "BindingDensity", y = y,
                                  tooltip = "SampleName")
-           p <- ggpoint(mapping, ...) +
+           p <- ggpoint(object, mapping, ...) +
              scale_x_continuous(name = "Binding Density")
          },
          "heatmap-genes" = {
@@ -191,7 +191,7 @@ function(object,
              }
              oldClass(geomParams[["point"]]) <- "uneval"
            }
-           p <- ggpoint(mapping, extradata = extradata, ...) +
+           p <- ggpoint(object, mapping, extradata = extradata, ...) +
              scale_x_continuous(name = "Lane", breaks = 1:12,
                                 limits = c(1L, 12L)) +
              scale_y_continuous(name = "Binding Density",
@@ -219,7 +219,7 @@ function(object,
              }
              oldClass(geomParams[["point"]]) <- "uneval"
            }
-           p <- ggpoint(mapping, extradata = extradata, ...) +
+           p <- ggpoint(object, mapping, extradata = extradata, ...) +
              scale_x_continuous(name = "Lane", breaks = 1:12,
                                 limits = c(1L, 12L)) +
              scale_y_continuous(name = "FOV Counted", labels = format_percent,
@@ -234,7 +234,7 @@ function(object,
            else
              mapping <- aes_string(x = "Mean", y = "SD",
                                    tooltip = dimLabels(object)[1L])
-           p <- ggpoint(mapping, ...)
+           p <- ggpoint(object, mapping, ...)
          },
          "mean-sd-samples" = {
            if (log2scale)
@@ -243,7 +243,7 @@ function(object,
            else
              mapping <- aes_string(x = "Mean", y = "SD",
                                    tooltip = dimLabels(object)[2L])
-           p <- ggpoint(mapping, ...)
+           p <- ggpoint(object, mapping, ...)
          },
          "positiveControl" = {
            posCtrl <- positiveControlSubset(object)
