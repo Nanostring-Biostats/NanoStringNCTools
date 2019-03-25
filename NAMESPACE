@@ -13,15 +13,16 @@ importFrom(ggbeeswarm, position_beeswarm)
 importFrom(ggiraph, geom_boxplot_interactive, geom_line_interactive,
            geom_point_interactive, GeomInteractiveBoxplot, GeomInteractiveLine,
            GeomInteractivePoint)
-importFrom(ggplot2, aes, aes_string, autoplot, element_blank, element_text,
-           geom_hline, ggplot, guide_legend, guides, layer, scale_x_continuous,
-           scale_x_discrete, scale_y_continuous, stat_boxplot, theme)
+importFrom(ggplot2, aes, aes_, aes_string, autoplot, element_blank,
+           element_text, geom_hline, ggplot, guide_legend, guides, layer,
+           scale_x_continuous, scale_x_discrete, scale_y_continuous,
+           stat_boxplot, theme)
 importFrom(grDevices, colorRampPalette)
 importFrom(IRanges, NumericList)
 importFrom(methods, as, callGeneric, callNextMethod, is, validObject)
 importFrom(pheatmap, pheatmap)
 importFrom(RColorBrewer, brewer.pal)
-importFrom(stats, as.formula, coef, lm, model.frame, quantile, update)
+importFrom(stats, as.formula, coef, lm, model.frame, qnorm, quantile, update)
 importFrom(utils, read.csv, write.csv)
 
 ### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
