@@ -17,13 +17,14 @@ setReplaceMethod("signatures", c("NanoStringRccSet", "SignatureSet"),
 {
   t(sapply(sigWeights,
            function(wts) {
-             if ("(Intercept)" %in% names(wts))
-               X <- rbind("(Intercept)" = 1, X)
-             if (all(names(wts) %in% rownames(X))) {
-               X <- X[names(wts), , drop = FALSE]
-               colSums(wts * X)
+             if ("(Intercept)" %in% names(wts)) {
+               X <- cbind("(Intercept)" = 1, X)
+             }
+             if (all(names(wts) %in% colnames(X))) {
+               X <- X[, names(wts), drop = FALSE]
+               (X %*% wts)[, 1L]
              } else {
-               rep.int(NA_real_, ncol(X))
+               structure(rep.int(NA_real_, nrow(X)), names = rownames(X))
              }
            }))
 }
@@ -35,8 +36,8 @@ setMethod("signatureScores", "NanoStringRccSet",
               return(matrix(numeric(), nrow = 0L, ncol = ncol(object),
                             dimnames = list(NULL, colnames(object))))
             }
-            exprs <- assayDataElement2(object, elt)
-            rownames(exprs) <- featureData(object)[["GeneName"]]
+            exprs <- t(assayDataElement2(object, elt))
+            colnames(exprs) <- featureData(object)[["GeneName"]]
             scores <- .sigCalc(exprs, weights(signatures(object)))
             while (length(idx <- which(rowSums(is.na(scores)) > 0L))) {
               subscores <- .sigCalc(rbind(exprs, scores[-idx, , drop = FALSE]),

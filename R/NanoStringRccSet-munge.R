@@ -22,15 +22,21 @@ function(data, mapping = update(design(data), exprs ~ .), extradata = NULL,
                      sData(data),
                      check.names = FALSE,
                      stringsAsFactors = FALSE)
-    if (!is.null(extradata) && any(vars %in% colnames(extradata)))
+    if (!is.null(extradata) && any(vars %in% colnames(extradata))) {
       df <- cbind(df, extradata)
-    if (hasGeneMatrix) {
-      mat <- t(assayDataElement2(data, elt))
-      colnames(mat) <- featureData(data)[["GeneName"]]
-      df[["GeneMatrix"]] <- mat
     }
-    if (hasSignatureMatrix)
-      df[["SignatureMatrix"]] <- t(signatureScores(data, elt))
+    sampleLabels <- sData(data)[[dimLabels(data)[2L]]]
+    if (hasGeneMatrix) {
+      mat <- assayDataElement2(data, elt)
+      rownames(mat) <- featureData(data)[["GeneName"]]
+      colnames(mat) <- sampleLabels
+      df[["GeneMatrix"]] <- t(mat)
+    }
+    if (hasSignatureMatrix) {
+      mat <- signatureScores(data, elt)
+      colnames(mat) <- sampleLabels
+      df[["SignatureMatrix"]] <- t(mat)
+    }
     if (!all(vars %in% colnames(df))) {
       stop("\"mapping\" contains undefined variables")
     }

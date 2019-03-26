@@ -218,18 +218,20 @@ test_NanoStringRccSet_munge_signatures <- function() {
 
 test_NanoStringRccSet_munge_GeneMatrix <- function() {
   exprs <- t(exprs(rcc))
+  rownames(exprs) <- sData(rcc)[[dimLabels(rcc)[2L]]]
   colnames(exprs) <- featureData(rcc)[["GeneName"]]
 
-  target <- DataFrame(GeneMatrix = exprs[,1L])
+  target <- DataFrame(GeneMatrix = exprs[,1L], row.names = sampleNames(rcc))
   target[["GeneMatrix"]] <- exprs
   checkEquals(target, munge(rcc, ~ GeneMatrix))
 
   target <- DataFrame(GeneMatrix = exprs[,1L],
-                      SampleName = sampleNames(rcc))
+                      SampleName = sampleNames(rcc),
+                      row.names = sampleNames(rcc))
   target[["GeneMatrix"]] <- exprs
   checkEquals(target, munge(rcc, GeneMatrix ~ SampleName))
 
-  target <- DataFrame(GeneMatrix = exprs[,1L])
+  target <- DataFrame(GeneMatrix = exprs[,1L], row.names = sampleNames(rcc))
   target[["GeneMatrix"]] <- exprs
   target <- cbind(target, pData(rcc)[, c("Treatment", "Age")])
   checkEquals(target, munge(rcc, GeneMatrix ~ Treatment + Age))
@@ -237,25 +239,30 @@ test_NanoStringRccSet_munge_GeneMatrix <- function() {
 
 test_NanoStringRccSet_munge_SignatureMatrix <- function() {
   exprs <- t(exprs(rcc))
+  rownames(exprs) <- sData(rcc)[[dimLabels(rcc)[2L]]]
   colnames(exprs) <- featureData(rcc)[["GeneName"]]
-  sigs <- t(signatureScores(rcc))
 
-  target <- DataFrame(SignatureMatrix = sigs[,1L])
+  sigs <- t(signatureScores(rcc))
+  rownames(sigs) <- sData(rcc)[[dimLabels(rcc)[2L]]]
+
+  target <- DataFrame(SignatureMatrix = sigs[,1L], row.names = sampleNames(rcc))
   target[["SignatureMatrix"]] <- sigs
   checkEquals(target, munge(rcc, ~ SignatureMatrix))
 
   target <- DataFrame(SignatureMatrix = sigs[,1L],
-                      SampleName = sampleNames(rcc))
+                      SampleName = sampleNames(rcc),
+                      row.names = sampleNames(rcc))
   target[["SignatureMatrix"]] <- sigs
   checkEquals(target, munge(rcc, SignatureMatrix ~ SampleName))
 
-  target <- DataFrame(SignatureMatrix = sigs[,1L])
+  target <- DataFrame(SignatureMatrix = sigs[,1L], row.names = sampleNames(rcc))
   target[["SignatureMatrix"]] <- sigs
   target <- cbind(target, pData(rcc)[, c("Treatment", "Age")])
   checkEquals(target, munge(rcc, SignatureMatrix ~ Treatment + Age))
 
   target <- DataFrame(SignatureMatrix = sigs[,1L],
-                      GeneMatrix = exprs[,1L])
+                      GeneMatrix = exprs[,1L],
+                      row.names = sampleNames(rcc))
   target[["SignatureMatrix"]] <- sigs
   target[["GeneMatrix"]] <- exprs
   checkEquals(target, munge(rcc, SignatureMatrix ~ GeneMatrix))

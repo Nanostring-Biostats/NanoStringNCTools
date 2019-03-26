@@ -224,35 +224,16 @@ function(object,
                    axis.title.x = element_blank())
          },
          "heatmap-genes" = {
-           sampleLabels <- sData(object)[[dimLabels(object)[2L]]]
-           if (anyNA(sampleLabels)) {
-             object <- object[, !is.na(sampleLabels)]
-             sampleLabels <- sData(object)[[dimLabels(object)[2L]]]
-           }
-           object <- endogenousSubset(object)
-           scores <- assayDataElement2(object, elt)
-           rownames(scores) <- featureData(object)[["GeneName"]]
-           colnames(scores) <- sampleLabels
-           if (anyNA(colnames(scores))) {
-             scores <- scores[, !is.na(colnames(scores)), drop = FALSE]
-           }
+           scores <-
+             t(munge(endogenousSubset(object), ~ GeneMatrix,
+                     elt = elt)[["GeneMatrix"]])
            p <- protoheatmap(scores, log2scale = log2scale,
                              group = heatmapGroup, object = object, ...)
          },
          "heatmap-signatures" = {
-           sampleLabels <- sData(object)[[dimLabels(object)[2L]]]
-           if (anyNA(sampleLabels)) {
-             object <- object[, !is.na(sampleLabels)]
-             sampleLabels <- sData(object)[[dimLabels(object)[2L]]]
-           }
-           scores <- signatureScores(object, elt)
-           colnames(scores) <- sampleLabels
-           if (anyNA(scores)) {
-             whichNA <- which(is.na(rowSums(scores)))
-             warning(sprintf("dropped %d signatures due to missing values",
-                             length(whichNA)))
-             scores <- scores[- whichNA, , drop = FALSE]
-           }
+           scores <-
+             t(munge(endogenousSubset(object), ~ SignatureMatrix,
+                     elt = elt)[["SignatureMatrix"]])
            p <- protoheatmap(scores, log2scale = log2scale,
                              group = heatmapGroup, object = object, ...)
          },
@@ -341,8 +322,16 @@ function(scores, log2scale, group, object,
              "#EDC948", "#B07AA1", "#FF9DA7", "#9C755F", "#BAB0AC"),
          ...)
 {
-  if (log2scale)
+  if (anyNA(rownames(scores))) {
+    scores <- scores[!is.na(rownames(scores)), , drop = FALSE]
+  }
+  if (anyNA(colnames(scores))) {
+    scores <- scores[, !is.na(colnames(scores)), drop = FALSE]
+  }
+
+  if (log2scale) {
     scores <- log2t(scores)
+  }
 
   scaleCutoff <- abs(scaleCutoff)
   scores <- pmin(pmax(t(scale(t(scores))), - scaleCutoff), scaleCutoff)
