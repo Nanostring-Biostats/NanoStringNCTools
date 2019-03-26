@@ -40,8 +40,9 @@ setMethod("signatureScores", "NanoStringRccSet",
             colnames(exprs) <- featureData(object)[["GeneName"]]
             scores <- .sigCalc(exprs, weights(signatures(object)))
             while (length(idx <- which(rowSums(is.na(scores)) > 0L))) {
-              subscores <- .sigCalc(rbind(exprs, scores[-idx, , drop = FALSE]),
-                                    weights(signatures(object))[idx])
+              subscores <-
+                .sigCalc(cbind(exprs, t(scores[-idx, , drop = FALSE])),
+                         weights(signatures(object))[idx])
               if (all(is.na(subscores)))
                 break
               else
