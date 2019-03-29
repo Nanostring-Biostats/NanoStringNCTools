@@ -326,7 +326,9 @@ function(scores, log2scale, group, object,
     scores <- scores[!is.na(rownames(scores)), , drop = FALSE]
   }
   if (anyNA(colnames(scores))) {
-    scores <- scores[, !is.na(colnames(scores)), drop = FALSE]
+    ok <- which(!is.na(colnames(scores)))
+    object <- object[, ok]
+    scores <- scores[, ok, drop = FALSE]
   }
 
   if (log2scale) {
