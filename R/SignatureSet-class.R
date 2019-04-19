@@ -107,8 +107,10 @@ setReplaceMethod("weights", c("SignatureSet", "NULL"),
                  })
 
 # Groups Accessor and Replacer
-setMethod("groups", "SignatureSet",
-          function(object, ...) object@groups)
+setGeneric("groups", signature = c ("object" ) ,
+           function( object , ... ) standardGeneric( "groups" ) )
+setMethod( "groups" , "SignatureSet" ,
+          function( object , ... ) object@groups )
 
 setGeneric("groups<-", signature = c("object", "value"),
            function(object, value) standardGeneric("groups<-"))

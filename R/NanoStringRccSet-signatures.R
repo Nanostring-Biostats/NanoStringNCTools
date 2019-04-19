@@ -50,3 +50,10 @@ setMethod("signatureScores", "NanoStringRccSet",
             }
             scores
           })
+
+setGeneric( "signatureGroups" , signature = "object" ,
+           function (object , ... ) standardGeneric( "signatureGroups" ) )
+setMethod("signatureGroups", "NanoStringRccSet",
+          function( object ) {
+            groups( object@signatures )
+          } )
