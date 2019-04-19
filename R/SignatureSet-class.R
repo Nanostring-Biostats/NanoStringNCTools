@@ -131,8 +131,10 @@ setReplaceMethod("groups", c("SignatureSet", "NULL"),
                  })
 
 # Version Accessor and Replacer
-setMethod("version", "SignatureSet",
-          function(object, ...) object@version)
+setGeneric( "version" , signature = c( "object" ) ,
+           function( object , ... ) standardGeneric( "version" ) )
+setMethod( "version" , "SignatureSet" ,
+          function( object , ... ) object@version )
 
 setGeneric("version<-", signature = c("object", "value"),
            function(object, value) standardGeneric("version<-"))
@@ -153,10 +155,10 @@ setReplaceMethod("version", c("SignatureSet", "NULL"),
                  })
 
 # Additional methods
-setMethod("version", "SignatureSet",
-          function( object ) {
-            return( object@version )
-          })
+# setMethod("version", "SignatureSet",
+#           function( object ) {
+#             return( object@version )
+#           })
 setMethod("length", "SignatureSet",
           function(x) {
             length(weights(x))
