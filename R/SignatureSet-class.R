@@ -15,7 +15,7 @@ function(.Object, weights = NumericList(), ...)
 {
   callNextMethod(.Object,
                  weights = as(weights, "NumericList"),
-                 groups = as( names( weights ) , "factor" ),
+                 groups = factor( names( weights ) ),
                  version = "0.0.1",
                  ...)
 })
@@ -26,7 +26,7 @@ setMethod("initialize", "SignatureSet",
           {
             callNextMethod(.Object,
                            weights = as(weights, "NumericList"),
-                           groups = as( groups , "factor" ),
+                           groups = factor( groups ),
                            version = "0.0.1",
                            ...)
           })
@@ -37,7 +37,7 @@ setMethod("initialize", "SignatureSet",
           {
             callNextMethod(.Object,
                            weights = as(weights, "NumericList"),
-                           groups = ifelse( inherits( groups , "factor" ) , as( groups , "factor" ) , factor( groups ) ),
+                           groups = factor( groups ),
                            version = as( version , "character" ),
                            ...)
           })
@@ -116,7 +116,7 @@ setGeneric("groups<-", signature = c("object", "value"),
            function(object, value) standardGeneric("groups<-"))
 setReplaceMethod("groups", c("SignatureSet", "factor"),
                  function(object, value) {
-                   object@groups <- value
+                   object@groups <- ifelse( inherits( value , "factor" ) , as( value , "factor" ) , factor( value ) )
                    object
                  })
 setReplaceMethod("groups", c("SignatureSet", "ANY"),
