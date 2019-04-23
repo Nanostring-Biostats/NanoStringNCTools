@@ -83,6 +83,11 @@ setReplaceMethod("weights", c("SignatureSet", "NumericList"),
                    object@weights <- value
                    object
                  })
+setReplaceMethod("weights", c("SignatureSet", "CompressedNumericList"),
+                 function(object, value) {
+                   object@weights <- as(value, "NumericList")
+                   object
+                 })
 setReplaceMethod("weights", c("SignatureSet", "ANY"),
                  function(object, value) {
                    object@weights <- as(value, "NumericList")
