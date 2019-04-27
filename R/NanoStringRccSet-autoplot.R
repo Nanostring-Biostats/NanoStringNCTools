@@ -320,10 +320,15 @@ function(scores, log2scale, group, object,
          groupPalette =
            c("#4E79A7", "#F28E2B", "#E15759", "#76B7B2", "#59A14F",
              "#EDC948", "#B07AA1", "#FF9DA7", "#9C755F", "#BAB0AC"),
+         blacklist = NULL,
          ...)
 {
   if (anyNA(rownames(scores))) {
     scores <- scores[!is.na(rownames(scores)), , drop = FALSE]
+  }
+  if ( !is.null( blacklist ) )
+  {
+    scores <- scores[-which( rownames( scores ) %in% blacklist ), , drop = FALSE]
   }
   if (anyNA(colnames(scores))) {
     ok <- which(!is.na(colnames(scores)))
