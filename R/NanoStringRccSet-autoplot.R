@@ -240,7 +240,7 @@ function(object,
              t(munge(endogenousSubset(object), ~ SignatureMatrix,
                      elt = elt)[["SignatureMatrix"]])
            p <- protoheatmap(scores, log2scale = log2scale,
-                             group = heatmapGroup, object = object, ...)
+                             group = heatmapGroup, object = object, blacklist, ...)
          },
          "lane-bindingDensity" = {
            maxBD <- 2.25
