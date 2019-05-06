@@ -19,6 +19,7 @@ function(object,
          geomParams = list(),
          tooltipDigits = 4L,
          heatmapGroup = NULL,
+         blacklist = NULL,
          ...)
 {
   geomParams <- as.list(geomParams)
@@ -58,6 +59,10 @@ function(object,
          "boxplot-signature" = {
            if (type == "boxplot-feature") {
              scores <- assayDataElement2(object, elt)
+             if ( !is.null( blacklist ) )
+             {
+               scores <- scores[-which( rownames( scores ) %in% blacklist ), , drop = FALSE]
+             }
              ytitle <- fData(object)[index, dimLabels(object)[1L]]
            } else {
              scores <- signatureScores(object, elt)
