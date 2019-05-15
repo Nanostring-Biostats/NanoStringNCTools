@@ -74,7 +74,7 @@ function(object,
              x <- rep.int("", ncol(scores))
              xtitle <- ""
            } else {
-             x <- eval(geomParams[["base"]][["x"]], sData(object))
+             x <- as.character(eval(geomParams[["base"]][["x"]], sData(object)))
              xtitle <- as.character(geomParams[["base"]][["x"]])
            }
            if (!is.name(geomParams[["point"]][["colour"]])) {
