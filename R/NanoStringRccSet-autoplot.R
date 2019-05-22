@@ -121,8 +121,10 @@ function(object,
                                          colour = "colour")),
                          geomParams[["point"]],
                          geomParams[["beeswarm"]])) +
-               guides(colour = guide_legend(title = colourtitle)) +
-               theme(legend.position = "bottom")
+               guides(colour = guide_legend(title = colourtitle, 
+                                              ncol = 1L, 
+                                              title.position = "top")) +
+               theme(legend.position = "right")
            }
            if (xtitle == "") {
              p <- p + theme(axis.text.x  = element_blank(),
