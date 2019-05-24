@@ -59,13 +59,13 @@ function(object,
          "boxplot-signature" = {
            if (type == "boxplot-feature") {
              scores <- assayDataElement2(object, elt)
+             ytitle <- fData(object)[index, dimLabels(object)[1L]]
+           } else {
+             scores <- signatureScores(object, elt)
              if ( !is.null( blacklist ) )
              {
                scores <- scores[-which( rownames( scores ) %in% blacklist ), , drop = FALSE]
              }
-             ytitle <- fData(object)[index, dimLabels(object)[1L]]
-           } else {
-             scores <- signatureScores(object, elt)
              ytitle <- rownames(scores)[index]
            }
            colnames(scores) <- sData(object)[[dimLabels(object)[2L]]]
@@ -121,8 +121,8 @@ function(object,
                                          colour = "colour")),
                          geomParams[["point"]],
                          geomParams[["beeswarm"]])) +
-               guides(colour = guide_legend(title = colourtitle, 
-                                              ncol = 1L, 
+               guides(colour = guide_legend(title = colourtitle,
+                                              ncol = 1L,
                                               title.position = "top")) +
                theme(legend.position = "right")
            }
