@@ -391,8 +391,8 @@ function(scores, log2scale, group, object,
                                 "darkred"))(100),
            annotation_col = annotation_col,
            annotation_colors = annotation_colors,
-           show_rownames = (nrow(scores) <= 36L),
+           show_rownames = (nrow(scores) <= 60L),
            show_colnames = (ncol(scores) <= 36L),
            silent = TRUE,
-           ...)
+           ...) + theme( legend.position = "bottom" )
 }
