@@ -1,12 +1,13 @@
 # Class definition
 setClass("SignatureSet",
          contains = "VersionedBiobase",
-         slots = c(weights = "NumericList", groups = "factor", version = "character"),
+         slots = c(weights = "NumericList", groups = "factor", func = "character", version = "character"),
          prototype = prototype(
            new("VersionedBiobase",
                versions = c(SignatureSet = "1.0.0")),
            weights = NumericList(),
            groups = factor(),
+           func = character(),
            version = character()))
 
 # Initialization method
@@ -16,6 +17,7 @@ function(.Object, weights = NumericList(), ...)
   callNextMethod(.Object,
                  weights = as(weights, "NumericList"),
                  groups = factor( names( weights ) ),
+                 func = "default",
                  version = "0.0.1",
                  ...)
 })
@@ -27,17 +29,31 @@ setMethod("initialize", "SignatureSet",
             callNextMethod(.Object,
                            weights = as(weights, "NumericList"),
                            groups = factor( groups ),
+                           func = "default",
                            version = "0.0.1",
                            ...)
           })
 
 # Initialization method
 setMethod("initialize", "SignatureSet",
-          function(.Object, weights = NumericList(), groups = factor(), version = character(), ...)
+          function(.Object, weights = NumericList(), groups = factor(), func = character(), ...)
           {
             callNextMethod(.Object,
                            weights = as(weights, "NumericList"),
                            groups = factor( groups ),
+                           func = as( func , "character" ),
+                           version = "0.0.1",
+                           ...)
+          })
+
+# Initialization method
+setMethod("initialize", "SignatureSet",
+          function(.Object, weights = NumericList(), groups = factor(), func = character(), version = character(), ...)
+          {
+            callNextMethod(.Object,
+                           weights = as(weights, "NumericList"),
+                           groups = factor( groups ),
+                           func = as( func , "character" ),
                            version = as( version , "character" ),
                            ...)
           })
@@ -67,9 +83,15 @@ SignatureSet <-
   }
 
 SignatureSet <-
-  function(weights = NumericList(), groups = factor(), version = character(), ...)
+  function(weights = NumericList(), groups = factor(), func = character(), ...)
   {
-    new2("SignatureSet", weights = weights , groups = groups, version = version, ...)
+    new2("SignatureSet", weights = weights , groups = groups, func = func, ...)
+  }
+
+SignatureSet <-
+  function(weights = NumericList(), groups = factor(), func = character(), version = character(), ...)
+  {
+    new2("SignatureSet", weights = weights , groups = groups, func = func, version = version, ...)
   }
 
 # Weights Accessor and Replacer
@@ -158,6 +180,18 @@ setReplaceMethod("version", c("SignatureSet", "NULL"),
                    object@version <- character()
                    object
                  })
+
+# Version Accessor and Replacer
+setGeneric("setFunc", signature = c ("object" ) ,
+           function( object , ... ) standardGeneric( "setFunc" ) )
+setMethod( "setFunc" , "SignatureSet" ,
+           function( object , newFunc , ... ) object@func <- newFunc )
+
+setGeneric("getFunc", signature = c ("object" ) ,
+           function( object , ... ) standardGeneric( "getFunc" ) )
+setMethod( "getFunc" , "SignatureSet" ,
+           function( object , ... ) object@func )
+
 
 # Additional methods
 # setMethod("version", "SignatureSet",
