@@ -182,7 +182,7 @@ setReplaceMethod("version", c("SignatureSet", "NULL"),
                  })
 
 # Version Accessor and Replacer
-setGeneric("setFunc<-", signature = c ("object" ) ,
+setGeneric("setFunc<-", signature = c ("object" , "value" ) ,
            function( object , ... ) standardGeneric( "setFunc<-" ) )
 setReplaceMethod( "setFunc" , c("SignatureSet", "character") ,
            function( object , value , ... ) object@func <- value )
