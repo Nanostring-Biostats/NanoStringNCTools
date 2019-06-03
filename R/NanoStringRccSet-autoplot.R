@@ -8,6 +8,7 @@ function(object,
                   "ercc-lod",
                   "heatmap-genes",
                   "heatmap-signatures",
+                  "housekeep-geom",
                   "lane-bindingDensity",
                   "lane-fov",
                   "lod",
@@ -243,6 +244,57 @@ function(object,
                      elt = elt)[["SignatureMatrix"]])
            p <- protoheatmap(scores, log2scale = log2scale,
                              group = heatmapGroup, object = object, blacklist = blacklist, ...)
+         },
+         "housekeep-geom" = { 
+           # Extract housekeeping geometric mean data
+           hkSet <- as.data.frame(object[["hkStats"]])
+           hkSet[["tooltip"]] <- 
+             sprintf("%s | Geometric&nbsp;Mean&nbsp;=&nbsp;%s", rownames(hkSet),
+                     signif(hkSet[["GeomMean"]], tooltipDigits))
+           hkSet[["x"]] <- rownames(hkSet)
+           
+           # Default to all values passing
+           hkSet[["Quality"]] <- "Passing >= 100" 
+           # Indicate which are low or failing quality
+           hkSet$Quality[hkSet$GeomMean < 100] <- "Low Quality < 100"
+           hkSet$Quality[hkSet$GeomMean < 32] <- "Failed < 32"
+           
+           # Reorder by geometric mean value
+           hkSet <- transform(hkSet, x=reorder(x, GeomMean) ) 
+           mapping <- aes_string(x = "x", y = "GeomMean",
+                                 tooltip = "tooltip")
+           
+           # Discriminate lower quality values by color
+           if (any(hkSet[["Quality"]] != "Passing >= 100")) {
+             # Separate for editing
+             geomParams[["point"]] <- unclass(geomParams[["point"]])
+             if (!is.name(geomParams[["point"]][["colour"]])) {
+               # Set color based on quality
+               mapping[["colour"]] <- as.name("Quality")
+               # Remove default point color
+               geomParams[["point"]][["colour"]] <- NULL
+             } else if (!is.name(geomParams[["point"]][["shape"]])) {
+               mapping[["shape"]] <- as.name("Quality")
+               geomParams[["point"]][["shape"]] <- NULL
+             }
+             #Reset class
+             oldClass(geomParams[["point"]]) <- "uneval"
+           }
+           
+           p <- ggpoint(hkSet, mapping, ...) +
+             # Add lines indicating low quality or failing housekeepers
+             geom_hline(yintercept = 32, linetype = 2L,
+                          colour = "darkgray") +
+             geom_hline(yintercept = 100, linetype = 2L,
+                          colour = "darkgray") +
+             guides(colour = guide_legend(title = "Housekeeper Quality",
+                                            ncol = 1L,
+                                            title.position = "top")) +
+             scale_x_discrete(name="Sample") +
+             scale_y_continuous(name="Geometric Mean") +
+             theme(legend.position = "right") +
+             theme(text=element_text(family="TT Arial"), 
+                     axis.text.x = element_text(angle = 90, hjust = 1, vjust = 1))
          },
          "lane-bindingDensity" = {
            maxBD <- 2.25
