@@ -255,8 +255,8 @@ function(object,
            
            # Default to all values passing
            hkSet[["Quality"]] <- "Passing >= 100" 
-           # Indicate which are low or failing quality
-           hkSet$Quality[hkSet$GeomMean < 100] <- "Low Quality < 100"
+           # Indicate which are borderline or failing quality
+           hkSet$Quality[hkSet$GeomMean < 100] <- "Borderline < 100"
            hkSet$Quality[hkSet$GeomMean < 32] <- "Failed < 32"
            
            # Reorder by geometric mean value
