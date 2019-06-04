@@ -226,7 +226,7 @@ function(object,
              geom_hline(yintercept = cutoff, linetype = 2L,
                         colour = "darkgray") +
              scale_x_discrete(name = "") +
-             scale_y_continuous(name = elt, trans = "log2") +
+             scale_y_continuous(name = "Counts (log2)", trans = "log2") +
              theme(axis.text.x  = element_blank(),
                    axis.ticks.x = element_blank(),
                    axis.title.x = element_blank())
