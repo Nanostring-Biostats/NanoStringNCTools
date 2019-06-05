@@ -56,6 +56,11 @@ function(object,
           Housekeeping = 
             hkStats[, "GeomMean"] < minHKGeoMean)
 
+  QCResults <- apply(prData[["QCFlags"]], 1L, function(x) sum(x) == 0L)
+  if (sum(QCResults) < 5) {
+    stop( "Unable to run 360 Report: less than five samples passed QC" )
+  }
+
   protocolData(object) <- prData
 
   # Add method call to preproc list
