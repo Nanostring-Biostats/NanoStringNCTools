@@ -6,6 +6,8 @@ function(object,
          bindDenRange = c(0.1, 2.25),
          posCtrlRsqLB = 0.95,
          negCtrlSDUB = 2,
+         hkGenes = NULL,
+         minHKGeoMean = 32,
          ...)
 {
   stopifnot(isSinglePercent(fovPercentLB))
@@ -26,6 +28,18 @@ function(object,
   prData <- protocolData(object)
   x <- log2(controlConc)
 
+  # The generic case uses the genes as labeled
+  if (is.null(hkGenes)) { 
+    subHKGenes <- housekeepingSubset(object)
+  } else {
+    # Create NanoStringRCCSet for only the listed housekeepers
+    preHKGenes <- housekeepingSubset(object)
+    # Only use those housekeepers which data was collected for
+    subHKGenes <- subset(preHKGenes, featureData( preHKGenes )[["GeneName"]] %in% hkGenes)
+  }
+  #Get geometric mean
+  hkStats <- summary( subHKGenes , 2L , elt = "exprs" )
+
   prData[["QCFlags"]] <-
     cbind(Imaging =
             prData[["FovCounted"]] / prData[["FovCount"]] < fovPercentLB,
@@ -38,7 +52,9 @@ function(object,
           LoD =
             apply(exprs(posCtrl[controlConc == 0.5, ]), 2L, max) <=
             assayDataApply(negCtrl, 2L,
-                           function(x) mean(x) + negCtrlSDUB * sd(x)))
+                           function(x) mean(x) + negCtrlSDUB * sd(x)),
+          HK = 
+            hkStats[, "GeomMean"] < minHKGeoMean)
 
   protocolData(object) <- prData
 
