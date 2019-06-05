@@ -53,7 +53,7 @@ function(object,
             apply(exprs(posCtrl[controlConc == 0.5, ]), 2L, max) <=
             assayDataApply(negCtrl, 2L,
                            function(x) mean(x) + negCtrlSDUB * sd(x)),
-          HK = 
+          Housekeeping = 
             hkStats[, "GeomMean"] < minHKGeoMean)
 
   protocolData(object) <- prData
