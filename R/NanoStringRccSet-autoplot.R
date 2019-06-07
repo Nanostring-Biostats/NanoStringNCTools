@@ -263,21 +263,32 @@ function(object,
            hkSet <- transform(hkSet, x=reorder(x, GeomMean) ) 
            mapping <- aes_string(x = "x", y = "GeomMean",
                                  tooltip = "tooltip")
-           
-           # Discriminate lower quality values by color
-           if (any(hkSet[["Quality"]] != "Passing >= 100")) {
+           # function call to check if panel standard exists
+           PSCol <- pscheck(object)
+
+           # Discriminate lower quality values by color and panel standards by shape 
+           if (any(hkSet[["Quality"]] != "Passing >= 100") | 
+                 !is.null(PSCol)) {
              # Separate for editing
              geomParams[["point"]] <- unclass(geomParams[["point"]])
-             if (!is.name(geomParams[["point"]][["colour"]])) {
+             if (any(hkSet[["Quality"]] != "Passing >= 100") & 
+                   !is.name(geomParams[["point"]][["colour"]])) {
                # Set color based on quality
                mapping[["colour"]] <- as.name("Quality")
                # Remove default point color
                geomParams[["point"]][["colour"]] <- NULL
-             } else if (!is.name(geomParams[["point"]][["shape"]])) {
-               mapping[["shape"]] <- as.name("Quality")
+             }
+             # Set shapes based on panel standards
+             if (!is.null(PSCol) & 
+                   !is.name(geomParams[["point"]][["shape"]])) { 
+               # Get sample and panel standard designations
+               PSLabels <- getpslabels(object, PSCol)
+               # Set shape based on label
+               mapping[["shape"]] <- PSLabels
+               # Remove default point shape
                geomParams[["point"]][["shape"]] <- NULL
              }
-             #Reset class
+             # Reset class if setting new color or shape
              oldClass(geomParams[["point"]]) <- "uneval"
            }
            
@@ -295,6 +306,15 @@ function(object,
              theme(legend.position = "right") +
              theme(text=element_text(family="TT Arial"), 
                      axis.text.x = element_text(angle = 90, hjust = 1, vjust = 1))
+           
+           # If there are panel standards add a shape legend
+           if (!is.null(PSCol)) {
+             p <- p + 
+                    guides(shape = guide_legend(title = "Sample Type",
+                               ncol = 1L,
+                               title.position = "top")) +
+                    theme(legend.position = "right")
+           }
          },
          "lane-bindingDensity" = {
            maxBD <- 2.25
@@ -447,4 +467,28 @@ function(scores, log2scale, group, object,
            show_colnames = (ncol(scores) <= 36L),
            silent = TRUE, legend.position = "bottom" ,
            ...)
+}
+
+# Check if panel standards were provided
+pscheck <-
+function(currObj) {
+  # Check if panel standard column attached to rcc set dimLabels
+  if(length(dimLabels(currObj)) > 2) {
+    # Get panel standard column label
+    panelStdCol <- dimLabels(currObj)[3]
+  } else {
+    # Panel standard not required for assay
+    panelStdCol <- NULL
+  }
+  return(panelStdCol)
+}
+
+# Get panel standard and sample designations
+getpslabels <-
+function(currObj, PSColumn) {
+  panelStandardLabels <- pData(currObj)[, PSColumn]
+  # Label for legend
+  panelStandardLabels[panelStandardLabels == 0] <- "Sample"
+  panelStandardLabels[panelStandardLabels == 1] <- "Panel Standard"
+  return(panelStandardLabels)
 }
