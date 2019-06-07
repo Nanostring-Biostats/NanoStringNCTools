@@ -166,17 +166,51 @@ function(object,
            mapping <-
              aes_string(x = "ControlConc", y = elt, group = "SampleName",
                         tooltip = "CustomTooltip")
-           if (any(extradata[["Low R-Squared"]])) {
-             mapping[["colour"]] <- as.name("Low R-Squared")
+           
+           # Check if panel standard exists
+           PSCol <- pscheck(object)
+           # Add custom aesthetics
+           if (any(extradata[["Low R-Squared"]]) | 
+                 !is.null(PSCol)) {
              for (i in c("line", "point")) {
+             # Separate for editing
                geomParams[[i]] <- unclass(geomParams[[i]])
-               geomParams[[i]][["colour"]] <- NULL
+               if (any(extradata[["Low R-Squared"]]) & 
+                     !is.name(geomParams[[i]][["colour"]])) {
+                 # Set color based on low R-squared
+                 mapping[["colour"]] <- as.name("Low R-Squared")
+                 # Remove default color
+                 geomParams[[i]][["colour"]] <- NULL
+               }
+               if(i == "point") {
+                 if (!is.null(PSCol) & 
+                       !is.name(geomParams[[i]][["shape"]])) { 
+                   # Get panel standard labels
+                   PSLabels <- getpslabels(object, PSCol)
+                   # Assign shape based on if panel standard
+                   mapping[["shape"]] <- 
+                     rep(PSLabels, length(featureData(posCtrl)[["ControlConc"]]))
+                   # Remove default shape
+                   geomParams[[i]][["shape"]] <- NULL
+                 }
+               }
+               # Reset class if setting new color or shape
                oldClass(geomParams[[i]]) <- "uneval"
              }
            }
+
            p <- ggline(posCtrl, mapping, extradata = extradata, ...) +
              scale_x_continuous(name = "Concentration (fM)", trans = "log2") +
              scale_y_continuous(trans = "log2")
+           # Add legend if panel standard provided
+           if (!is.null(PSCol)) {
+             p <- p + 
+               guides(shape = guide_legend(title = "Sample Type",
+                                           ncol = 1L,
+                                           title.position = "top")) +
+               theme(legend.position = "right") +
+               scale_shape_manual(values = c(2, 16), guide = "none")
+           }
          },
          "ercc-lod" = {
            negCtrl <- munge(negativeControlSubset(object),
@@ -201,17 +235,34 @@ function(object,
            posCtrl[["x"]] <- ""
            posCtrl[["Outlier"]] <- posCtrl[["exprs"]] < cutoff
            mapping <- aes_string(x = "x", y = elt, tooltip = "tooltip")
-           if (any(posCtrl[["Outlier"]])) {
+
+           # Check if panel standard exists
+           PSCol <- pscheck(object)
+           # Discriminate outliers and/or panel standards if designated
+           if (any(posCtrl[["Outlier"]]) | 
+                 !is.null(PSCol)) {
+             # Separate for editing
              geomParams[["point"]] <- unclass(geomParams[["point"]])
-             if (!is.name(geomParams[["point"]][["colour"]])) {
+             if (any(posCtrl[["Outlier"]]) & 
+                   !is.name(geomParams[["point"]][["colour"]])) {
+               # Set color based on outlier
                mapping[["colour"]] <- as.name("Outlier")
+               # Remove default point color
                geomParams[["point"]][["colour"]] <- NULL
-             } else if (!is.name(geomParams[["point"]][["shape"]])) {
-               mapping[["shape"]] <- as.name("Outlier")
+             }
+             if (!is.null(PSCol) & 
+                   !is.name(geomParams[["point"]][["shape"]])) { 
+               # Get panel standard labels
+               PSLabels <- getpslabels(object, PSCol)
+               # Assign shape based on if panel standard
+               mapping[["shape"]] <- PSLabels
+               # Remove default shape
                geomParams[["point"]][["shape"]] <- NULL
              }
+             # Reset class if setting new color or shape
              oldClass(geomParams[["point"]]) <- "uneval"
            }
+
            p <- ggplot(negCtrl, aes_string(x = "x", y = "exprs")) +
              stat_boxplot(geom = "errorbar",
                           width = geomParams[["boxplot"]][["size"]],
@@ -230,6 +281,15 @@ function(object,
              theme(axis.text.x  = element_blank(),
                    axis.ticks.x = element_blank(),
                    axis.title.x = element_blank())
+           # Add legend if panel standard provided
+           if (!is.null(PSCol)) {
+             p <- p + 
+               guides(shape = guide_legend(title = "Sample Type",
+                                           ncol = 1L,
+                                           title.position = "top")) +
+               theme(legend.position = "right") +
+               scale_shape_manual(values = c(2, 16), guide = "none")
+           }
          },
          "heatmap-genes" = {
            scores <-
@@ -313,7 +373,8 @@ function(object,
                     guides(shape = guide_legend(title = "Sample Type",
                                ncol = 1L,
                                title.position = "top")) +
-                    theme(legend.position = "right")
+                    theme(legend.position = "right") +
+                    scale_shape_manual(values = c(2, 16), guide = "none")
            }
          },
          "lane-bindingDensity" = {
@@ -324,17 +385,34 @@ function(object,
                         row.names = sampleNames(object))
            mapping <- aes_string(x = "LaneID", y = "BindingDensity",
                                  tooltip = "SampleName")
-           if (any(extradata[["Outlier"]])) {
+           
+           # Check if panel standard provided
+           PSCol <- pscheck(object)
+           # Discriminate outliers and/or panel standards if designated
+           if (any(extradata[["Outlier"]]) | 
+                 !is.null(PSCol)) {
+             # Separate for editing
              geomParams[["point"]] <- unclass(geomParams[["point"]])
-             if (!is.name(geomParams[["point"]][["colour"]])) {
+             if (any(extradata[["Outlier"]]) & 
+                   !is.name(geomParams[["point"]][["colour"]])) {
+               # Set color based on outlier
                mapping[["colour"]] <- as.name("Outlier")
+               # Remove default point color
                geomParams[["point"]][["colour"]] <- NULL
-             } else if (!is.name(geomParams[["point"]][["shape"]])) {
-               mapping[["shape"]] <- as.name("Outlier")
+             }
+             if (!is.null(PSCol) & 
+                   !is.name(geomParams[["point"]][["shape"]])) { 
+               # Get panel standard labels
+               PSLabels <- getpslabels(object, PSCol)
+               # Assign shape based on if panel standard
+               mapping[["shape"]] <- PSLabels
+               # Remove default shape
                geomParams[["point"]][["shape"]] <- NULL
              }
+             # Reset class if setting new color or shape
              oldClass(geomParams[["point"]]) <- "uneval"
            }
+
            p <- ggpoint(object, mapping, extradata = extradata, ...) +
              scale_x_continuous(name = "Lane", breaks = 1:12,
                                 limits = c(1L, 12L)) +
@@ -342,6 +420,15 @@ function(object,
                                 limits = c(0, NA_real_)) +
              geom_hline(yintercept = c(0.1, maxBD), linetype = 2L,
                         colour = "darkgray")
+           # Add legend if panel standard provided
+           if (!is.null(PSCol)) {
+             p <- p + 
+               guides(shape = guide_legend(title = "Sample Type",
+                                           ncol = 1L,
+                                           title.position = "top")) +
+               theme(legend.position = "right") +
+               scale_shape_manual(values = c(2, 16), guide = "none")
+           }
          },
          "lane-fov" = {
            extradata <- pData(protocolData(object))
@@ -352,17 +439,33 @@ function(object,
            extradata[["Outlier"]] <- extradata[["FOVCounted"]] < 0.75
            mapping <- aes_string(x = "LaneID", y = "FOVCounted",
                                  tooltip = "SampleName")
-           if (any(extradata[["Outlier"]])) {
+           # Check if panel standard provided
+           PSCol <- pscheck(object)
+           # Discriminate outliers and/or panel standards if designated
+           if (any(extradata[["Outlier"]]) | 
+                 !is.null(PSCol)) {
+             # Separate for editing
              geomParams[["point"]] <- unclass(geomParams[["point"]])
-             if (!is.name(geomParams[["point"]][["colour"]])) {
+             if (any(extradata[["Outlier"]]) & 
+                   !is.name(geomParams[["point"]][["colour"]])) {
+               # Set color based on outlier
                mapping[["colour"]] <- as.name("Outlier")
+               # Remove default point color
                geomParams[["point"]][["colour"]] <- NULL
-             } else if (!is.name(geomParams[["point"]][["shape"]])) {
-               mapping[["shape"]] <- as.name("Outlier")
+             }
+             if (!is.null(PSCol) & 
+                   !is.name(geomParams[["point"]][["shape"]])) { 
+               # Get panel standard labels
+               PSLabels <- getpslabels(object, PSCol)
+               # Assign shape based on if panel standard
+               mapping[["shape"]] <- PSLabels
+               # Remove default shape
                geomParams[["point"]][["shape"]] <- NULL
              }
+             # Reset class if setting new color or shape
              oldClass(geomParams[["point"]]) <- "uneval"
            }
+
            p <- ggpoint(object, mapping, extradata = extradata, ...) +
              scale_x_continuous(name = "Lane", breaks = 1:12,
                                 limits = c(1L, 12L)) +
@@ -370,6 +473,15 @@ function(object,
                                 limits = c(0, 1)) +
              geom_hline(yintercept = 0.75, linetype = 2L,
                         colour = "darkgray")
+           # Add legend if panel standard provided
+           if (!is.null(PSCol)) {
+             p <- p + 
+               guides(shape = guide_legend(title = "Sample Type",
+                                           ncol = 1L,
+                                           title.position = "top")) +
+               theme(legend.position = "right") +
+               scale_shape_manual(values = c(2, 16), guide = "none")
+           }
          },
          "mean-sd-features" = {
            if (log2scale)
