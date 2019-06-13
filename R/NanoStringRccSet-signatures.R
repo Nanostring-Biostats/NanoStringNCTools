@@ -28,6 +28,7 @@ setReplaceMethod("signatures", c("NanoStringRccSet", "SignatureSet"),
              }
            }))
 }
+
 setGeneric("signatureScores", signature = "object",
            function(object, ...) standardGeneric("signatureScores"))
 setMethod("signatureScores", "NanoStringRccSet",
@@ -38,7 +39,11 @@ setMethod("signatureScores", "NanoStringRccSet",
             }
             exprs <- t(assayDataElement2(object, elt))
             colnames(exprs) <- featureData(object)[["GeneName"]]
-            scores <- .sigCalc(exprs, weights(signatures(object)))
+            sigFuncList <- signatureFuncs( object )
+            linWeights <- weights(signatures(object))[which( sigFuncList %in% "default" )]
+            nonLinFuncs <- sigFuncList[which( !( sigFuncList %in% "default" ) )]
+            names( nonLinFuncs ) <- names( weights(signatures(object)) )[which( !( sigFuncList %in% "default" ) )]
+            scores <- .sigCalc(exprs, linWeights)
             while (length(idx <- which(rowSums(is.na(scores)) > 0L))) {
               subscores <-
                 .sigCalc(cbind(exprs, t(scores[-idx, , drop = FALSE])),
@@ -48,12 +53,21 @@ setMethod("signatureScores", "NanoStringRccSet",
               else
                 scores[idx, ] <- subscores
             }
-            scores
+            nonLinScores <- t( sapply( nonLinFuncs , function( x , elt ) eval( parse( text = paste( x , "( object , fromElt = \"" , elt , "\" )" , sep = "" ) ) ) , elt ) )
+            scores <- rbind( scores , nonLinScores )
+            return( scores[names( weights( signatures( object ) ) ),] )
           })
 
 setGeneric( "signatureGroups" , signature = "object" ,
-           function (object , ... ) standardGeneric( "signatureGroups" ) )
+            function (object , ... ) standardGeneric( "signatureGroups" ) )
 setMethod("signatureGroups", "NanoStringRccSet",
           function( object ) {
             groups( object@signatures )
+          } )
+
+setGeneric( "signatureFuncs" , signature = "object" ,
+            function (object , ... ) standardGeneric( "signatureFuncs" ) )
+setMethod("signatureFuncs", "NanoStringRccSet",
+          function( object ) {
+            getSigFuncs( object@signatures )
           } )

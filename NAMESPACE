@@ -37,11 +37,11 @@ export("weights<-",
        NanoStringRccSet,
        sData, svarLabels, groups, "groups<-", version, "version<-",
        signatures, "signatures<-", signatureScores, signatureGroups,
-       endogenousSubset, housekeepingSubset,
+       endogenousSubset, housekeepingSubset, getSigFuncs,
        negativeControlSubset, positiveControlSubset,
        controlSubset, nonControlSubset, signatureSubset,
        assayDataApply, signatureScoresApply, esBy,
-       munge,
+       munge, signatureFuncs,
        setQCFlags)
 
 ### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -58,7 +58,7 @@ exportMethods(show,
               negativeControlSubset, positiveControlSubset,
               controlSubset, nonControlSubset, signatureSubset,
               assayDataApply, signatureScoresApply, esBy, with,
-              munge, transform,
+              munge, transform, getSigFuncs, signatureFuncs,
               setQCFlags, normalize)
 
 ### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
