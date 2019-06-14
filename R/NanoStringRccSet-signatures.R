@@ -40,9 +40,8 @@ setMethod("signatureScores", "NanoStringRccSet",
             exprs <- t(assayDataElement2(object, elt))
             colnames(exprs) <- featureData(object)[["GeneName"]]
             sigFuncList <- signatureFuncs( object )
-            linWeights <- weights(signatures(object))[which( sigFuncList %in% "default" )]
+            linWeights <- weights( signatures( object ) )[names( sigFuncList )[which( sigFuncList %in% "default" )]]
             nonLinFuncs <- sigFuncList[which( !( sigFuncList %in% "default" ) )]
-            names( nonLinFuncs ) <- names( weights(signatures(object)) )[which( !( sigFuncList %in% "default" ) )]
             scores <- .sigCalc(exprs, linWeights)
             while (length(idx <- which(rowSums(is.na(scores)) > 0L))) {
               subscores <-
