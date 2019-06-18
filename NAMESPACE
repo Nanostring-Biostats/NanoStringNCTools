@@ -41,7 +41,7 @@ export("weights<-",
        negativeControlSubset, positiveControlSubset,
        controlSubset, nonControlSubset, signatureSubset,
        assayDataApply, signatureScoresApply, esBy,
-       munge, signatureFuncs, setSignatureFuncs, setSignatureGroups,
+       munge, signatureFuncs, "setSignatureFuncs<-", "setSignatureGroups<-",
        setQCFlags)
 
 ### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -53,7 +53,7 @@ exportMethods(show,
               sData, svarLabels, dimLabels, "dimLabels<-",
               signatures, "signatures<-", signatureScores,
               design, "design<-", signatureGroups,
-              summary, "[", subset, setSignatureFuncs, setSignatureGroups,
+              summary, "[", subset, "setSignatureFuncs<-", "setSignatureGroups<-",
               endogenousSubset, housekeepingSubset,
               negativeControlSubset, positiveControlSubset,
               controlSubset, nonControlSubset, signatureSubset,
