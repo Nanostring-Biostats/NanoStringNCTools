@@ -73,13 +73,13 @@ function(object) {
 SignatureSet <-
 function(weights = NumericList(), ...)
 {
-  new2("SignatureSet", weights = weights, ...)
+  new2("SignatureSet", weights = weights , groups = rep( "Group" , length( weights ) ) , func = rep( "default" , length( weights ) ) , ...)
 }
 
 SignatureSet <-
   function(weights = NumericList(), groups = factor(), ...)
   {
-    new2("SignatureSet", weights = weights , groups = groups, ...)
+    new2("SignatureSet", weights = weights , groups = groups, func = rep( "default" , length( groups ) ) , ...)
   }
 
 SignatureSet <-
