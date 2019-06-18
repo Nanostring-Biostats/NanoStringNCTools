@@ -64,9 +64,25 @@ setMethod("signatureGroups", "NanoStringRccSet",
             groups( object@signatures )
           } )
 
+setGeneric("setSignatureGroups<-", signature = c("object", "value"),
+           function(object, value) standardGeneric("setSignatureGroups<-"))
+setReplaceMethod("setSignatureGroups", c("NanoStringRccSet", "character"),
+                 function(object, value) {
+                   groups( object@signatures ) <- value
+                   object
+                 })
+
 setGeneric( "signatureFuncs" , signature = "object" ,
             function (object , ... ) standardGeneric( "signatureFuncs" ) )
 setMethod("signatureFuncs", "NanoStringRccSet",
           function( object ) {
             getSigFuncs( object@signatures )
           } )
+
+setGeneric("setSignatureFuncs<-", signature = c("object", "value"),
+           function(object, value) standardGeneric("setSignatureFuncs<-"))
+setReplaceMethod("setSignatureFuncs", c("NanoStringRccSet", "character"),
+                 function(object, value) {
+                   setSigFuncs( object@signatures ) <- value
+                   object
+                 })

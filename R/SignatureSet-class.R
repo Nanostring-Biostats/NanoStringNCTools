@@ -185,7 +185,10 @@ setReplaceMethod("version", c("SignatureSet", "NULL"),
 setGeneric("setSigFuncs<-", signature = c ("object" , "value" ) ,
            function( object, value , ... ) standardGeneric( "setSigFuncs<-" ) )
 setReplaceMethod( "setSigFuncs" , c("SignatureSet", "character") ,
-           function( object , value , ... ) object@func <- value )
+           function( object , value , ... ) {
+             object@func <- value
+             return( object )
+             })
 
 setGeneric("getSigFuncs", signature = c ("object" ) ,
            function( object , ... ) standardGeneric( "getSigFuncs" ) )
