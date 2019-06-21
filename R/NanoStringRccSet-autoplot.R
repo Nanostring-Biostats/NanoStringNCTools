@@ -578,7 +578,7 @@ function(scores, log2scale, group, object,
            show_rownames = (nrow(scores) <= 60L),
            show_colnames = (ncol(scores) <= 36L),
            silent = TRUE, legend.position = "bottom" ,
-           ...)
+           fontfamily = "HersheySans")
 }
 
 # Check if panel standards were provided
