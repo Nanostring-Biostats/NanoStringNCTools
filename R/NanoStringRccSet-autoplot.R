@@ -160,7 +160,7 @@ function(object,
                                          elt = elt))
            extradata[["Low R-Squared"]] <- extradata[["RSquared"]] < 0.95
            extradata[["CustomTooltip"]] <-
-             sprintf("%s\nR-Squared = %.4f", rownames(extradata),
+             sprintf("%s | R-Squared = %.4f", rownames(extradata),
                      extradata[["RSquared"]])
 
            mapping <-
