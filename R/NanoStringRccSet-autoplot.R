@@ -577,7 +577,8 @@ function(scores, log2scale, group, object,
            annotation_colors = annotation_colors,
            show_rownames = (nrow(scores) <= 60L),
            show_colnames = (ncol(scores) <= 36L),
-           silent = TRUE, legend.position = "bottom" ,
+           silent = TRUE, legend.position = "bottom",
+           fontsize = 10, cellheight = 10,
            fontfamily = "HersheySans")
 }
 
