@@ -507,6 +507,7 @@ function(object,
 
 protoheatmap <-
 function(scores, log2scale, group, object,
+         labelsize = 10L,
          scaleCutoff = 3,
          groupPalette =
            c("#4E79A7", "#F28E2B", "#E15759", "#76B7B2", "#59A14F",
@@ -578,7 +579,7 @@ function(scores, log2scale, group, object,
            show_rownames = (nrow(scores) <= 60L),
            show_colnames = (ncol(scores) <= 36L),
            silent = TRUE, legend.position = "bottom",
-           fontsize = 10, cellheight = 10,
+           fontsize = labelsize, cellheight = labelsize + 2,
            fontfamily = "HersheySans")
 }
 
