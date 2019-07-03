@@ -579,7 +579,9 @@ function(scores, log2scale, group, object,
            show_rownames = (nrow(scores) <= 60L),
            show_colnames = (ncol(scores) <= 36L),
            silent = TRUE, legend.position = "bottom",
-           fontsize = labelsize, cellheight = labelsize + 2,
+           fontsize = labelsize, 
+           cellheight = ifelse(nrow(scores) <= 60L, labelsize + 2, NA),
+           cellwidth = ifelse(ncol(scores) <= 36L, labelsize + 2, NA),
            fontfamily = "Arial")
 }
 
