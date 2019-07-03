@@ -582,7 +582,7 @@ function(scores, log2scale, group, object,
            fontsize = labelsize, 
            cellheight = ifelse(nrow(scores) <= 60L, labelsize + 2, NA),
            cellwidth = ifelse(ncol(scores) <= 36L, labelsize + 2, NA),
-           fontfamily = "Arial")
+           fontfamily = "HersheySans")
 }
 
 # Check if panel standards were provided
