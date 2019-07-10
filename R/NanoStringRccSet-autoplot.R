@@ -312,7 +312,9 @@ function(object,
              sprintf("%s | Geometric&nbsp;Mean&nbsp;=&nbsp;%s", rownames(hkSet),
                      signif(hkSet[["GeomMean"]], tooltipDigits))
            hkSet[["x"]] <- rownames(hkSet)
-           
+           # Get plot x limit for cut-off text
+           cutX <- length(hkSet[["x"]]) - 1
+
            # Default to all values passing
            hkSet[["Quality"]] <- "Passing >= 100" 
            # Indicate which are borderline or failing quality
@@ -358,6 +360,14 @@ function(object,
                           colour = "darkgray") +
              geom_hline(yintercept = 100, linetype = 2L,
                           colour = "darkgray") +
+             geom_text(aes(cutX, h, label = label, hjust = 0.5, vjust = 1.25),
+                         data =
+                           data.frame(h = c(32, 100), label = c("G = 32 counts", "G = 100 counts"),
+                         stringsAsFactors = FALSE),
+                         color = "#79706E", 
+                         size = 3, 
+                         family = "Arial", 
+                         inherit.aes = FALSE) +
              guides(colour = guide_legend(title = "Housekeeper Quality",
                                             ncol = 1L,
                                             title.position = "top")) +
