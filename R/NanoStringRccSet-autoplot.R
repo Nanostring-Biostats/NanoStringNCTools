@@ -313,7 +313,7 @@ function(object,
                      signif(hkSet[["GeomMean"]], tooltipDigits))
            hkSet[["x"]] <- rownames(hkSet)
            # Get plot x limit for cut-off text
-           cutX <- length(hkSet[["x"]]) - 1
+           cutX <- length(hkSet[["x"]]) - 2
 
            # Default to all values passing
            hkSet[["Quality"]] <- "Passing >= 100" 
@@ -362,7 +362,7 @@ function(object,
                           colour = "darkgray") +
              geom_text(aes(cutX, h, label = label, hjust = 0.5, vjust = 1.25),
                          data =
-                           data.frame(h = c(32, 100), label = c("G = 32 counts", "G = 100 counts"),
+                           data.frame(h = c(32, 100), label = c("Minimum Threshold = 32 counts", "Borderline Threshold = 100 counts"),
                          stringsAsFactors = FALSE),
                          color = "#79706E", 
                          size = 3, 
