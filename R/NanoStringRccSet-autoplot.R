@@ -371,12 +371,20 @@ function(object,
                           colour = "darkgray") +
              geom_text(aes(cutX, h, label = label, hjust = 0.5, vjust = 1.25),
                          data =
-                           data.frame(h = c(32, 100), label = c("Minimum Threshold = 32 counts", "Borderline Threshold = 100 counts"),
+                           data.frame(h = c(32), label = c("Minimum Threshold = 32 counts"),
                          stringsAsFactors = FALSE),
                          color = "#79706E", 
                          size = 3, 
                          family = "Arial", 
                          inherit.aes = FALSE) +
+             geom_text(aes(cutX, h, label = label, hjust = 0.5, vjust = -0.25),
+                       data =
+                         data.frame(h = c(100), label = c("Borderline Threshold = 100 counts"),
+                                    stringsAsFactors = FALSE),
+                       color = "#79706E", 
+                       size = 3, 
+                       family = "Arial", 
+                       inherit.aes = FALSE) +
              guides(colour = guide_legend(title = "Housekeeper Quality",
                                             ncol = 1L,
                                             title.position = "top")) +
