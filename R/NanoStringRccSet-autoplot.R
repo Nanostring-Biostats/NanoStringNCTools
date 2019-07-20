@@ -262,7 +262,8 @@ function(object,
              # Reset class if setting new color or shape
              oldClass(geomParams[["point"]]) <- "uneval"
            }
-
+           # Set x position for cutoff line text
+           cutX = 1
            p <- ggplot(negCtrl, aes_string(x = "x", y = "exprs")) +
              stat_boxplot(geom = "errorbar",
                           width = geomParams[["boxplot"]][["size"]],
@@ -280,7 +281,15 @@ function(object,
              scale_y_continuous(name = "Counts (log2)", trans = "log2") +
              theme(axis.text.x  = element_blank(),
                    axis.ticks.x = element_blank(),
-                   axis.title.x = element_blank())
+                   axis.title.x = element_blank()) +
+             geom_text(aes(cutX, h, label = label, hjust = -1.05, vjust = 1.25),
+                       data =
+                         data.frame(h = c(cutoff), label = c("2 Std Dev. Above Mean"),
+                                    stringsAsFactors = FALSE),
+                       color = "#79706E", 
+                       size = 3, 
+                       family = "Arial", 
+                       inherit.aes = FALSE)
            # Add legend if panel standard provided
            if (!is.null(PSCol)) {
              p <- p + 
@@ -362,12 +371,20 @@ function(object,
                           colour = "darkgray") +
              geom_text(aes(cutX, h, label = label, hjust = 0.5, vjust = 1.25),
                          data =
-                           data.frame(h = c(32, 100), label = c("Minimum Threshold = 32 counts", "Borderline Threshold = 100 counts"),
+                           data.frame(h = c(32), label = c("Minimum Threshold = 32 counts"),
                          stringsAsFactors = FALSE),
                          color = "#79706E", 
                          size = 3, 
                          family = "Arial", 
                          inherit.aes = FALSE) +
+             geom_text(aes(cutX, h, label = label, hjust = 0.5, vjust = -0.25),
+                       data =
+                         data.frame(h = c(100), label = c("Borderline Threshold = 100 counts"),
+                                    stringsAsFactors = FALSE),
+                       color = "#79706E", 
+                       size = 3, 
+                       family = "Arial", 
+                       inherit.aes = FALSE) +
              guides(colour = guide_legend(title = "Housekeeper Quality",
                                             ncol = 1L,
                                             title.position = "top")) +
@@ -422,14 +439,23 @@ function(object,
              # Reset class if setting new color or shape
              oldClass(geomParams[["point"]]) <- "uneval"
            }
-
+           # Set x position for cutoff line text
+           cutX = 11
            p <- ggpoint(object, mapping, extradata = extradata, ...) +
              scale_x_continuous(name = "Lane", breaks = 1:12,
                                 limits = c(1L, 12L)) +
              scale_y_continuous(name = "Binding Density",
                                 limits = c(0, NA_real_)) +
              geom_hline(yintercept = c(0.1, maxBD), linetype = 2L,
-                        colour = "darkgray")
+                        colour = "darkgray") +
+             geom_text(aes(cutX, h, label = label, hjust = 0.55, vjust = 1.25),
+                       data =
+                         data.frame(h = c(0.1, 2.25), label = c("Minimum Binding Density", "Maximum Binding Density"),
+                                    stringsAsFactors = FALSE),
+                       color = "#79706E", 
+                       size = 3, 
+                       family = "Arial", 
+                       inherit.aes = FALSE)
            # Add legend if panel standard provided
            if (!is.null(PSCol)) {
              p <- p + 
@@ -475,12 +501,21 @@ function(object,
              # Reset class if setting new color or shape
              oldClass(geomParams[["point"]]) <- "uneval"
            }
-
+           # Set x position for cutoff line text
+           cutX = 11
            p <- ggpoint(object, mapping, extradata = extradata, ...) +
              scale_x_continuous(name = "Lane", breaks = 1:12,
                                 limits = c(1L, 12L)) +
              scale_y_continuous(name = "FOV Counted", labels = format_percent,
                                 limits = c(0, 1)) +
+             geom_text(aes(cutX, h, label = label, hjust = 0.1, vjust = 1.25),
+                       data =
+                         data.frame(h = c(0.75), label = c("75% Passing"),
+                                    stringsAsFactors = FALSE),
+                       color = "#79706E", 
+                       size = 3, 
+                       family = "Arial", 
+                       inherit.aes = FALSE) +
              geom_hline(yintercept = 0.75, linetype = 2L,
                         colour = "darkgray")
            # Add legend if panel standard provided
