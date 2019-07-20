@@ -53,7 +53,9 @@ setMethod("signatureScores", "NanoStringRccSet",
                 scores[idx, ] <- subscores
             }
             nonLinScores <- t( sapply( nonLinFuncs , function( x , elt ) eval( parse( text = paste( x , "( object , fromElt = \"" , elt , "\" )" , sep = "" ) ) ) , elt ) )
-            scores <- rbind( scores , nonLinScores )
+            if (ncol(nonLinScores) > 0) {
+                scores <- rbind( scores , nonLinScores )
+            }
             return( scores[names( weights( signatures( object ) ) ),] )
           })
 
