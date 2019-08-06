@@ -65,7 +65,7 @@ function(object,
              scores <- signatureScores(object, elt)
              if ( !is.null( blacklist ) )
              {
-               scores <- scores[-which( rownames( scores ) %in% blacklist ), , drop = FALSE]
+               scores <- scores[!rownames(scores) %in% blacklist, , drop = FALSE]
              }
              ytitle <- rownames(scores)[index]
            }
