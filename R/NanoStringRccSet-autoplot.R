@@ -565,7 +565,7 @@ function(scores, log2scale, group, object,
   }
   if ( !is.null( blacklist ) )
   {
-    scores <- scores[-which( rownames( scores ) %in% blacklist ), , drop = FALSE]
+    scores <- scores[!rownames(scores) %in% blacklist, , drop = FALSE]
   }
   if (anyNA(colnames(scores))) {
     ok <- which(!is.na(colnames(scores)))
