@@ -21,6 +21,7 @@ function(object,
          tooltipDigits = 4L,
          heatmapGroup = NULL,
          blacklist = NULL,
+         tooltipID = "SampleName",
          ...)
 {
   geomParams <- as.list(geomParams)
@@ -160,7 +161,7 @@ function(object,
                                          elt = elt))
            extradata[["Low R-Squared"]] <- extradata[["RSquared"]] < 0.95
            extradata[["CustomTooltip"]] <-
-             sprintf("%s | R-Squared = %.4f", rownames(extradata),
+             sprintf("%s | R-Squared = %.4f", object[[tooltipID]],
                      extradata[["RSquared"]])
 
            mapping <-
@@ -230,7 +231,7 @@ function(object,
                              featureData(posCtrl)[["ControlConc"]] == 0.5)
            posCtrl <- munge(posCtrl, mapping = aes_(exprs = as.name(elt)))
            posCtrl[["tooltip"]] <-
-             sprintf("%s | POS_E(0.5)&nbsp;=&nbsp;%s", posCtrl[["SampleName"]],
+             sprintf("%s | POS_E(0.5)&nbsp;=&nbsp;%s", object[[tooltipID]],
                      signif(posCtrl[["exprs"]], tooltipDigits))
            posCtrl[["x"]] <- ""
            posCtrl[["Outlier"]] <- posCtrl[["exprs"]] < cutoff
@@ -318,7 +319,7 @@ function(object,
            # Extract housekeeping geometric mean data
            hkSet <- as.data.frame(object[["hkStats"]])
            hkSet[["tooltip"]] <- 
-             sprintf("%s | Geometric&nbsp;Mean&nbsp;=&nbsp;%s", rownames(hkSet),
+             sprintf("%s | Geometric&nbsp;Mean&nbsp;=&nbsp;%s", object[[tooltipID]],
                      signif(hkSet[["GeomMean"]], tooltipDigits))
            hkSet[["x"]] <- rownames(hkSet)
            # Get plot x limit for cut-off text
@@ -411,7 +412,7 @@ function(object,
                           protocolData(object)[["BindingDensity"]] > maxBD,
                         row.names = sampleNames(object))
            mapping <- aes_string(x = "LaneID", y = "BindingDensity",
-                                 tooltip = "SampleName")
+                                 tooltip = tooltipID)
            
            # Check if panel standard provided
            PSCol <- pscheck(object)
@@ -474,7 +475,7 @@ function(object,
                         row.names = rownames(extradata))
            extradata[["Outlier"]] <- extradata[["FOVCounted"]] < 0.75
            mapping <- aes_string(x = "LaneID", y = "FOVCounted",
-                                 tooltip = "SampleName")
+                                 tooltip = tooltipID)
            # Check if panel standard provided
            PSCol <- pscheck(object)
            # Discriminate outliers and/or panel standards if designated
