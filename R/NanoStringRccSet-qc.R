@@ -8,6 +8,7 @@ function(object,
          negCtrlSDUB = 2,
          hkGenes = NULL,
          minHKGeoMean = 32,
+         blHKGeoMean = 100,
          ...)
 {
   stopifnot(isSinglePercent(fovPercentLB))
@@ -56,6 +57,19 @@ function(object,
           Housekeeping = 
             hkStats[, "GeomMean"] < minHKGeoMean)
 
+  prData[["QCBorderlineFlags"]] <-
+    cbind(Imaging = 
+            rep(FALSE, nrow(prData@data)),
+          Binding = 
+            rep(FALSE, nrow(prData@data)),
+          Linearity = 
+            rep(FALSE, nrow(prData@data)),
+          LoD = 
+            rep(FALSE, nrow(prData@data)),
+          Housekeeping =
+            hkStats[, "GeomMean"] > minHKGeoMean &
+            hkStats[, "GeomMean"] < blHKGeoMean)
+  
   QCResults <- apply(prData[["QCFlags"]], 1L, function(x) sum(x) == 0L)
   if (sum(QCResults) < 5) {
     stop( "Unable to run 360 Report: less than five samples passed QC" )
