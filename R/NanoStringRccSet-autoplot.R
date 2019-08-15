@@ -109,7 +109,9 @@ function(object,
                      c(list(aes_string(tooltip = "x")),
                        geomParams[["boxplot"]],
                        outlier.shape = NA)) +
-             scale_x_discrete(name = xtitle) + scale_y_continuous(name = ytitle)
+             scale_x_discrete(name = xtitle) +
+             scale_y_continuous(name = ytitle, ,
+                                labels = function(y) {sprintf("%.1f", y])}))
            if (is.null(colour)) {
              p <- p +
                do.call(geom_beeswarm_interactive,
