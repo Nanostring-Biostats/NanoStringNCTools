@@ -103,13 +103,16 @@ function(object,
            df[["colour"]] <- colour
            p <- ggplot(df, aes_string(x = "x", y = "score")) +
              stat_boxplot(geom = "errorbar",
+                          lwd = 0.5, # add this to boxplot geomParams later, sets error bar line width = box line width
                           width = geomParams[["boxplot"]][["size"]],
                           colour = geomParams[["boxplot"]][["colour"]]) +
              do.call(geom_boxplot_interactive,
                      c(list(aes_string(tooltip = "x")),
                        geomParams[["boxplot"]],
                        outlier.shape = NA)) +
-             scale_x_discrete(name = xtitle) + scale_y_continuous(name = ytitle)
+             scale_x_discrete(name = xtitle) +
+             scale_y_continuous(name = ytitle,
+                                labels = function(x) {sprintf("%.1f", x)})
            if (is.null(colour)) {
              p <- p +
                do.call(geom_beeswarm_interactive,
@@ -124,8 +127,8 @@ function(object,
                          geomParams[["point"]],
                          geomParams[["beeswarm"]])) +
                guides(colour = guide_legend(title = colourtitle,
-                                              ncol = 1L,
-                                              title.position = "top")) +
+                                            ncol = 1L,
+                                            title.position = "top")) +
                theme(legend.position = "right")
            }
            if (xtitle == "") {
