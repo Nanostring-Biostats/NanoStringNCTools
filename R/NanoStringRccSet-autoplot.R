@@ -394,10 +394,15 @@ function(object,
                                             title.position = "top")) +
              scale_x_discrete(name="Sample") +
              scale_y_continuous(name="Geometric Mean") +
-             theme(legend.position = "right") +
-             theme(text=element_text(family="TT Arial"), 
-                     axis.text.x = element_text(angle = 90, hjust = 1, vjust = 1))
-           
+             theme(legend.position = "right")
+           if( length(hkSet[["x"]]) <= 60L ) {
+             p <- p + theme(text = element_text(family="TT Arial"), 
+                            axis.text.x.bottom = element_text(angle = 90, hjust = 1, vjust = 0.5))
+           } else {
+             p <- p + theme( axis.text.x.bottom = element_blank(),
+                             axis.ticks.x = element_blank())
+           }
+          
            # If there are panel standards add a shape legend
            if (!is.null(PSCol)) {
              p <- p + 
