@@ -631,6 +631,7 @@ function(scores, log2scale, group, object,
            show_colnames = (ncol(scores) <= 36L),
            silent = TRUE, legend.position = "bottom",
            fontsize = labelsize, 
+           angle_col = 90, 
            cellheight = ifelse(nrow(scores) <= 60L, labelsize + 2, NA),
            cellwidth = ifelse(ncol(scores) <= 36L, labelsize + 2, NA),
            fontfamily = "HersheySans")
