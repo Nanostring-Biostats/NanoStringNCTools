@@ -556,7 +556,7 @@ function(object,
 
 protoheatmap <-
 function(scores, log2scale, group, object,
-         labelsize = 10L,
+         labelsize = 9L,
          scaleCutoff = 3,
          groupPalette =
            c("#4E79A7", "#F28E2B", "#E15759", "#76B7B2", "#59A14F",
