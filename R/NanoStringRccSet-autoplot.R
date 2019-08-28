@@ -30,6 +30,8 @@ function(object,
   geomParams <- update_geom_params("line", geomParams, GeomInteractiveLine$default_aes)
   geomParams <- update_geom_params("boxplot", geomParams, GeomInteractiveBoxplot$default_aes)
 
+  fontFamily <- ifelse( is.null( theme_get()$text$family ) , "Arial" , theme_get()$text$family )
+
   ggpoint <- function(object, mapping, ...) {
     for (arg in names(geomParams[["point"]])) {
       if (is.name(geomParams[["point"]][[arg]])) {
@@ -292,7 +294,7 @@ function(object,
                                     stringsAsFactors = FALSE),
                        color = "#79706E", 
                        size = 3, 
-                       family = "Arial", 
+                       family = fontFamily, 
                        inherit.aes = FALSE)
            # Add legend if panel standard provided
            if (!is.null(PSCol)) {
@@ -379,7 +381,7 @@ function(object,
                          stringsAsFactors = FALSE),
                          color = "#79706E", 
                          size = 3, 
-                         family = "Arial", 
+                         family = fontFamily, 
                          inherit.aes = FALSE) +
              geom_text(aes(cutX, h, label = label, hjust = 0.5, vjust = -0.25),
                        data =
@@ -387,7 +389,7 @@ function(object,
                                     stringsAsFactors = FALSE),
                        color = "#79706E", 
                        size = 3, 
-                       family = "Arial", 
+                       family = fontFamily, 
                        inherit.aes = FALSE) +
              guides(colour = guide_legend(title = "Housekeeper Quality",
                                             ncol = 1L,
@@ -396,7 +398,7 @@ function(object,
              scale_y_continuous(name="Geometric Mean") +
              theme(legend.position = "right")
            if( length(hkSet[["x"]]) <= 60L ) {
-             p <- p + theme(text = element_text(family="TT Arial"), 
+             p <- p + theme(text = element_text(family="fontFamily"), 
                             axis.text.x.bottom = element_text(angle = 90, hjust = 1, vjust = 0.5))
            } else {
              p <- p + theme( axis.text.x.bottom = element_blank(),
@@ -414,7 +416,24 @@ function(object,
            }
          },
          "lane-bindingDensity" = {
-           maxBD <- 2.25
+           instrument <- unique( substr( protocolData( object )[["ScannerID"]] , 5 , 5 ) )
+           if ( length( instrument ) > 1 )
+           {
+             warning( "More than one instrument type in RCC set.  Using SPRINT threshold of 1.8 instead of 2.25.\n" )
+             maxBD <- 1.8
+           }
+           else
+           {
+             maxBD <- switch( instrument , 
+                              A = 2.25 ,
+                              B = 2.25 ,
+                              C = 2.25 ,
+                              D = 2.25 ,
+                              G = 2.25 ,
+                              H = 2.25 ,
+                              P = 1.8 ,
+                              default = 2.25 )
+           }
            extradata <-
              data.frame(Outlier =
                           protocolData(object)[["BindingDensity"]] > maxBD,
@@ -464,7 +483,7 @@ function(object,
                                     stringsAsFactors = FALSE),
                        color = "#79706E", 
                        size = 3, 
-                       family = "Arial", 
+                       family = fontFamily, 
                        inherit.aes = FALSE)
            # Add legend if panel standard provided
            if (!is.null(PSCol)) {
@@ -525,7 +544,7 @@ function(object,
                                     stringsAsFactors = FALSE),
                        color = "#79706E", 
                        size = 3, 
-                       family = "Arial", 
+                       family = fontFamily, 
                        inherit.aes = FALSE) +
              geom_hline(yintercept = 0.75, linetype = 2L,
                         colour = "darkgray")
@@ -641,7 +660,7 @@ function(scores, log2scale, group, object,
            angle_col = 90, 
            cellheight = ifelse(nrow(scores) <= 60L, labelsize + 2, NA),
            cellwidth = ifelse(ncol(scores) <= 36L, labelsize + 2, NA),
-           fontfamily = "HersheySans")
+           fontfamily = ifelse( is.null( theme_get()$text$family ) , "HersheySans" , theme_get()$text$family ) )
 }
 
 # Check if panel standards were provided
