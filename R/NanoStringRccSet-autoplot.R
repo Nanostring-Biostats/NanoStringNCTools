@@ -419,8 +419,11 @@ function(object,
              data.frame(Outlier =
                           protocolData(object)[["BindingDensity"]] > maxBD,
                         row.names = sampleNames(object))
+           extradata[["CustomTooltip"]] <-
+             sprintf("%s | LaneID = %s | BindingDensity = %.4f", object[[tooltipID]],
+                     protocolData(object)[["LaneID"]], protocolData(object)[["BindingDensity"]])
            mapping <- aes_string(x = "LaneID", y = "BindingDensity",
-                                 tooltip = tooltipID)
+                                 tooltip = "CustomTooltip")
            
            # Check if panel standard provided
            PSCol <- pscheck(object)
@@ -482,8 +485,11 @@ function(object,
                           extradata[["FovCounted"]] / extradata[["FovCount"]],
                         row.names = rownames(extradata))
            extradata[["Outlier"]] <- extradata[["FOVCounted"]] < 0.75
-           mapping <- aes_string(x = "LaneID", y = "FOVCounted",
-                                 tooltip = tooltipID)
+           extradata[["CustomTooltip"]] <-
+             sprintf("%s | LaneID = %s | FOVCounted = %.4f", object[[tooltipID]],
+                     protocolData(object)[["LaneID"]], protocolData(object)[["FovCounted"]])
+           mapping <- aes_string( x = "LaneID" , y = "FOVCounted" ,
+                                  tooltip = "CustomTooltip" )
            # Check if panel standard provided
            PSCol <- pscheck(object)
            # Discriminate outliers and/or panel standards if designated
