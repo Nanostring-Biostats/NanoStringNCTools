@@ -419,9 +419,7 @@ function(object,
              data.frame(Outlier =
                           protocolData(object)[["BindingDensity"]] > maxBD,
                         row.names = sampleNames(object))
-           extradata[["CustomTooltip"]] <-
-             sprintf("%s | LaneID = %s | BindingDensity = %.4f", object[[tooltipID]],
-                     protocolData(object)[["LaneID"]], protocolData(object)[["BindingDensity"]])
+           extradata[["CustomTooltip"]] <- object[[tooltipID]]
            mapping <- aes_string(x = "LaneID", y = "BindingDensity",
                                  tooltip = "CustomTooltip")
            
@@ -485,9 +483,7 @@ function(object,
                           extradata[["FovCounted"]] / extradata[["FovCount"]],
                         row.names = rownames(extradata))
            extradata[["Outlier"]] <- extradata[["FOVCounted"]] < 0.75
-           extradata[["CustomTooltip"]] <-
-             sprintf("%s | LaneID = %s | FOVCounted = %.4f", object[[tooltipID]],
-                     protocolData(object)[["LaneID"]], protocolData(object)[["FovCounted"]])
+           extradata[["CustomTooltip"]] <- object[[tooltipID]]
            mapping <- aes_string( x = "LaneID" , y = "FOVCounted" ,
                                   tooltip = "CustomTooltip" )
            # Check if panel standard provided
