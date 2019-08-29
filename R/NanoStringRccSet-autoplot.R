@@ -417,10 +417,28 @@ function(object,
          },
          "lane-bindingDensity" = {
            instrument <- unique( substr( protocolData( object )[["ScannerID"]] , 5 , 5 ) )
+           SPRINT <- FALSE
            if ( length( instrument ) > 1 )
            {
              warning( "More than one instrument type in RCC set.  Using SPRINT threshold of 1.8 instead of 2.25.\n" )
-             maxBD <- 1.8
+             extradata <-
+               data.frame(Outlier = unlist( apply( data.frame( bd = protocolData(object)[["BindingDensity"]] , i = instrument ) , 1 ,
+                              function( x )
+                                {
+                                  maxBD <- switch( x[2] , 
+                                                   A = 2.25 ,
+                                                   B = 2.25 ,
+                                                   C = 2.25 ,
+                                                   D = 2.25 ,
+                                                   G = 2.25 ,
+                                                   H = 2.25 ,
+                                                   P = 1.8 ,
+                                                   default = 2.25 )
+                                  return( x[1] > maxBD )
+                              } ) ) ,
+                          row.names = sampleNames(object))
+             SPRINT <- TRUE
+             maxBD <- 2.25
            }
            else
            {
@@ -433,11 +451,11 @@ function(object,
                               H = 2.25 ,
                               P = 1.8 ,
                               default = 2.25 )
+             extradata <-
+               data.frame(Outlier =
+                            protocolData(object)[["BindingDensity"]] > maxBD,
+                          row.names = sampleNames(object))
            }
-           extradata <-
-             data.frame(Outlier =
-                          protocolData(object)[["BindingDensity"]] > maxBD,
-                        row.names = sampleNames(object))
            extradata[["CustomTooltip"]] <- object[[tooltipID]]
            mapping <- aes_string(x = "LaneID", y = "BindingDensity",
                                  tooltip = "CustomTooltip")
@@ -479,12 +497,25 @@ function(object,
                         colour = "darkgray") +
              geom_text(aes(cutX, h, label = label, hjust = 0.55, vjust = 1.25),
                        data =
-                         data.frame(h = c(0.1, 2.25), label = c("Minimum Binding Density", "Maximum Binding Density"),
+                         data.frame(h = c(0.1, maxBD), label = c("Minimum Binding Density", "Maximum Binding Density"),
                                     stringsAsFactors = FALSE),
                        color = "#79706E", 
                        size = 3, 
                        family = fontFamily, 
                        inherit.aes = FALSE)
+           if ( SPRINT )
+           {
+             p <- p + geom_hline(yintercept = 1.8, linetype = 2L,
+                        colour = "darkgray") +
+               geom_text(aes(cutX, h, label = label, hjust = 0.55, vjust = 1.25),
+                         data =
+                           data.frame(h = 1.8, label = "SPRINT Binding Density",
+                                      stringsAsFactors = FALSE),
+                         color = "#79706E", 
+                         size = 3, 
+                         family = fontFamily, 
+                         inherit.aes = FALSE)
+           }
            # Add legend if panel standard provided
            if (!is.null(PSCol)) {
              p <- p + 
@@ -660,7 +691,8 @@ function(scores, log2scale, group, object,
            angle_col = 90, 
            cellheight = ifelse(nrow(scores) <= 60L, labelsize + 2, NA),
            cellwidth = ifelse(ncol(scores) <= 36L, labelsize + 2, NA),
-           fontfamily = ifelse( is.null( theme_get()$text$family ) , "HersheySans" , theme_get()$text$family ) )
+           fontfamily = ifelse( is.null( theme_get()$text$family ) , "HersheySans" , theme_get()$text$family ) ,
+           fontfamily_col = ifelse( is.null( theme_get()$text$family ) , "HersheySans" , theme_get()$text$family ) )
 }
 
 # Check if panel standards were provided
