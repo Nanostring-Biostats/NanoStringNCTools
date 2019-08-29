@@ -88,6 +88,14 @@ function(object,
              geomParams[["point"]] <- unclass(geomParams[["point"]])
              geomParams[["point"]][["colour"]] <- NULL
              oldClass(geomParams[["point"]]) <- "uneval"
+             if("palette" %in% names(geomParams)) {
+               plot_palDF <- geomParams[["palette"]][["dataframe"]]
+               pal_ind <- as.character(plot_palDF[["Variable"]]) == colourtitle
+               plot_pal <- unlist(plot_palDF[pal_ind, "MainColor"])
+               names(plot_pal) <- plot_palDF[pal_ind, "Level"]
+             } else {
+               plot_pal <- tableau_color_pal(palette = "Tableau 20")
+             }
            }
            tooltip <- colnames(scores)
            if (is.name(geomParams[["base"]][["x"]])) {
@@ -126,6 +134,7 @@ function(object,
                                          colour = "colour")),
                          geomParams[["point"]],
                          geomParams[["beeswarm"]])) +
+               scale_colour_manual(values = plot_pal) +
                guides(colour = guide_legend(title = colourtitle,
                                             ncol = 1L,
                                             title.position = "top")) +
