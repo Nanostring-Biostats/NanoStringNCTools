@@ -90,6 +90,14 @@ function(object,
              geomParams[["point"]] <- unclass(geomParams[["point"]])
              geomParams[["point"]][["colour"]] <- NULL
              oldClass(geomParams[["point"]]) <- "uneval"
+             if("palette" %in% names(geomParams)) {
+               plot_palDF <- geomParams[["palette"]][["dataframe"]]
+               pal_ind <- as.character(plot_palDF[["Variable"]]) == colourtitle
+               plot_pal <- unlist(plot_palDF[pal_ind, "MainColor"])
+               names(plot_pal) <- plot_palDF[pal_ind, "Level"]
+             } else {
+               plot_pal <- tableau_color_pal(palette = "Tableau 20")
+             }
            }
            tooltip <- colnames(scores)
            if (is.name(geomParams[["base"]][["x"]])) {
@@ -128,6 +136,7 @@ function(object,
                                          colour = "colour")),
                          geomParams[["point"]],
                          geomParams[["beeswarm"]])) +
+               scale_colour_manual(values = plot_pal) +
                guides(colour = guide_legend(title = colourtitle,
                                             ncol = 1L,
                                             title.position = "top")) +
@@ -612,15 +621,16 @@ function(object,
 
 
 protoheatmap <-
-function(scores, log2scale, group, object,
-         labelsize = 9L,
-         scaleCutoff = 3,
-         groupPalette =
-           c("#4E79A7", "#F28E2B", "#E15759", "#76B7B2", "#59A14F",
-             "#EDC948", "#B07AA1", "#FF9DA7", "#9C755F", "#BAB0AC"),
-         blacklist = NULL,
-         ...)
-{
+  function(scores, log2scale, group, object,
+           labelsize = 9L,
+           scaleCutoff = 3,
+           groupPalette =
+             c("#4E79A7", "#F28E2B", "#E15759", "#76B7B2", "#59A14F",
+               "#EDC948", "#B07AA1", "#FF9DA7", "#9C755F", "#BAB0AC"),
+           blacklist = NULL,
+           annotation_colors = NULL,
+           ...)
+  {
   if (anyNA(rownames(scores))) {
     scores <- scores[!is.na(rownames(scores)), , drop = FALSE]
   }
@@ -633,14 +643,14 @@ function(scores, log2scale, group, object,
     object <- object[, ok]
     scores <- scores[, ok, drop = FALSE]
   }
-
+  
   if (log2scale) {
     scores <- log2t(scores)
   }
-
+  
   scaleCutoff <- abs(scaleCutoff)
   scores <- pmin(pmax(t(scale(t(scores))), - scaleCutoff), scaleCutoff)
-
+  
   if (is.null(group)) {
     annotation_col <- NA
     annotation_colors <- NA
@@ -661,20 +671,21 @@ function(scores, log2scale, group, object,
         x
       })
     rownames(annotation_col) <- make.unique(colnames(scores), sep = "_")
-
-    annotation_colors <- cumsum(sapply(annotation_col, nlevels))
-    annotation_colors <- Map(`:`, c(1L, head(annotation_colors, -1L) + 1L),
-                             annotation_colors)
-    annotation_colors <- structure(lapply(annotation_colors, function(x) {
-      x <- x %% length(groupPalette)
-      x[x == 0L] <- length(groupPalette)
-      groupPalette[x]
-    }), names = colnames(annotation_col))
-    for (j in seq_len(ncol(annotation_col))) {
-      names(annotation_colors[[j]]) <- levels(annotation_col[[j]])
+    if(is.null(annotation_colors)) {
+      annotation_colors <- cumsum(sapply(annotation_col, nlevels))
+      annotation_colors <- Map(`:`, c(1L, head(annotation_colors, -1L) + 1L),
+                               annotation_colors)
+      annotation_colors <- structure(lapply(annotation_colors, function(x) {
+        x <- x %% length(groupPalette)
+        x[x == 0L] <- length(groupPalette)
+        groupPalette[x]
+      }), names = colnames(annotation_col))
+      for (j in seq_len(ncol(annotation_col))) {
+        names(annotation_colors[[j]]) <- levels(annotation_col[[j]])
+      }
     }
   }
-
+  
   pheatmap(scores,
            color =
              colorRampPalette(c("darkblue",
