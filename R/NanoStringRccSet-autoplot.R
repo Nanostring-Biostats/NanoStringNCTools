@@ -90,6 +90,14 @@ function(object,
              geomParams[["point"]] <- unclass(geomParams[["point"]])
              geomParams[["point"]][["colour"]] <- NULL
              oldClass(geomParams[["point"]]) <- "uneval"
+             if("palette" %in% names(geomParams)) {
+               plot_palDF <- geomParams[["palette"]][["dataframe"]]
+               pal_ind <- as.character(plot_palDF[["Variable"]]) == colourtitle
+               plot_pal <- unlist(plot_palDF[pal_ind, "MainColor"])
+               names(plot_pal) <- plot_palDF[pal_ind, "Level"]
+             } else {
+               plot_pal <- tableau_color_pal(palette = "Tableau 20")
+             }
            }
            tooltip <- colnames(scores)
            if (is.name(geomParams[["base"]][["x"]])) {
@@ -128,6 +136,7 @@ function(object,
                                          colour = "colour")),
                          geomParams[["point"]],
                          geomParams[["beeswarm"]])) +
+               scale_colour_manual(values = plot_pal) +
                guides(colour = guide_legend(title = colourtitle,
                                             ncol = 1L,
                                             title.position = "top")) +
@@ -417,10 +426,28 @@ function(object,
          },
          "lane-bindingDensity" = {
            instrument <- unique( substr( protocolData( object )[["ScannerID"]] , 5 , 5 ) )
+           SPRINT <- FALSE
            if ( length( instrument ) > 1 )
            {
              warning( "More than one instrument type in RCC set.  Using SPRINT threshold of 1.8 instead of 2.25.\n" )
-             maxBD <- 1.8
+             extradata <-
+               data.frame(Outlier = unlist( apply( data.frame( bd = protocolData(object)[["BindingDensity"]] , i = instrument ) , 1 ,
+                              function( x )
+                                {
+                                  maxBD <- switch( x[2] , 
+                                                   A = 2.25 ,
+                                                   B = 2.25 ,
+                                                   C = 2.25 ,
+                                                   D = 2.25 ,
+                                                   G = 2.25 ,
+                                                   H = 2.25 ,
+                                                   P = 1.8 ,
+                                                   default = 2.25 )
+                                  return( x[1] > maxBD )
+                              } ) ) ,
+                          row.names = sampleNames(object))
+             SPRINT <- TRUE
+             maxBD <- 2.25
            }
            else
            {
@@ -433,11 +460,11 @@ function(object,
                               H = 2.25 ,
                               P = 1.8 ,
                               default = 2.25 )
+             extradata <-
+               data.frame(Outlier =
+                            protocolData(object)[["BindingDensity"]] > maxBD,
+                          row.names = sampleNames(object))
            }
-           extradata <-
-             data.frame(Outlier =
-                          protocolData(object)[["BindingDensity"]] > maxBD,
-                        row.names = sampleNames(object))
            extradata[["CustomTooltip"]] <- object[[tooltipID]]
            mapping <- aes_string(x = "LaneID", y = "BindingDensity",
                                  tooltip = "CustomTooltip")
@@ -479,12 +506,25 @@ function(object,
                         colour = "darkgray") +
              geom_text(aes(cutX, h, label = label, hjust = 0.55, vjust = 1.25),
                        data =
-                         data.frame(h = c(0.1, 2.25), label = c("Minimum Binding Density", "Maximum Binding Density"),
+                         data.frame(h = c(0.1, maxBD), label = c("Minimum Binding Density", "Maximum Binding Density"),
                                     stringsAsFactors = FALSE),
                        color = "#79706E", 
                        size = 3, 
                        family = fontFamily, 
                        inherit.aes = FALSE)
+           if ( SPRINT )
+           {
+             p <- p + geom_hline(yintercept = 1.8, linetype = 2L,
+                        colour = "darkgray") +
+               geom_text(aes(cutX, h, label = label, hjust = 0.55, vjust = 1.25),
+                         data =
+                           data.frame(h = 1.8, label = "SPRINT Binding Density",
+                                      stringsAsFactors = FALSE),
+                         color = "#79706E", 
+                         size = 3, 
+                         family = fontFamily, 
+                         inherit.aes = FALSE)
+           }
            # Add legend if panel standard provided
            if (!is.null(PSCol)) {
              p <- p + 
@@ -581,15 +621,16 @@ function(object,
 
 
 protoheatmap <-
-function(scores, log2scale, group, object,
-         labelsize = 9L,
-         scaleCutoff = 3,
-         groupPalette =
-           c("#4E79A7", "#F28E2B", "#E15759", "#76B7B2", "#59A14F",
-             "#EDC948", "#B07AA1", "#FF9DA7", "#9C755F", "#BAB0AC"),
-         blacklist = NULL,
-         ...)
-{
+  function(scores, log2scale, group, object,
+           labelsize = 9L,
+           scaleCutoff = 3,
+           groupPalette =
+             c("#4E79A7", "#F28E2B", "#E15759", "#76B7B2", "#59A14F",
+               "#EDC948", "#B07AA1", "#FF9DA7", "#9C755F", "#BAB0AC"),
+           blacklist = NULL,
+           annotation_colors = NULL,
+           ...)
+  {
   if (anyNA(rownames(scores))) {
     scores <- scores[!is.na(rownames(scores)), , drop = FALSE]
   }
@@ -602,14 +643,14 @@ function(scores, log2scale, group, object,
     object <- object[, ok]
     scores <- scores[, ok, drop = FALSE]
   }
-
+  
   if (log2scale) {
     scores <- log2t(scores)
   }
-
+  
   scaleCutoff <- abs(scaleCutoff)
   scores <- pmin(pmax(t(scale(t(scores))), - scaleCutoff), scaleCutoff)
-
+  
   if (is.null(group)) {
     annotation_col <- NA
     annotation_colors <- NA
@@ -630,20 +671,21 @@ function(scores, log2scale, group, object,
         x
       })
     rownames(annotation_col) <- make.unique(colnames(scores), sep = "_")
-
-    annotation_colors <- cumsum(sapply(annotation_col, nlevels))
-    annotation_colors <- Map(`:`, c(1L, head(annotation_colors, -1L) + 1L),
-                             annotation_colors)
-    annotation_colors <- structure(lapply(annotation_colors, function(x) {
-      x <- x %% length(groupPalette)
-      x[x == 0L] <- length(groupPalette)
-      groupPalette[x]
-    }), names = colnames(annotation_col))
-    for (j in seq_len(ncol(annotation_col))) {
-      names(annotation_colors[[j]]) <- levels(annotation_col[[j]])
+    if(is.null(annotation_colors)) {
+      annotation_colors <- cumsum(sapply(annotation_col, nlevels))
+      annotation_colors <- Map(`:`, c(1L, head(annotation_colors, -1L) + 1L),
+                               annotation_colors)
+      annotation_colors <- structure(lapply(annotation_colors, function(x) {
+        x <- x %% length(groupPalette)
+        x[x == 0L] <- length(groupPalette)
+        groupPalette[x]
+      }), names = colnames(annotation_col))
+      for (j in seq_len(ncol(annotation_col))) {
+        names(annotation_colors[[j]]) <- levels(annotation_col[[j]])
+      }
     }
   }
-
+  
   pheatmap(scores,
            color =
              colorRampPalette(c("darkblue",
@@ -660,7 +702,8 @@ function(scores, log2scale, group, object,
            angle_col = 90, 
            cellheight = ifelse(nrow(scores) <= 60L, labelsize + 2, NA),
            cellwidth = ifelse(ncol(scores) <= 36L, labelsize + 2, NA),
-           fontfamily = ifelse( is.null( theme_get()$text$family ) , "HersheySans" , theme_get()$text$family ) )
+           fontfamily = ifelse( is.null( theme_get()$text$family ) , "HersheySans" , theme_get()$text$family ) ,
+           fontfamily_col = ifelse( is.null( theme_get()$text$family ) , "HersheySans" , theme_get()$text$family ) )
 }
 
 # Check if panel standards were provided
