@@ -398,7 +398,7 @@ function(object,
              scale_y_continuous(name="Geometric Mean") +
              theme(legend.position = "right")
            if( length(hkSet[["x"]]) <= 60L ) {
-             p <- p + theme(text = element_text(family="fontFamily"), 
+             p <- p + theme(text = element_text(family=fontFamily), 
                             axis.text.x.bottom = element_text(angle = 90, hjust = 1, vjust = 0.5))
            } else {
              p <- p + theme( axis.text.x.bottom = element_blank(),
