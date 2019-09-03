@@ -384,7 +384,7 @@ function(object,
                           colour = "darkgray") +
              geom_hline(yintercept = 100, linetype = 2L,
                           colour = "darkgray") +
-             geom_text(aes(cutX, h, label = label, hjust = 0.5, vjust = 1.25),
+             geom_text(aes(cutX, h, label = label, hjust = 0.75, vjust = 1.25),
                          data =
                            data.frame(h = c(32), label = c("Minimum Threshold = 32 counts"),
                          stringsAsFactors = FALSE),
@@ -392,7 +392,7 @@ function(object,
                          size = 3, 
                          family = fontFamily, 
                          inherit.aes = FALSE) +
-             geom_text(aes(cutX, h, label = label, hjust = 0.5, vjust = -0.25),
+             geom_text(aes(cutX, h, label = label, hjust = 0.75, vjust = -0.25),
                        data =
                          data.frame(h = c(100), label = c("Borderline Threshold = 100 counts"),
                                     stringsAsFactors = FALSE),
