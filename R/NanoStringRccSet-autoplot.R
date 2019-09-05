@@ -96,7 +96,7 @@ function(object,
                plot_pal <- unlist(plot_palDF[pal_ind, "MainColor"])
                names(plot_pal) <- plot_palDF[pal_ind, "Level"]
              } else {
-               plot_pal <- tableau_color_pal(palette = "Tableau 20")
+               plot_pal <- tableau_color_pal(palette = "Tableau 20")(20)
              }
            }
            tooltip <- colnames(scores)
