@@ -425,13 +425,21 @@ function(object,
            }
          },
          "lane-bindingDensity" = {
-           instrument <- unique( substr( protocolData( object )[["ScannerID"]] , 5 , 5 ) )
-           SPRINT <- FALSE
-           if ( length( instrument ) > 1 )
+           instrument <- substr( protocolData( object )[["ScannerID"]] , 5 , 5 )
+           if ( any( instrument %in% "P" ) )
+           {
+             SPRINT <- TRUE
+           }
+           else
+           {
+             SPRINT <- FALSE
+           }
+           minBD <- 0.1
+           if ( length( unique( instrument ) ) > 1 )
            {
              warning( "More than one instrument type in RCC set.  Using SPRINT threshold of 1.8 instead of 2.25.\n" )
              extradata <-
-               data.frame(Outlier = unlist( apply( data.frame( bd = protocolData(object)[["BindingDensity"]] , i = instrument ) , 1 ,
+               data.frame(Outlier = unlist( apply( data.frame( bd = protocolData(object)[["BindingDensity"]] , i = instrument , min = minBD ) , 1 ,
                               function( x )
                                 {
                                   maxBD <- switch( x[2] , 
@@ -443,7 +451,7 @@ function(object,
                                                    H = 2.25 ,
                                                    P = 1.8 ,
                                                    default = 2.25 )
-                                  return( x[1] > maxBD )
+                                  return( x[1] < x[3] | x[1] > maxBD )
                               } ) ) ,
                           row.names = sampleNames(object))
              SPRINT <- TRUE
@@ -451,7 +459,7 @@ function(object,
            }
            else
            {
-             maxBD <- switch( instrument , 
+             maxBD <- switch( unique( instrument ) , 
                               A = 2.25 ,
                               B = 2.25 ,
                               C = 2.25 ,
@@ -462,6 +470,7 @@ function(object,
                               default = 2.25 )
              extradata <-
                data.frame(Outlier =
+                            protocolData(object)[["BindingDensity"]] < minBD |
                             protocolData(object)[["BindingDensity"]] > maxBD,
                           row.names = sampleNames(object))
            }

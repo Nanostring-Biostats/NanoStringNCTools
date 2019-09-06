@@ -41,12 +41,34 @@ function(object,
   #Get geometric mean
   hkStats <- summary( subHKGenes , 2L , elt = "exprs" )
 
+  # Set binding density threshold by SPRINT and not SPRINT
+  instrument <- substr( protocolData( object )[["ScannerID"]] , 5 , 5 )
+  if ( length( unique( instrument ) ) > 1 | any( instrument %in% "P" ) )
+  {
+    Binding <- unlist( apply( data.frame( bd = prData[["BindingDensity"]] , i = instrument , min = bindDenRange[1L] ) , 1 ,
+                 function( x )
+                 {
+                   maxBD <- switch( x[2] , 
+                                    A = 2.25 ,
+                                    B = 2.25 ,
+                                    C = 2.25 ,
+                                    D = 2.25 ,
+                                    G = 2.25 ,
+                                    H = 2.25 ,
+                                    P = 1.8 ,
+                                    default = 2.25 )
+                   return( x[1] < x[3] | x[1] > maxBD )
+                 } ) )
+  }
+  else
+  {
+    Binding <- prData[["BindingDensity"]] < bindDenRange[1L] |
+               prData[["BindingDensity"]] > bindDenRange[2L]
+  }
   prData[["QCFlags"]] <-
     cbind(Imaging =
             prData[["FovCounted"]] / prData[["FovCount"]] < fovPercentLB,
-          Binding =
-            prData[["BindingDensity"]] < bindDenRange[1L] |
-            prData[["BindingDensity"]] > bindDenRange[2L],
+          Binding = Binding ,
           Linearity =
             assayDataApply(posCtrl, 2L,
                            function(y) cor(x, log2t(y, 0.5))^2 < posCtrlRsqLB),
