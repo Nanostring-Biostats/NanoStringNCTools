@@ -204,7 +204,7 @@ function(object,
                    PSLabels <- getpslabels(object, PSCol)
                    # Assign shape based on if panel standard
                    mapping[["shape"]] <- 
-                     rep(PSLabels, length(featureData(posCtrl)[["ControlConc"]]))
+                     rep(PSLabels, each = length(featureData(posCtrl)[["ControlConc"]]))
                    # Remove default shape
                    geomParams[[i]][["shape"]] <- NULL
                  }
