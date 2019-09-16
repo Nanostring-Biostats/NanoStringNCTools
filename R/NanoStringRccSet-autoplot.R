@@ -353,30 +353,26 @@ function(object,
            PSCol <- pscheck(object)
 
            # Discriminate lower quality values by color and panel standards by shape 
-           if (any(hkSet[["Quality"]] != "Passing >= 100") | 
-                 !is.null(PSCol)) {
-             # Separate for editing
-             geomParams[["point"]] <- unclass(geomParams[["point"]])
-             if (any(hkSet[["Quality"]] != "Passing >= 100") & 
-                   !is.name(geomParams[["point"]][["colour"]])) {
-               # Set color based on quality
-               mapping[["colour"]] <- as.name("Quality")
-               # Remove default point color
-               geomParams[["point"]][["colour"]] <- NULL
-             }
-             # Set shapes based on panel standards
-             if (!is.null(PSCol) & 
-                   !is.name(geomParams[["point"]][["shape"]])) { 
+           # Separate for editing
+           geomParams[["point"]] <- unclass(geomParams[["point"]])
+           # Set color based on quality
+           mapping[["colour"]] <- as.name("Quality")
+           # Remove default point color
+           geomParams[["point"]][["colour"]] <- NULL
+           # Set shapes based on panel standards
+           if (!is.null(PSCol)) { 
                # Get sample and panel standard designations
                PSLabels <- getpslabels(object, PSCol)
-               # Set shape based on label
-               mapping[["shape"]] <- PSLabels
-               # Remove default point shape
-               geomParams[["point"]][["shape"]] <- NULL
-             }
-             # Reset class if setting new color or shape
-             oldClass(geomParams[["point"]]) <- "uneval"
+           } else {
+               # Set all to samples if no panel standard
+               PSLabels <- rep("Sample", nrow(hkSet))
            }
+           # Set shape based on label
+           mapping[["shape"]] <- PSLabels
+           # Remove default point shape
+           geomParams[["point"]][["shape"]] <- NULL
+           # Reset class if setting new color or shape
+           oldClass(geomParams[["point"]]) <- "uneval"
            
            p <- ggpoint(hkSet, mapping, ...) +
              # Add lines indicating low quality or failing housekeepers
@@ -405,7 +401,12 @@ function(object,
                                             title.position = "top")) +
              scale_x_discrete(name="Sample") +
              scale_y_continuous(name="Geometric Mean") +
-             theme(legend.position = "right")
+             theme(legend.position = "right") +
+             scale_colour_manual(values = c("#4E7DA7", "#BAB0AC", "#E15759"),
+                                   limits = c("Passing >= 100", 
+                                                "Borderline < 100", 
+                                                "Failed < 32"),
+                                   drop = FALSE) +
            if( length(hkSet[["x"]]) <= 60L ) {
              p <- p + theme(text = element_text(family=fontFamily), 
                             axis.text.x.bottom = element_text(angle = 90, hjust = 1, vjust = 0.5))
@@ -413,16 +414,16 @@ function(object,
              p <- p + theme( axis.text.x.bottom = element_blank(),
                              axis.ticks.x = element_blank())
            }
-          
-           # If there are panel standards add a shape legend
-           if (!is.null(PSCol)) {
-             p <- p + 
-                    guides(shape = guide_legend(title = "Sample Type",
-                               ncol = 1L,
-                               title.position = "top")) +
-                    theme(legend.position = "right") +
-                    scale_shape_manual(values = c(2, 16), guide = "none")
-           }
+          # Add shape legend
+           p <- p + 
+                  guides(shape = guide_legend(title = "Sample Type",
+                           ncol = 1L,
+                           title.position = "top",
+                           override.aes = list(color=c("#4E7DA7", "#4E7DA7")))) +
+                  theme(legend.position = "right") +
+                  scale_shape_manual(values = c(2, 16), guide = "none", 
+                                         limits= c("Panel Standard", "Sample"),
+                                         drop = FALSE)
          },
          "lane-bindingDensity" = {
            instrument <- substr( protocolData( object )[["ScannerID"]] , 5 , 5 )
