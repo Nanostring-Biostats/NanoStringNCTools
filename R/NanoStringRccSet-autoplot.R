@@ -171,7 +171,7 @@ function(object,
            extradata <-
              data.frame(RSquared =
                           assayDataApply(posCtrl, 2L,
-                                         function(y) cor(x, log2t(y, 0.5)),
+                                         function(y) cor(x, log2t(y, 0.5))^2,
                                          elt = elt))
            extradata[["Low R-Squared"]] <- extradata[["RSquared"]] < 0.95
            extradata[["CustomTooltip"]] <-
