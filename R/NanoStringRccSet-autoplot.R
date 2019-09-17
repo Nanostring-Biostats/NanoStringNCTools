@@ -173,7 +173,7 @@ function(object,
                           assayDataApply(posCtrl, 2L,
                                          function(y) cor(x, log2t(y, 0.5))^2,
                                          elt = elt))
-           extradata[["Low R-Squared"]] <- extradata[["RSquared"]] < 0.95
+           extradata[["Passing Correlation Value"]] <- extradata[["RSquared"]] >= 0.95
            extradata[["CustomTooltip"]] <-
              sprintf("%s | R-Squared = %.4f", object[[tooltipID]],
                      extradata[["RSquared"]])
@@ -185,30 +185,25 @@ function(object,
            # Check if panel standard exists
            PSCol <- pscheck(object)
            # Add custom aesthetics
-           if (any(extradata[["Low R-Squared"]]) | 
-                 !is.null(PSCol)) {
-             for (i in c("line", "point")) {
+           for (i in c("line", "point")) {
              # Separate for editing
-               geomParams[[i]] <- unclass(geomParams[[i]])
-               if (any(extradata[["Low R-Squared"]]) & 
-                     !is.name(geomParams[[i]][["colour"]])) {
-                 # Set color based on low R-squared
-                 mapping[["colour"]] <- as.name("Low R-Squared")
-                 # Remove default color
-                 geomParams[[i]][["colour"]] <- NULL
+             geomParams[[i]] <- unclass(geomParams[[i]])
+             # Set color based on low R-squared
+             mapping[["colour"]] <- as.name("Passing Correlation Value")
+             # Remove default color
+             geomParams[[i]][["colour"]] <- NULL
+             if(i == "point") {
+               if (!is.null(PSCol)) { 
+                 # Get panel standard labels
+                 PSLabels <- getpslabels(object, PSCol)
+               } else {
+                 PSLabels <- rep("Sample", nrows(extradata))
                }
-               if(i == "point") {
-                 if (!is.null(PSCol) & 
-                       !is.name(geomParams[[i]][["shape"]])) { 
-                   # Get panel standard labels
-                   PSLabels <- getpslabels(object, PSCol)
-                   # Assign shape based on if panel standard
-                   mapping[["shape"]] <- 
-                     rep(PSLabels, each = length(featureData(posCtrl)[["ControlConc"]]))
-                   # Remove default shape
-                   geomParams[[i]][["shape"]] <- NULL
-                 }
-               }
+               # Assign shape based on if panel standard
+               mapping[["shape"]] <- 
+               rep(PSLabels, each = length(featureData(posCtrl)[["ControlConc"]]))
+               # Remove default shape
+               geomParams[[i]][["shape"]] <- NULL
                # Reset class if setting new color or shape
                oldClass(geomParams[[i]]) <- "uneval"
              }
@@ -216,16 +211,25 @@ function(object,
 
            p <- ggline(posCtrl, mapping, extradata = extradata, ...) +
              scale_x_continuous(name = "Concentration (fM)", trans = "log2") +
-             scale_y_continuous(trans = "log2")
+             scale_y_continuous(trans = "log2") + 
+             scale_colour_manual(values = c("#7ab800", "#E15759"),
+                                   limits = c(TRUE, FALSE),
+                                   drop = FALSE) +
+              guides(colour = guide_legend(ncol = 1L,
+                                             title.position = "top", 
+                                             order=1))
            # Add legend if panel standard provided
-           if (!is.null(PSCol)) {
              p <- p + 
                guides(shape = guide_legend(title = "Sample Type",
-                                           ncol = 1L,
-                                           title.position = "top")) +
+                                             ncol = 1L,
+                                             title.position = "top",
+                                             order = 0,
+                                             override.aes = list(color=c("#7ab800", "#7ab800")))) + 
                theme(legend.position = "right") +
-               scale_shape_manual(values = c(2, 16), guide = "none")
-           }
+               scale_shape_manual(values = c(2, 16), 
+                                    guide = "none", 
+                                    limits= c("Panel Standard", "Sample"),
+                                    drop = FALSE)
          },
          "ercc-lod" = {
            negCtrl <- munge(negativeControlSubset(object),
@@ -398,11 +402,12 @@ function(object,
                        inherit.aes = FALSE) +
              guides(colour = guide_legend(title = "Housekeeper Quality",
                                             ncol = 1L,
-                                            title.position = "top")) +
+                                            title.position = "top",
+                                            order = 1)) +
              scale_x_discrete(name="Sample") +
              scale_y_continuous(name="Geometric Mean") +
              theme(legend.position = "right") +
-             scale_colour_manual(values = c("#4E7DA7", "#BAB0AC", "#E15759"),
+             scale_colour_manual(values = c("#7ab800", "#BAB0AC", "#E15759"),
                                    limits = c("Passing >= 100", 
                                                 "Borderline < 100", 
                                                 "Failed < 32"),
@@ -419,7 +424,8 @@ function(object,
                   guides(shape = guide_legend(title = "Sample Type",
                            ncol = 1L,
                            title.position = "top",
-                           override.aes = list(color=c("#4E7DA7", "#4E7DA7")))) +
+                           order = 0,
+                           override.aes = list(color=c("#7ab800", "#7ab800")))) +
                   theme(legend.position = "right") +
                   scale_shape_manual(values = c(2, 16), guide = "none", 
                                          limits= c("Panel Standard", "Sample"),
