@@ -259,23 +259,17 @@ function(object,
                      signif(posCtrl[["exprs"]], tooltipDigits))
            posCtrl[["x"]] <- ""
            posCtrl[["Outlier"]] <- posCtrl[["exprs"]] < cutoff[posCtrl[["SampleName"]]]
-           mapping <- aes_string(x = "x", y = elt, tooltip = "tooltip")
+           mapping <- aes_string(x = "SampleName", y = elt, tooltip = "tooltip")
 
            # Check if panel standard exists
            PSCol <- pscheck(object)
            # Discriminate outliers and/or panel standards if designated
-           if (any(posCtrl[["Outlier"]]) | 
-                 !is.null(PSCol)) {
-             # Separate for editing
-             geomParams[["point"]] <- unclass(geomParams[["point"]])
-             if (any(posCtrl[["Outlier"]]) & 
-                   !is.name(geomParams[["point"]][["colour"]])) {
-               # Set color based on outlier
-               mapping[["colour"]] <- as.name("Outlier")
-               # Remove default point color
-               geomParams[["point"]][["colour"]] <- NULL
-             }
-             if (!is.null(PSCol) & 
+           geomParams[["point"]] <- unclass(geomParams[["point"]])
+           # Set color based on quality
+           mapping[["colour"]] <- as.name("Outlier")
+           # Remove default point color
+           geomParams[["point"]][["colour"]] <- NULL
+           if (!is.null(PSCol) & 
                    !is.name(geomParams[["point"]][["shape"]])) { 
                # Get panel standard labels
                PSLabels <- getpslabels(object, PSCol)
@@ -286,35 +280,33 @@ function(object,
              }
              # Reset class if setting new color or shape
              oldClass(geomParams[["point"]]) <- "uneval"
-           }
+           # Create data for critical value threshold lines
+           indThreshold <- data.frame( x = seq_along( posCtrl[["SampleName"]] ) - 0.5 ,
+                                       xend = seq_along( posCtrl[["SampleName"]] ) + 0.5 ,
+                                       y = cutoff[posCtrl[["SampleName"]]] ,
+                                       yend = cutoff[posCtrl[["SampleName"]]] )
            # Set x position for cutoff line text
-           cutX = 1
-           p <- ggplot(negCtrl, aes_string(x = "x", y = "exprs")) +
+           p <- ggplot(negCtrl, aes_string(x = "SampleName", y = "exprs")) +
              stat_boxplot(geom = "errorbar",
                           width = geomParams[["boxplot"]][["size"]],
                           colour = geomParams[["boxplot"]][["colour"]]) +
              do.call(geom_boxplot_interactive,
                      c(geomParams[["boxplot"]],
                        outlier.shape = NA)) +
-             do.call(geom_beeswarm_interactive,
-                     c(list(posCtrl, mapping = mapping),
-                       geomParams[["point"]],
-                       geomParams[["beeswarm"]])) +
-             geom_hline(yintercept = cutoff, linetype = 2L,
-                        colour = "darkgray") +
-             scale_x_discrete(name = "") +
+             geom_beeswarm_interactive( posCtrl ,
+                       mapping = mapping ,
+                       colour = geomParams[["point"]][["colour"]] ,
+                       size = geomParams[["point"]][["size"]] ,
+                       fill = geomParams[["point"]][["fill"]] ,
+                       alpha = geomParams[["point"]][["alpha"]] ,
+                       stroke = geomParams[["point"]][["stroke"]] ,
+                       dodge.width = geomParams[["beeswarm"]][["dodge.width"]] ,
+                       groupOnX = FALSE ) +
+             geom_segment( aes( x = x , xend = xend , y = y , yend = y ) , indThreshold , color = "red" ) +
              scale_y_continuous(name = "Counts (log2)", trans = "log2") +
-             theme(axis.text.x  = element_blank(),
-                   axis.ticks.x = element_blank(),
-                   axis.title.x = element_blank()) +
-             geom_text(aes(cutX, h, label = label, hjust = -1.05, vjust = 1.25),
-                       data =
-                         data.frame(h = c(cutoff), label = c("2 Std Dev. Above Mean"),
-                                    stringsAsFactors = FALSE),
-                       color = "#79706E", 
-                       size = 3, 
-                       family = fontFamily, 
-                       inherit.aes = FALSE)
+             theme( axis.text.x  = element_text( angle = 90 , hjust = 1 , family=fontFamily , size = 180 / nrow( posCtrl ) ) ,
+                    axis.ticks.x = element_blank() ,
+                    axis.title.x = element_blank() )
            # Add legend if panel standard provided
            if (!is.null(PSCol)) {
              p <- p + 
