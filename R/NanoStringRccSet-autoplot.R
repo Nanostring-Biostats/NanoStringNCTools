@@ -264,12 +264,18 @@ function(object,
            # Check if panel standard exists
            PSCol <- pscheck(object)
            # Discriminate outliers and/or panel standards if designated
-           geomParams[["point"]] <- unclass(geomParams[["point"]])
-           # Set color based on quality
-           mapping[["colour"]] <- as.name("Outlier")
-           # Remove default point color
-           geomParams[["point"]][["colour"]] <- NULL
-           if (!is.null(PSCol) & 
+           if (any(posCtrl[["Outlier"]]) | 
+                 !is.null(PSCol)) {
+             # Separate for editing
+             geomParams[["point"]] <- unclass(geomParams[["point"]])
+             if (any(posCtrl[["Outlier"]]) & 
+                   !is.name(geomParams[["point"]][["colour"]])) {
+               # Set color based on outlier
+               mapping[["colour"]] <- as.name("Outlier")
+               # Remove default point color
+               geomParams[["point"]][["colour"]] <- NULL
+             }
+             if (!is.null(PSCol) & 
                    !is.name(geomParams[["point"]][["shape"]])) { 
                # Get panel standard labels
                PSLabels <- getpslabels(object, PSCol)
@@ -280,6 +286,7 @@ function(object,
              }
              # Reset class if setting new color or shape
              oldClass(geomParams[["point"]]) <- "uneval"
+           }
            # Create data for critical value threshold lines
            indThreshold <- data.frame( x = seq_along( posCtrl[["SampleName"]] ) - 0.5 ,
                                        xend = seq_along( posCtrl[["SampleName"]] ) + 0.5 ,
