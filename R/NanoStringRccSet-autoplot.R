@@ -237,8 +237,10 @@ function(object,
                             qnorm(0.975) * sd(cutoff, na.rm = TRUE))
            } else {
              cutoff <- negCtrl[["exprs"]]
-             cutoff <- mean(cutoff, na.rm = TRUE) +
-               qnorm(0.975) * sd(cutoff, na.rm = TRUE)
+             # cutoff <- mean(cutoff, na.rm = TRUE) +
+             #   qnorm(0.975) * sd(cutoff, na.rm = TRUE)
+             cutoff <- tapply(cutoff, negCtrl[["SampleName"]] ,function( x ) mean( x , na.rm = TRUE ) ) +
+               qnorm(0.975) * tapply( cutoff , negCtrl[["SampleName"]] , function( x ) sd( x , na.rm = TRUE ) )
            }
            posCtrl <- positiveControlSubset(object)
            posCtrl <- subset(posCtrl,
@@ -248,7 +250,7 @@ function(object,
              sprintf("%s | POS_E(0.5)&nbsp;=&nbsp;%s", object[[tooltipID]],
                      signif(posCtrl[["exprs"]], tooltipDigits))
            posCtrl[["x"]] <- ""
-           posCtrl[["Outlier"]] <- posCtrl[["exprs"]] < cutoff
+           posCtrl[["Outlier"]] <- posCtrl[["exprs"]] < cutoff[posCtrl[["SampleName"]]]
            mapping <- aes_string(x = "x", y = elt, tooltip = "tooltip")
 
            # Check if panel standard exists
