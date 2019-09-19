@@ -111,9 +111,6 @@ function(object,
            df <- data.frame(x = x, score = y, tooltip = tooltip,
                             stringsAsFactors = FALSE)
            df[["colour"]] <- colour
-           if (type=="boxplot-signature") {
-             ytitletext = 'Score'
-           }
            else { ytitletext = ytitle}
            p <- ggplot(df, aes_string(x = "x", y = "score")) +
              stat_boxplot(geom = "errorbar",
@@ -125,7 +122,7 @@ function(object,
                        geomParams[["boxplot"]],
                        outlier.shape = NA)) +
              scale_x_discrete(name = xtitle) +
-             scale_y_continuous(name = ytitletext,
+             scale_y_continuous(name = "Score",
                                 labels = function(x) {sprintf("%.1f", x)})
            if (is.null(colour)) {
              p <- p +
