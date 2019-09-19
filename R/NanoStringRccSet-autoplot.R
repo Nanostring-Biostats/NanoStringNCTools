@@ -561,36 +561,33 @@ function(object,
              data.frame(FOVCounted =
                           extradata[["FovCounted"]] / extradata[["FovCount"]],
                         row.names = rownames(extradata))
-           extradata[["Outlier"]] <- extradata[["FOVCounted"]] < 0.75
+           extradata[["Imaging Quality"]] <- "Passing >= 75%"
+           extradata$"Imaging Quality"[extradata$"FOVCounted" < 0.75] <- "Failed < 75%"
            extradata[["CustomTooltip"]] <- object[[tooltipID]]
            mapping <- aes_string( x = "LaneID" , y = "FOVCounted" ,
                                   tooltip = "CustomTooltip" )
            # Check if panel standard provided
            PSCol <- pscheck(object)
            # Discriminate outliers and/or panel standards if designated
-           if (any(extradata[["Outlier"]]) | 
-                 !is.null(PSCol)) {
-             # Separate for editing
-             geomParams[["point"]] <- unclass(geomParams[["point"]])
-             if (any(extradata[["Outlier"]]) & 
-                   !is.name(geomParams[["point"]][["colour"]])) {
-               # Set color based on outlier
-               mapping[["colour"]] <- as.name("Outlier")
-               # Remove default point color
-               geomParams[["point"]][["colour"]] <- NULL
-             }
-             if (!is.null(PSCol) & 
-                   !is.name(geomParams[["point"]][["shape"]])) { 
-               # Get panel standard labels
-               PSLabels <- getpslabels(object, PSCol)
-               # Assign shape based on if panel standard
-               mapping[["shape"]] <- PSLabels
-               # Remove default shape
-               geomParams[["point"]][["shape"]] <- NULL
-             }
-             # Reset class if setting new color or shape
-             oldClass(geomParams[["point"]]) <- "uneval"
+           geomParams[["point"]] <- unclass(geomParams[["point"]])
+           # Set color based on quality
+           mapping[["colour"]] <- as.name("Imaging Quality") #NEO changed
+           # Remove default point color
+           geomParams[["point"]][["colour"]] <- NULL
+           if (!is.null(PSCol)) { 
+             # Get panel standard labels
+             PSLabels <- getpslabels(object, PSCol)
+           } else {
+             # Set all to samples if no panel standard
+             PSLabels <- rep("Sample", nrow(extraData))
            }
+           # Assign shape based on if panel standard
+           mapping[["shape"]] <- PSLabels
+           # Remove default shape
+           geomParams[["point"]][["shape"]] <- NULL
+           # Reset class if setting new color or shape
+           oldClass(geomParams[["point"]]) <- "uneval"
+
            # Set x position for cutoff line text
            cutX = 11
            p <- ggpoint(object, mapping, extradata = extradata, ...) +
@@ -607,16 +604,23 @@ function(object,
                        family = fontFamily, 
                        inherit.aes = FALSE) +
              geom_hline(yintercept = 0.75, linetype = 2L,
-                        colour = "darkgray")
-           # Add legend if panel standard provided
-           if (!is.null(PSCol)) {
+                        colour = "darkgray") + 
+             guides(colour = guide_legend(title = "Imaging Quality",
+                                          ncol = 1L,
+                                          title.position = "top",
+                                          order = 1)) +
+             scale_colour_manual(values = c("#7ab800", "#E15759"),
+                                 limits = c("Passing >= 75%", "Failed < 75%"),
+                                 drop = FALSE)
+           # Add legend for panel standard
              p <- p + 
                guides(shape = guide_legend(title = "Sample Type",
                                            ncol = 1L,
-                                           title.position = "top")) +
+                                           title.position = "top",
+                                           order = 0,
+                                           override.aes = list(color=c("#7ab800", "#7ab800")))) +
                theme(legend.position = "right") +
                scale_shape_manual(values = c(2, 16), guide = "none")
-           }
          },
          "mean-sd-features" = {
            if (log2scale)
