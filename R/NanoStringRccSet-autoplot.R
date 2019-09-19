@@ -415,7 +415,7 @@ function(object,
                                    limits = c("Passing >= 100", 
                                                 "Borderline < 100", 
                                                 "Failed < 32"),
-                                   drop = FALSE) +
+                                   drop = FALSE)
            if( length(hkSet[["x"]]) <= 60L ) {
              p <- p + theme(text = element_text(family=fontFamily), 
                             axis.text.x.bottom = element_text(angle = 90, hjust = 1, vjust = 0.5))
