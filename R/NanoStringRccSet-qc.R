@@ -42,10 +42,7 @@ function(object,
   hkStats <- summary( subHKGenes , 2L , elt = "exprs" )
 
   # Set binding density threshold by SPRINT and not SPRINT
-  instrument <- substr( protocolData( object )[["ScannerID"]] , 5 , 5 )
-  if ( length( unique( instrument ) ) > 1 | any( instrument %in% "P" ) )
-  {
-    Binding <- unlist( apply( data.frame( bd = prData[["BindingDensity"]] , i = instrument , min = bindDenRange[1L] ) , 1 ,
+  Binding <- unlist( apply( data.frame( prData[["BindingDensity"]] , substr( protocolData( object )[["ScannerID"]] , 5 , 5 ) , bindDenRange[1L] ) , 1 ,
                  function( x )
                  {
                    maxBD <- switch( x[2] , 
@@ -59,12 +56,6 @@ function(object,
                                     default = 2.25 )
                    return( x[1] < x[3] | x[1] > maxBD )
                  } ) )
-  }
-  else
-  {
-    Binding <- prData[["BindingDensity"]] < bindDenRange[1L] |
-               prData[["BindingDensity"]] > bindDenRange[2L]
-  }
   prData[["QCFlags"]] <-
     cbind(Imaging =
             prData[["FovCounted"]] / prData[["FovCount"]] < fovPercentLB,

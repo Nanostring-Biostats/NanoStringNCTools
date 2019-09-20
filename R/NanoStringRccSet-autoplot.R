@@ -446,6 +446,14 @@ function(object,
            if ( any( instrument %in% "P" ) )
            {
              SPRINT <- TRUE
+             if ( all( instrument ) %in% "P" )
+             {
+               maxBD <- 1.8
+             }
+             else
+             {
+               maxBD <- 2.25
+             }
            }
            else
            {
@@ -455,8 +463,9 @@ function(object,
            if ( length( unique( instrument ) ) > 1 )
            {
              warning( "More than one instrument type in RCC set.  Using SPRINT threshold of 1.8 instead of 2.25.\n" )
-             extradata <-
-               data.frame(Outlier = unlist( apply( data.frame( bd = protocolData(object)[["BindingDensity"]] , i = instrument , min = minBD ) , 1 ,
+           }
+           extradata <-
+               data.frame( Outlier = unlist( apply( data.frame( bd = protocolData(object)[["BindingDensity"]] , i = instrument , min = minBD ) , 1 ,
                               function( x )
                                 {
                                   maxBD <- switch( x[2] , 
@@ -470,27 +479,7 @@ function(object,
                                                    default = 2.25 )
                                   return( x[1] < x[3] | x[1] > maxBD )
                               } ) ) ,
-                          row.names = sampleNames(object))
-             SPRINT <- TRUE
-             maxBD <- 2.25
-           }
-           else
-           {
-             maxBD <- switch( unique( instrument ) , 
-                              A = 2.25 ,
-                              B = 2.25 ,
-                              C = 2.25 ,
-                              D = 2.25 ,
-                              G = 2.25 ,
-                              H = 2.25 ,
-                              P = 1.8 ,
-                              default = 2.25 )
-             extradata <-
-               data.frame(Outlier =
-                            protocolData(object)[["BindingDensity"]] < minBD |
-                            protocolData(object)[["BindingDensity"]] > maxBD,
-                          row.names = sampleNames(object))
-           }
+                          row.names = sampleNames( object ) )
            extradata[["CustomTooltip"]] <- object[[tooltipID]]
            mapping <- aes_string(x = "LaneID", y = "BindingDensity",
                                  tooltip = "CustomTooltip")
