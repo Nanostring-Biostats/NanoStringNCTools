@@ -259,11 +259,6 @@ function(object,
                      signif(posCtrl[["exprs"]], tooltipDigits))
            posCtrl[["x"]] <- ""
            posCtrl[["Outlier"]] <- posCtrl[["exprs"]] < cutoff[posCtrl[["SampleName"]]]
-           if ( !( tooltipID %in% "SampleName" ) )
-           {
-             negCtrl[["SampleName"]] <- pData( object )[[tooltipID]]
-             posCtrl[["SampleName"]] <- pData( object )[[tooltipID]]
-           }
            mapping <- aes_string(x = "SampleName", y = elt, tooltip = "tooltip")
 
            # Check if panel standard exists
@@ -297,6 +292,12 @@ function(object,
                                        xend = seq_along( posCtrl[["SampleName"]] ) + 0.5 ,
                                        y = cutoff[posCtrl[["SampleName"]]] ,
                                        yend = cutoff[posCtrl[["SampleName"]]] )
+           if ( !( tooltipID %in% "SampleName" ) )
+           {
+             negCtrl[["SampleName"]] <- pData( object )[[tooltipID]]
+             posCtrl[["SampleName"]] <- pData( object )[[tooltipID]]
+             rownames( indThreshold ) <- pData( object )[[tooltipID]]
+           }
            # Set x position for cutoff line text
            p <- ggplot(negCtrl, aes_string(x = "SampleName", y = "exprs")) +
              stat_boxplot(geom = "errorbar",
@@ -315,7 +316,7 @@ function(object,
                        dodge.width = geomParams[["beeswarm"]][["dodge.width"]] ,
                        groupOnX = FALSE ) +
              geom_segment( aes( x = x , xend = xend , y = y , yend = y ) , indThreshold , color = "red" ) +
-             scale_y_continuous(name = "Counts (log2)", trans = "log2") +
+             scale_y_continuous( name = "Counts (log2)" , trans = "log2" ) +
              theme( axis.text.x  = element_text( family=fontFamily , size = 180 / nrow( posCtrl ) ) ,
                     axis.ticks.x = element_blank() ,
                     axis.title.x = element_blank() )
@@ -326,7 +327,7 @@ function(object,
                                            ncol = 1L,
                                            title.position = "top")) +
                theme(legend.position = "right") +
-               scale_shape_manual(values = c(2, 16), guide = "none")
+               scale_shape_manual( values = c( 2, 16 ) , guide = "none" )
            }
          },
          "heatmap-genes" = {
