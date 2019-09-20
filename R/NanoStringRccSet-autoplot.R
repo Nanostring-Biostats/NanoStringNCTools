@@ -238,7 +238,7 @@ function(object,
          "ercc-lod" = {
            negCtrl <- munge(negativeControlSubset(object),
                             mapping = aes_(exprs = as.name(elt)))
-           negCtrl[["x"]] <- ""
+           negCtrl[["x"]] <- negCtrl[["SampleName"]]
            if (log2scale) {
              cutoff <- log2t(negCtrl[["exprs"]])
              cutoff <- 2^(tapply(cutoff, negCtrl[["SampleName"]] ,function( x ) mean( x , na.rm = TRUE ) ) +
@@ -257,9 +257,9 @@ function(object,
            posCtrl[["tooltip"]] <-
              sprintf("%s | POS_E(0.5)&nbsp;=&nbsp;%s", object[[tooltipID]],
                      signif(posCtrl[["exprs"]], tooltipDigits))
-           posCtrl[["x"]] <- ""
+           posCtrl[["x"]] <- posCtrl[["SampleName"]]
            posCtrl[["Outlier"]] <- posCtrl[["exprs"]] < cutoff[posCtrl[["SampleName"]]]
-           mapping <- aes_string(x = "SampleName", y = elt, tooltip = "tooltip")
+           mapping <- aes_string( x = "x" , y = elt , tooltip = "tooltip" )
 
            # Check if panel standard exists
            PSCol <- pscheck(object)
@@ -294,12 +294,12 @@ function(object,
                                        yend = cutoff[posCtrl[["SampleName"]]] )
            if ( !( tooltipID %in% "SampleName" ) )
            {
-             negCtrl[["SampleName"]] <- pData( object )[[tooltipID]]
-             posCtrl[["SampleName"]] <- pData( object )[[tooltipID]]
+             negCtrl[["x"]] <- rep( pData( object )[[tooltipID]] , each = nrow( negativeControlSubset(object) ) )
+             posCtrl[["x"]] <- pData( object )[[tooltipID]]
              rownames( indThreshold ) <- pData( object )[[tooltipID]]
            }
            # Set x position for cutoff line text
-           p <- ggplot(negCtrl, aes_string(x = "SampleName", y = "exprs")) +
+           p <- ggplot(negCtrl, aes_string(x = "x", y = "exprs")) +
              stat_boxplot(geom = "errorbar",
                           width = geomParams[["boxplot"]][["size"]],
                           colour = geomParams[["boxplot"]][["colour"]]) +
@@ -313,11 +313,10 @@ function(object,
                        fill = geomParams[["point"]][["fill"]] ,
                        alpha = geomParams[["point"]][["alpha"]] ,
                        stroke = geomParams[["point"]][["stroke"]] ,
-                       dodge.width = geomParams[["beeswarm"]][["dodge.width"]] ,
                        groupOnX = FALSE ) +
              geom_segment( aes( x = x , xend = xend , y = y , yend = y ) , indThreshold , color = "red" ) +
              scale_y_continuous( name = "Counts (log2)" , trans = "log2" ) +
-             theme( axis.text.x  = element_text( family=fontFamily , size = 180 / nrow( posCtrl ) ) ,
+             theme( axis.text.x  = element_text( angle = 90, hjust = 1 , family = fontFamily , size = 180 / nrow( posCtrl ) ) ,
                     axis.ticks.x = element_blank() ,
                     axis.title.x = element_blank() )
            # Add legend if panel standard provided
