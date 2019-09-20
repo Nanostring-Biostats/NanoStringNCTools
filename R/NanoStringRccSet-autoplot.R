@@ -111,7 +111,6 @@ function(object,
            df <- data.frame(x = x, score = y, tooltip = tooltip,
                             stringsAsFactors = FALSE)
            df[["colour"]] <- colour
-           else { ytitletext = ytitle}
            p <- ggplot(df, aes_string(x = "x", y = "score")) +
              stat_boxplot(geom = "errorbar",
                           lwd = 0.5, # add this to boxplot geomParams later, sets error bar line width = box line width
