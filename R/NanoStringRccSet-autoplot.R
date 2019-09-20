@@ -256,35 +256,33 @@ function(object,
              sprintf("%s | POS_E(0.5)&nbsp;=&nbsp;%s", object[[tooltipID]],
                      signif(posCtrl[["exprs"]], tooltipDigits))
            posCtrl[["x"]] <- ""
-           posCtrl[["Outlier"]] <- posCtrl[["exprs"]] < cutoff
+           posCtrl[["Limit of Detection"]] <- "Passing"
+           posCtrl[["Limit of Detection"]][posCtrl$exprs < cutoff] <- "Failed"
            mapping <- aes_string(x = "x", y = elt, tooltip = "tooltip")
 
            # Check if panel standard exists
            PSCol <- pscheck(object)
-           # Discriminate outliers and/or panel standards if designated
-           if (any(posCtrl[["Outlier"]]) | 
-                 !is.null(PSCol)) {
-             # Separate for editing
-             geomParams[["point"]] <- unclass(geomParams[["point"]])
-             if (any(posCtrl[["Outlier"]]) & 
-                   !is.name(geomParams[["point"]][["colour"]])) {
-               # Set color based on outlier
-               mapping[["colour"]] <- as.name("Outlier")
-               # Remove default point color
-               geomParams[["point"]][["colour"]] <- NULL
-             }
-             if (!is.null(PSCol) & 
-                   !is.name(geomParams[["point"]][["shape"]])) { 
-               # Get panel standard labels
-               PSLabels <- getpslabels(object, PSCol)
-               # Assign shape based on if panel standard
-               mapping[["shape"]] <- PSLabels
-               # Remove default shape
-               geomParams[["point"]][["shape"]] <- NULL
-             }
-             # Reset class if setting new color or shape
-             oldClass(geomParams[["point"]]) <- "uneval"
+           # Discriminate outliers and panel standards if designated
+           # Separate for editing
+           geomParams[["point"]] <- unclass(geomParams[["point"]])
+           # Set color based on outlier
+           mapping[["colour"]] <- as.name("Limit of Detection")
+           # Remove default point color
+           geomParams[["point"]][["colour"]] <- NULL
+           if (!is.null(PSCol)) { 
+             # Get panel standard labels
+             PSLabels <- getpslabels(object, PSCol)
+           } else {
+             # Label all as samples
+             PSLabels <- rep("Sample", nrows(posCtrl))
            }
+           # Assign shape based on if panel standard
+           mapping[["shape"]] <- PSLabels
+           # Remove default shape
+           geomParams[["point"]][["shape"]] <- NULL
+           # Reset class if setting new color or shape
+           oldClass(geomParams[["point"]]) <- "uneval"
+
            # Set x position for cutoff line text
            cutX = 1
            p <- ggplot(negCtrl, aes_string(x = "x", y = "exprs")) +
@@ -312,16 +310,22 @@ function(object,
                        color = "#79706E", 
                        size = 3, 
                        family = fontFamily, 
-                       inherit.aes = FALSE)
-           # Add legend if panel standard provided
-           if (!is.null(PSCol)) {
-             p <- p + 
-               guides(shape = guide_legend(title = "Sample Type",
-                                           ncol = 1L,
-                                           title.position = "top")) +
-               theme(legend.position = "right") +
-               scale_shape_manual(values = c(2, 16), guide = "none")
-           }
+                       inherit.aes = FALSE) +
+             scale_colour_manual(values = c("#7ab800", "#E15759"),
+                                 limits = c("Passing", "Failed"),
+                                 drop = FALSE) +
+             guides(colour = guide_legend(ncol = 1L,
+                                          title.position = "top", 
+                                          order=1))
+           # Add panel standard legend
+           p <- p + 
+             guides(shape = guide_legend(title = "Sample Type",
+                                         ncol = 1L,
+                                         title.position = "top")) +
+             theme(legend.position = "right") +
+             scale_shape_manual(values = c(2, 16), guide = "none", 
+                                limits= c("Panel Standard", "Sample"),
+                                drop = FALSE)
          },
          "heatmap-genes" = {
            scores <-
