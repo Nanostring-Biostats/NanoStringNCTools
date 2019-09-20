@@ -259,6 +259,11 @@ function(object,
                      signif(posCtrl[["exprs"]], tooltipDigits))
            posCtrl[["x"]] <- ""
            posCtrl[["Outlier"]] <- posCtrl[["exprs"]] < cutoff[posCtrl[["SampleName"]]]
+           if ( !( tooltipID %in% "SampleName" ) )
+           {
+             negCtrl[["SampleName"]] <- pData( object )[[tooltipID]]
+             posCtrl[["SampleName"]] <- pData( object )[[tooltipID]]
+           }
            mapping <- aes_string(x = "SampleName", y = elt, tooltip = "tooltip")
 
            # Check if panel standard exists
@@ -311,7 +316,7 @@ function(object,
                        groupOnX = FALSE ) +
              geom_segment( aes( x = x , xend = xend , y = y , yend = y ) , indThreshold , color = "red" ) +
              scale_y_continuous(name = "Counts (log2)", trans = "log2") +
-             theme( axis.text.x  = element_text( angle = 90 , hjust = 1 , family=fontFamily , size = 180 / nrow( posCtrl ) ) ,
+             theme( axis.text.x  = element_text( family=fontFamily , size = 180 / nrow( posCtrl ) ) ,
                     axis.ticks.x = element_blank() ,
                     axis.title.x = element_blank() )
            # Add legend if panel standard provided
