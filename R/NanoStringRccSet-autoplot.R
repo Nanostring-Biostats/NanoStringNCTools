@@ -241,8 +241,8 @@ function(object,
            negCtrl[["x"]] <- ""
            if (log2scale) {
              cutoff <- log2t(negCtrl[["exprs"]])
-             cutoff <- 2^(mean(cutoff, na.rm = TRUE) +
-                            qnorm(0.975) * sd(cutoff, na.rm = TRUE))
+             cutoff <- 2^(tapply(cutoff, negCtrl[["SampleName"]] ,function( x ) mean( x , na.rm = TRUE ) ) +
+                            qnorm(0.975) * tapply( cutoff , negCtrl[["SampleName"]] , function( x ) sd( x , na.rm = TRUE ) ))
            } else {
              cutoff <- negCtrl[["exprs"]]
              # cutoff <- mean(cutoff, na.rm = TRUE) +
