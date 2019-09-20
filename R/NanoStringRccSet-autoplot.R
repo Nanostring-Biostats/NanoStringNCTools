@@ -454,7 +454,7 @@ function(object,
            {
              warning( "More than one instrument type in RCC set.  Using SPRINT threshold of 1.8 instead of 2.25.\n" )
              extradata <-
-               data.frame(Outlier = unlist( apply( data.frame( bd = protocolData(object)[["BindingDensity"]] , i = instrument , min = minBD ) , 1 ,
+               data.frame("PassingBD" = unlist( apply( data.frame( bd = protocolData(object)[["BindingDensity"]] , i = instrument , min = minBD ) , 1 ,
                               function( x )
                                 {
                                   maxBD <- switch( x[2] , 
@@ -466,7 +466,7 @@ function(object,
                                                    H = 2.25 ,
                                                    P = 1.8 ,
                                                    default = 2.25 )
-                                  return( x[1] < x[3] | x[1] > maxBD )
+                                  return( x[1] > x[3] & x[1] < maxBD )
                               } ) ) ,
                           row.names = sampleNames(object))
              SPRINT <- TRUE
@@ -484,9 +484,9 @@ function(object,
                               P = 1.8 ,
                               default = 2.25 )
              extradata <-
-               data.frame(Outlier =
-                            protocolData(object)[["BindingDensity"]] < minBD |
-                            protocolData(object)[["BindingDensity"]] > maxBD,
+               data.frame("PassingBD" =
+                            protocolData(object)[["BindingDensity"]] > minBD &
+                            protocolData(object)[["BindingDensity"]] < maxBD,
                           row.names = sampleNames(object))
            }
            extradata[["CustomTooltip"]] <- object[[tooltipID]]
@@ -495,30 +495,27 @@ function(object,
            
            # Check if panel standard provided
            PSCol <- pscheck(object)
-           # Discriminate outliers and/or panel standards if designated
-           if (any(extradata[["Outlier"]]) | 
-                 !is.null(PSCol)) {
-             # Separate for editing
-             geomParams[["point"]] <- unclass(geomParams[["point"]])
-             if (any(extradata[["Outlier"]]) & 
-                   !is.name(geomParams[["point"]][["colour"]])) {
-               # Set color based on outlier
-               mapping[["colour"]] <- as.name("Outlier")
-               # Remove default point color
-               geomParams[["point"]][["colour"]] <- NULL
-             }
-             if (!is.null(PSCol) & 
-                   !is.name(geomParams[["point"]][["shape"]])) { 
-               # Get panel standard labels
-               PSLabels <- getpslabels(object, PSCol)
-               # Assign shape based on if panel standard
-               mapping[["shape"]] <- PSLabels
-               # Remove default shape
-               geomParams[["point"]][["shape"]] <- NULL
-             }
-             # Reset class if setting new color or shape
-             oldClass(geomParams[["point"]]) <- "uneval"
+           # Discriminate outliers and panel standards if designated
+           # Separate for editing
+           geomParams[["point"]] <- unclass(geomParams[["point"]])
+           # Set color based on outlier
+           mapping[["colour"]] <- as.name("PassingBD")
+           # Remove default point color
+           geomParams[["point"]][["colour"]] <- NULL
+           if (!is.null(PSCol)) {
+             # Get panel standard labels
+             PSLabels <- getpslabels(object, PSCol)
+           } else {
+             # Set all to samples if no panel standard
+             PSLabels <- rep("Sample", nrow(hkSet))
            }
+           # Assign shape based on if panel standard
+           mapping[["shape"]] <- PSLabels
+           # Remove default shape
+           geomParams[["point"]][["shape"]] <- NULL
+           # Reset class if setting new color or shape
+           oldClass(geomParams[["point"]]) <- "uneval"
+           
            # Set x position for cutoff line text
            cutX = 11
            p <- ggpoint(object, mapping, extradata = extradata, ...) +
@@ -535,7 +532,14 @@ function(object,
                        color = "#79706E", 
                        size = 3, 
                        family = fontFamily, 
-                       inherit.aes = FALSE)
+                       inherit.aes = FALSE) + 
+             guides(colour = guide_legend(title = "Passing Binding Density",
+                                          ncol = 1L,
+                                          title.position = "top",
+                                          order = 1)) +
+             scale_colour_manual(values = c("#7ab800", "#E15759"),
+                                 limits = c(TRUE, FALSE),
+                                 drop = FALSE)
            if ( SPRINT )
            {
              p <- p + geom_hline(yintercept = 1.8, linetype = 2L,
@@ -549,15 +553,15 @@ function(object,
                          family = fontFamily, 
                          inherit.aes = FALSE)
            }
-           # Add legend if panel standard provided
-           if (!is.null(PSCol)) {
-             p <- p + 
-               guides(shape = guide_legend(title = "Sample Type",
+           # Add legend for panel standard
+           p <- p + 
+              guides(shape = guide_legend(title = "Sample Type",
                                            ncol = 1L,
                                            title.position = "top")) +
                theme(legend.position = "right") +
-               scale_shape_manual(values = c(2, 16), guide = "none")
-           }
+               scale_shape_manual(values = c(2, 16), guide = "none", 
+                                  limits= c("Panel Standard", "Sample"),
+                                  drop = FALSE)
          },
          "lane-fov" = {
            extradata <- pData(protocolData(object))
