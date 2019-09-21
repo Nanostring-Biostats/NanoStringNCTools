@@ -234,15 +234,17 @@ function(object,
          "ercc-lod" = {
            negCtrl <- munge(negativeControlSubset(object),
                             mapping = aes_(exprs = as.name(elt)))
-           negCtrl[["x"]] <- ""
+           negCtrl[["x"]] <- negCtrl[["SampleName"]]
            if (log2scale) {
              cutoff <- log2t(negCtrl[["exprs"]])
-             cutoff <- 2^(mean(cutoff, na.rm = TRUE) +
-                            qnorm(0.975) * sd(cutoff, na.rm = TRUE))
+             cutoff <- 2^(tapply(cutoff, negCtrl[["SampleName"]] ,function( x ) mean( x , na.rm = TRUE ) ) +
+                            qnorm(0.975) * tapply( cutoff , negCtrl[["SampleName"]] , function( x ) sd( x , na.rm = TRUE ) ))
            } else {
              cutoff <- negCtrl[["exprs"]]
-             cutoff <- mean(cutoff, na.rm = TRUE) +
-               qnorm(0.975) * sd(cutoff, na.rm = TRUE)
+             # cutoff <- mean(cutoff, na.rm = TRUE) +
+             #   qnorm(0.975) * sd(cutoff, na.rm = TRUE)
+             cutoff <- tapply(cutoff, negCtrl[["SampleName"]] ,function( x ) mean( x , na.rm = TRUE ) ) +
+               qnorm(0.975) * tapply( cutoff , negCtrl[["SampleName"]] , function( x ) sd( x , na.rm = TRUE ) )
            }
            posCtrl <- positiveControlSubset(object)
            posCtrl <- subset(posCtrl,
@@ -251,9 +253,9 @@ function(object,
            posCtrl[["tooltip"]] <-
              sprintf("%s | POS_E(0.5)&nbsp;=&nbsp;%s", object[[tooltipID]],
                      signif(posCtrl[["exprs"]], tooltipDigits))
-           posCtrl[["x"]] <- ""
+           posCtrl[["x"]] <- posCtrl[["SampleName"]]
            posCtrl[["Limit of Detection"]] <- "Passing"
-           posCtrl[["Limit of Detection"]][posCtrl$exprs < cutoff] <- "Failed"
+           posCtrl[["Limit of Detection"]][posCtrl$exprs < cutoff[posCtrl[["SampleName"]]]] <- "Failed"
            mapping <- aes_string(x = "x", y = elt, tooltip = "tooltip")
 
            # Check if panel standard exists
@@ -279,8 +281,18 @@ function(object,
            # Reset class if setting new color or shape
            oldClass(geomParams[["point"]]) <- "uneval"
 
+           # Create data for critical value threshold lines
+           indThreshold <- data.frame( x = seq_along( posCtrl[["SampleName"]] ) - 0.5 ,
+                                       xend = seq_along( posCtrl[["SampleName"]] ) + 0.5 ,
+                                       y = cutoff[posCtrl[["SampleName"]]] ,
+                                       yend = cutoff[posCtrl[["SampleName"]]] )
+           if ( !( tooltipID %in% "SampleName" ) )
+           {
+             negCtrl[["x"]] <- rep( pData( object )[[tooltipID]] , each = nrow( negativeControlSubset(object) ) )
+             posCtrl[["x"]] <- pData( object )[[tooltipID]]
+             rownames( indThreshold ) <- pData( object )[[tooltipID]]
+           }
            # Set x position for cutoff line text
-           cutX = 1
            p <- ggplot(negCtrl, aes_string(x = "x", y = "exprs")) +
              stat_boxplot(geom = "errorbar",
                           width = geomParams[["boxplot"]][["size"]],
@@ -288,25 +300,18 @@ function(object,
              do.call(geom_boxplot_interactive,
                      c(geomParams[["boxplot"]],
                        outlier.shape = NA)) +
-             do.call(geom_beeswarm_interactive,
-                     c(list(posCtrl, mapping = mapping),
-                       geomParams[["point"]],
-                       geomParams[["beeswarm"]])) +
-             geom_hline(yintercept = cutoff, linetype = 2L,
-                        colour = "darkgray") +
-             scale_x_discrete(name = "") +
-             scale_y_continuous(name = "Counts (log2)", trans = "log2") +
-             theme(axis.text.x  = element_blank(),
-                   axis.ticks.x = element_blank(),
-                   axis.title.x = element_blank()) +
-             geom_text(aes(cutX, h, label = label, hjust = -1.05, vjust = 1.25),
-                       data =
-                         data.frame(h = c(cutoff), label = c("2 Std Dev. Above Mean"),
-                                    stringsAsFactors = FALSE),
-                       color = "#79706E", 
-                       size = 3, 
-                       family = fontFamily, 
-                       inherit.aes = FALSE) +
+             geom_beeswarm_interactive( posCtrl ,
+                       mapping = mapping ,
+                       size = geomParams[["point"]][["size"]] ,
+                       fill = geomParams[["point"]][["fill"]] ,
+                       alpha = geomParams[["point"]][["alpha"]] ,
+                       stroke = geomParams[["point"]][["stroke"]] ,
+                       groupOnX = FALSE ) +
+             geom_segment( aes( x = x , xend = xend , y = y , yend = y ) , indThreshold , color = "red" ) +
+             scale_y_continuous( name = "Counts (log2)" , trans = "log2" ) +
+             theme( axis.text.x  = element_text( angle = 90, hjust = 1 , family = fontFamily , size = 180 / nrow( posCtrl ) ) ,
+                    axis.ticks.x = element_blank() ,
+                    axis.title.x = element_blank() ) +
              scale_colour_manual(values = c("#7ab800", "#E15759"),
                                  limits = c("Passing", "Failed"),
                                  drop = FALSE) +
@@ -440,6 +445,14 @@ function(object,
            if ( any( instrument %in% "P" ) )
            {
              SPRINT <- TRUE
+             if ( all( instrument ) %in% "P" )
+             {
+               maxBD <- 1.8
+             }
+             else
+             {
+               maxBD <- 2.25
+             }
            }
            else
            {
@@ -449,6 +462,7 @@ function(object,
            if ( length( unique( instrument ) ) > 1 )
            {
              warning( "More than one instrument type in RCC set.  Using SPRINT threshold of 1.8 instead of 2.25.\n" )
+           }
              extradata <-
                data.frame("PassingBD" = unlist( apply( data.frame( bd = protocolData(object)[["BindingDensity"]] , i = instrument , min = minBD ) , 1 ,
                               function( x )
@@ -464,27 +478,7 @@ function(object,
                                                    default = 2.25 )
                                   return( x[1] > x[3] & x[1] < maxBD )
                               } ) ) ,
-                          row.names = sampleNames(object))
-             SPRINT <- TRUE
-             maxBD <- 2.25
-           }
-           else
-           {
-             maxBD <- switch( unique( instrument ) , 
-                              A = 2.25 ,
-                              B = 2.25 ,
-                              C = 2.25 ,
-                              D = 2.25 ,
-                              G = 2.25 ,
-                              H = 2.25 ,
-                              P = 1.8 ,
-                              default = 2.25 )
-             extradata <-
-               data.frame("PassingBD" =
-                            protocolData(object)[["BindingDensity"]] > minBD &
-                            protocolData(object)[["BindingDensity"]] < maxBD,
-                          row.names = sampleNames(object))
-           }
+                          row.names = sampleNames( object ) )
            extradata[["CustomTooltip"]] <- object[[tooltipID]]
            mapping <- aes_string(x = "LaneID", y = "BindingDensity",
                                  tooltip = "CustomTooltip")
