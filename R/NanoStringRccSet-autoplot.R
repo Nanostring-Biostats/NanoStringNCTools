@@ -443,6 +443,8 @@ function(object,
          },
          "lane-bindingDensity" = {
            instrument <- substr( protocolData( object )[["ScannerID"]] , 5 , 5 )
+           minBD <- 0.1
+           maxBD <- 2.25
            if ( any( instrument %in% "P" ) )
            {
              SPRINT <- TRUE
@@ -450,16 +452,11 @@ function(object,
              {
                maxBD <- 1.8
              }
-             else
-             {
-               maxBD <- 2.25
-             }
            }
            else
            {
              SPRINT <- FALSE
            }
-           minBD <- 0.1
            if ( length( unique( instrument ) ) > 1 )
            {
              warning( "More than one instrument type in RCC set.  Using SPRINT threshold of 1.8 instead of 2.25.\n" )
