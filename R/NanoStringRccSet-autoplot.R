@@ -309,8 +309,7 @@ function(object,
                        groupOnX = FALSE ) +
              geom_segment( aes( x = x , xend = xend , y = y , yend = y ) , indThreshold , color = "red" ) +
              scale_y_continuous( name = "Counts (log2)" , trans = "log2" ) +
-             theme( axis.text.x  = element_text( angle = 90, hjust = 1 , family = fontFamily , size = 180 / nrow( posCtrl ) ) ,
-                    axis.ticks.x = element_blank() ,
+             theme( axis.ticks.x = element_blank() ,
                     axis.title.x = element_blank() ) +
              scale_colour_manual(values = c("#7ab800", "#E15759"),
                                  limits = c("Passing", "Failed"),
@@ -318,6 +317,16 @@ function(object,
              guides(colour = guide_legend(ncol = 1L,
                                           title.position = "top", 
                                           order=1))
+           if ( nrow( posCtrl ) <= 60L )
+           {
+             p <- p + theme( text = element_text( family = fontFamily ) , 
+                             axis.text.x.bottom = element_text( angle = 90 , hjust = 1 , vjust = 0.5 , size = 180 / nrow( posCtrl ) ) )
+           }
+           else
+           {
+             p <- p + theme( axis.text.x.bottom = element_blank() ,
+                             axis.ticks.x = element_blank() )
+           }
            # Add panel standard legend
            p <- p + 
              guides(shape = guide_legend(title = "Sample Type",
