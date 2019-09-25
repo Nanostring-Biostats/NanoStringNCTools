@@ -320,7 +320,7 @@ function(object,
            if ( nrow( posCtrl ) <= 60L )
            {
              p <- p + theme( text = element_text( family = fontFamily ) , 
-                             axis.text.x.bottom = element_text( angle = 90 , hjust = 1 , vjust = 0.5 , size = 180 / nrow( posCtrl ) ) )
+                             axis.text.x.bottom = element_text( angle = 90 , hjust = 1 , vjust = 0.5 , size = min( 8 , 180 / nrow( posCtrl ) ) ) )
            }
            else
            {
