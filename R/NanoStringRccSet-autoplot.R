@@ -316,7 +316,13 @@ function(object,
                                  drop = FALSE) +
              guides(colour = guide_legend(ncol = 1L,
                                           title.position = "top", 
-                                          order=1))
+                                          order=1)) +
+             scale_colour_manual( values = c( "red" ) ,
+                                  limits = c( "Detection Threshold" ) ,
+                                  drop = FALSE) +
+             guides( colour = guide_legend( ncol = 1L ,
+                                            title.position = "top" , 
+                                            order=1 ) )
            if ( nrow( posCtrl ) <= 60L )
            {
              p <- p + theme( text = element_text( family = fontFamily ) , 
