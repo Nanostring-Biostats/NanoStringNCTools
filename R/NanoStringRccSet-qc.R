@@ -56,6 +56,10 @@ function(object,
                                     default = 2.25 )
                    return( x[1] < x[3] | x[1] > maxBD )
                  } ) )
+  negCtrld <- munge( negCtrl , mapping = aes_( exprs = as.name( "exprs" ) ) )
+  cutoff <- negCtrld[["exprs"]]
+  cutoff <- tapply(cutoff, negCtrld[["SampleName"]] ,function( x ) mean( x , na.rm = TRUE ) ) +
+    qnorm(0.975) * tapply( cutoff , negCtrld[["SampleName"]] , function( x ) sd( x , na.rm = TRUE ) )
   prData[["QCFlags"]] <-
     cbind(Imaging =
             prData[["FovCounted"]] / prData[["FovCount"]] < fovPercentLB,
@@ -63,10 +67,7 @@ function(object,
           Linearity =
             assayDataApply(posCtrl, 2L,
                            function(y) cor(x, log2t(y, 0.5))^2 < posCtrlRsqLB),
-          LoD =
-            apply(exprs(posCtrl[controlConc == 0.5, ]), 2L, max) <=
-            assayDataApply(negCtrl, 2L,
-                           function(x) mean(x) + negCtrlSDUB * sd(x)),
+          LoD = apply( exprs( posCtrl[controlConc == 0.5, ] ) , 2L , max ) <= cutoff,
           Housekeeping = 
             hkStats[, "GeomMean"] < minHKGeoMean)
 
