@@ -622,7 +622,9 @@ function(object,
                                            order = 0,
                                            override.aes = list(color=c("#7ab800", "#7ab800")))) +
                theme(legend.position = "right") +
-               scale_shape_manual(values = c(2, 16), guide = "none")
+               scale_shape_manual(values = c(2, 16), guide = "none", 
+                                    limits= c("Panel Standard", "Sample"),
+                                    drop = FALSE)
          },
          "mean-sd-features" = {
            if (log2scale)
