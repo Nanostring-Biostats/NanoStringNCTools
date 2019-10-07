@@ -140,9 +140,12 @@ function(object,
                guides(colour = guide_legend(title = colourtitle,
                                             ncol = 1L,
                                             title.position = "top"))
-             if ( !is.null( geomParams[["base"]][["x"]] ) && geomParams[["base"]][["x"]] == colourtitle )
+             if ( !is.null( geomParams[["showLegend"]] ) )
              {
-               p <- p + theme( legend.position = "none" )
+               if ( geomParams[["showLegend"]][["legend"]] == "off" )
+               {
+                 p <- p + theme( legend.position = "none" )
+               }
              }
              else
              {
