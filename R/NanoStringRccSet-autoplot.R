@@ -245,15 +245,10 @@ function(object,
            negCtrl <- munge(negativeControlSubset(object),
                             mapping = aes_(exprs = as.name(elt)))
            negCtrl[["x"]] <- negCtrl[["SampleName"]]
-           if (log2scale) {
-             cutoff <- log2t(negCtrl[["exprs"]])
-             cutoff <- 2^(tapply(cutoff, negCtrl[["SampleName"]] ,function( x ) mean( x , na.rm = TRUE ) ) +
-                            qnorm(0.975) * tapply( cutoff , negCtrl[["SampleName"]] , function( x ) sd( x , na.rm = TRUE ) ))
-           } else {
-             cutoff <- negCtrl[["exprs"]]
-             cutoff <- tapply(cutoff, negCtrl[["SampleName"]] ,function( x ) mean( x , na.rm = TRUE ) ) +
-               qnorm(0.975) * tapply( cutoff , negCtrl[["SampleName"]] , function( x ) sd( x , na.rm = TRUE ) )
-           }
+           cutoff <- negCtrl[["exprs"]]
+           cutoff <- tapply(cutoff, negCtrl[["SampleName"]] ,function( x ) mean( x , na.rm = TRUE ) ) +
+               2 * tapply( cutoff , negCtrl[["SampleName"]] , function( x ) sd( x , na.rm = TRUE ) )
+
            posCtrl <- positiveControlSubset(object)
            posCtrl <- subset(posCtrl,
                              featureData(posCtrl)[["ControlConc"]] == 0.5)
@@ -289,17 +284,18 @@ function(object,
            # Reset class if setting new color or shape
            oldClass(geomParams[["point"]]) <- "uneval"
 
-           # Create data for critical value threshold lines
-           indThreshold <- data.frame( x = seq_along( posCtrl[["SampleName"]] ) - 0.5 ,
-                                       xend = seq_along( posCtrl[["SampleName"]] ) + 0.5 ,
-                                       y = cutoff[posCtrl[["SampleName"]]] ,
-                                       yend = cutoff[posCtrl[["SampleName"]]] )
+           # Rename with sample labels
            if ( !( tooltipID %in% "SampleName" ) )
            {
              negCtrl[["x"]] <- rep( pData( object )[[tooltipID]] , each = nrow( negativeControlSubset(object) ) )
              posCtrl[["x"]] <- pData( object )[[tooltipID]]
-             rownames( indThreshold ) <- pData( object )[[tooltipID]]
            }
+
+           # Create data for critical value threshold lines
+           indThreshold <- data.frame( x = seq_along( order(posCtrl[["x"]]) ) - 0.5 ,
+                                       xend = seq_along( order(posCtrl[["x"]]) ) + 0.5 ,
+                                       y = cutoff[order(posCtrl[["x"]])] ,
+                                       yend = cutoff[order(posCtrl[["x"]])] )
            # Set x position for cutoff line text
            p <- ggplot(negCtrl, aes_string(x = "x", y = "exprs")) +
              stat_boxplot(geom = "errorbar",
@@ -316,7 +312,7 @@ function(object,
                        stroke = geomParams[["point"]][["stroke"]] ,
                        groupOnX = FALSE ) +
              geom_segment( aes( x = x , xend = xend , y = y , yend = y ) , indThreshold , color = "red" ) +
-             scale_y_continuous( name = "Counts (log2)" , trans = "log2" ) +
+             scale_y_continuous( name = "Counts" , trans = "log2" ) +
              theme( axis.ticks.x = element_blank() ,
                     axis.title.x = element_blank() ) +
              scale_colour_manual(values = c("#7ab800", "#E15759"),
@@ -583,7 +579,7 @@ function(object,
            # Discriminate outliers and/or panel standards if designated
            geomParams[["point"]] <- unclass(geomParams[["point"]])
            # Set color based on quality
-           mapping[["colour"]] <- as.name("Imaging Quality") #NEO changed
+           mapping[["colour"]] <- as.name("Imaging Quality")
            # Remove default point color
            geomParams[["point"]][["colour"]] <- NULL
            if (!is.null(PSCol)) { 
