@@ -133,7 +133,7 @@ function(object,
              p <- p +
                do.call(geom_beeswarm_interactive,
                        c(list(aes_string(tooltip = "tooltip",
-                                         colour = "colour")),
+                                         colour = "factor(colour)")),
                          geomParams[["point"]],
                          geomParams[["beeswarm"]])) +
                scale_colour_manual(values = plot_pal) +
