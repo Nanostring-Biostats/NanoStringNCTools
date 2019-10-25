@@ -61,15 +61,18 @@ function(object,
   cutoff <- tapply(cutoff, negCtrld[["SampleName"]] ,function( x ) mean( x , na.rm = TRUE ) ) +
     2 * tapply( cutoff , negCtrld[["SampleName"]] , function( x ) sd( x , na.rm = TRUE ) )
   prData[["QCFlags"]] <-
-    cbind(Imaging =
-            prData[["FovCounted"]] / prData[["FovCount"]] < fovPercentLB,
-          Binding = Binding ,
-          Linearity =
-            assayDataApply(posCtrl, 2L,
-                           function(y) cor(x, log2t(y, 0.5))^2 < posCtrlRsqLB),
-          LoD = apply( exprs( posCtrl[controlConc == 0.5, ] ) , 2L , max ) < cutoff,
-          Housekeeping = 
-            hkStats[, "GeomMean"] < minHKGeoMean)
+    cbind( Imaging = prData[["FovCounted"]] / prData[["FovCount"]] < fovPercentLB,
+           Binding = Binding ,
+           Linearity =
+             assayDataApply( posCtrl , 2L ,
+                             function( y )
+                             {
+                               cxy <- cor( x , log2t( y , 0.5 ) )^2 < posCtrlRsqLB
+                               cxy <- ifelse( is.na( cxy ) , TRUE , cxy )
+                               return( cxy )
+                             } ) ,
+           LoD = apply( exprs( posCtrl[controlConc == 0.5, ] ) , 2L , max ) < cutoff,
+           Housekeeping = hkStats[, "GeomMean"] < minHKGeoMean )
 
   prData[["QCBorderlineFlags"]] <-
     cbind(Imaging = 
@@ -84,8 +87,14 @@ function(object,
             hkStats[, "GeomMean"] > minHKGeoMean &
             hkStats[, "GeomMean"] < blHKGeoMean)
   
-  QCResults <- apply(prData[["QCFlags"]], 1L, function(x) sum(x) == 0L)
-  if (sum(QCResults) < 5) {
+# This is a stopgap.  If any test returns NA, the assumption is that sample is a failure
+    QCResults <- apply(prData[["QCFlags"]], 1L, function( x )
+    {
+      y <- sum( x ) == 0L
+      y <- ifelse( is.na( y ) , TRUE , y )
+      return( y )
+    })
+  if ( sum( QCResults ) < 5 ) {
     stop( "Unable to run 360 Report: less than five samples passed QC" )
   }
 
