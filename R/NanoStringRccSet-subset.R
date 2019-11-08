@@ -3,11 +3,13 @@ function(x, i, j, ..., drop = FALSE)
 {
   x <- callNextMethod()
   weights <- weights(signatures(x))
+  grps <- signatures(x)@groups
+  fncs <- signatures(x)@func
   if (length(weights) > 0L) {
     valid <- c("(Intercept)", featureData(x)[["GeneName"]])
     keep <- unlist(lapply(weights, function(y) all(names(y) %in% valid)))
     if (!all(keep)) {
-      weights(signatures(x)) <- weights[keep]
+      signatures(x) <- new( "SignatureSet" , weights = weights[keep] , groups = grps[keep] , func = fncs[keep] )
     }
   }
   x
