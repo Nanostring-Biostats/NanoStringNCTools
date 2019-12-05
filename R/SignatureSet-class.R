@@ -17,7 +17,7 @@ function(.Object, weights = NumericList(), ...)
   callNextMethod(.Object,
                  weights = as(weights, "NumericList"),
                  groups = factor( names( weights ) ),
-                 func = "default",
+                 func = rep( "default" , length( weights ) ) ,
                  version = "0.0.1",
                  ...)
 })
@@ -29,7 +29,7 @@ setMethod("initialize", "SignatureSet",
             callNextMethod(.Object,
                            weights = as(weights, "NumericList"),
                            groups = factor( groups ),
-                           func = "default",
+                           func = rep( "default" , length( weights ) ) ,
                            version = "0.0.1",
                            ...)
           })
@@ -39,7 +39,7 @@ setMethod("initialize", "SignatureSet",
           function(.Object, weights = NumericList(), groups = factor(), func = character(), ...)
           {
             callNextMethod(.Object,
-                           weights = as(weights, "NumericList"),
+                           weights = as( weights , "NumericList" ) ,
                            groups = factor( groups ),
                            func = as( func , "character" ),
                            version = "0.0.1",
@@ -221,15 +221,76 @@ setMethod("lengths", "SignatureSet",
 validSignatureSet <- function( object )
 {
   errorMessage <- NULL
+  if ( !inherits( object@weights , "NumericList" ) )
+  {
+    errTmp <- "Weights are not a NumericList"
+    errorMessage <- switch( is.null( errorMessage ),
+                            errTmp ,
+                            paste( errorMessage , errTmp , sep = "\n" )
+    )
+  }
+  if ( !inherits( object@groups , "character" ) )
+  {
+    errTmp <- "Groups are not a character"
+    errorMessage <- switch( is.null( errorMessage ),
+                            errTmp ,
+                            paste( errorMessage , errTmp , sep = "\n" )
+    )
+  }
+  if ( !inherits( object@func , "character" ) )
+  {
+    errTmp <- "Functions are not a character"
+    errorMessage <- switch( is.null( errorMessage ),
+                            errTmp ,
+                            paste( errorMessage , errTmp , sep = "\n" )
+    )
+  }
   if ( length( object@weights ) != length( object@groups ) )
   {
-    errorMessage <- paste( "Unequal weights and groups.  Lengths: " , length( object@weights ) , ", " , length( object@groups ) , sep="" )
+    errTmp <- paste( "Unequal weights and groups.  Length weights: " , length( object@weights ) , ", Length groups: " , length( object@groups ) , sep="" )
+    errorMessage <- switch( is.null( errorMessage ),
+                            errTmp ,
+                            paste( errorMessage , errTmp , sep = "\n" )
+    )
+  }
+  if ( length( object@weights ) != length( object@func ) )
+  {
+    errTmp <- paste( "Unequal weights and func  Length weights: " , length( object@weights ) , ", Length func: " , length( object@func ) , sep="" )
+    errorMessage <- switch( is.null( errorMessage ),
+                            errTmp ,
+                            paste( errorMessage , errTmp , sep = "\n" )
+    )
+  }
+  if ( length( object@groups ) != length( object@func ) )
+  {
+    errTmp <- paste( "Unequal groups and func  Length groups: " , length( object@groups ) , ", Length func: " , length( object@func ) , sep="" )
+    errorMessage <- switch( is.null( errorMessage ),
+                            errTmp ,
+                            paste( errorMessage , errTmp , sep = "\n" )
+    )
   }
   if ( length( object@weights ) != length( union( names( object@weights ) , names( object@groups ) ) ) )
   {
+    errTmp <- paste( "Weight names do not match group member names" , sep = "\n" )
     errorMessage <- switch( is.null( errorMessage ),
-                            paste( "Unequal weights and groups.  Lengths: " , length( object@weights ) , ", " , length( object@groups ) , sep="" ) ,
-                            paste( errorMessage , "Weight names do not match group member names" , sep = "\n" )
+                            errTmp ,
+                            paste( errorMessage , errTmp , sep = "\n" )
+    )
+  }
+  if ( length( object@weights ) != length( union( names( object@weights ) , names( object@func ) ) ) )
+  {
+    errTmp <- paste( "Weight names do not match func member names" , sep = "\n" )
+    errorMessage <- switch( is.null( errorMessage ),
+                            errTmp ,
+                            paste( errorMessage , errTmp , sep = "\n" )
+    )
+  }
+  if ( length( object@weights ) != length( union( names( object@groups ) , names( object@func ) ) ) )
+  {
+    errTmp <- paste( "Groups names do not match func member names" , sep = "\n" )
+    errorMessage <- switch( is.null( errorMessage ),
+                            errTmp ,
+                            paste( errorMessage , errTmp , sep = "\n" )
     )
   }
   ifelse( is.null( errorMessage ) , TRUE , errorMessage )
