@@ -229,14 +229,14 @@ validSignatureSet <- function( object )
                             paste( errorMessage , errTmp , sep = "\n" )
     )
   }
-  if ( !inherits( object@groups , "character" ) )
-  {
-    errTmp <- "Groups are not a character"
-    errorMessage <- switch( is.null( errorMessage ),
-                            errTmp ,
-                            paste( errorMessage , errTmp , sep = "\n" )
-    )
-  }
+  # if ( !inherits( object@groups , "character" ) )
+  # {
+  #   errTmp <- "Groups are not a character"
+  #   errorMessage <- switch( is.null( errorMessage ),
+  #                           errTmp ,
+  #                           paste( errorMessage , errTmp , sep = "\n" )
+  #   )
+  # }
   if ( !inherits( object@func , "character" ) )
   {
     errTmp <- "Functions are not a character"
