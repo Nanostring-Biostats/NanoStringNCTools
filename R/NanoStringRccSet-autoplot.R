@@ -22,6 +22,7 @@ function(object,
          heatmapGroup = NULL,
          blacklist = NULL,
          tooltipID = "SampleName",
+         scalingFactor=1L,
          ...)
 {
   geomParams <- as.list(geomParams)
@@ -113,7 +114,7 @@ function(object,
            df[["colour"]] <- colour
            p <- ggplot(df, aes_string(x = "x", y = "score")) +
              stat_boxplot(geom = "errorbar",
-                          lwd = 0.5, # add this to boxplot geomParams later, sets error bar line width = box line width
+                          lwd = 0.5*scalingFactor, # add this to boxplot geomParams later, sets error bar line width = box line width
                           width = geomParams[["boxplot"]][["size"]],
                           colour = geomParams[["boxplot"]][["colour"]]) +
              do.call(geom_boxplot_interactive,
