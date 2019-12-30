@@ -25,6 +25,31 @@ function(object,
          scalingFactor=1L,
          ...)
 {
+  if ( (length( geomParams) > 0 ) ) {
+    for (i in seq_along(geomParams)) {
+      for (j in seq_along(geomParams[[i]])) {
+        if( class( geomParams[[i]][[j]] ) == "name" ) {
+          charColName <- as.character( geomParams[[i]][[j]] )
+          if ( substr( charColName , 1, 1) == "_" ) {
+            newLabel = substr( charColName , 2 , nchar( charColName ) )
+            pData( object )[newLabel] <- pData( object )[charColName]
+            if ("palette" %in% names(geomParams) ) {
+              levels(geomParams[["palette"]][["dataframe"]][['Variable']])[levels(geomParams[["palette"]][["dataframe"]][['Variable']])==geomParams[[i]][[j]] ] <- newLabel
+              geomParams[[i]][[j]] <- as.name(newLabel)
+            }
+          }
+          if ( substr( charColName , nchar(charColName), nchar(charColName)) == "_" ) {
+            newLabel = substr( charColName , 1 , (nchar( charColName ) -1 ) )
+            pData( object )[newLabel] <- pData( object )[charColName]
+            if ("palette" %in% names(geomParams) ) {
+              levels(geomParams[["palette"]][["dataframe"]][['Variable']])[levels(geomParams[["palette"]][["dataframe"]][['Variable']])==geomParams[[i]][[j]] ] <- newLabel
+              geomParams[[i]][[j]] <- as.name(newLabel)
+            }
+          }
+        }
+      }
+    }
+  }
   geomParams <- as.list(geomParams)
   geomParams <- update_geom_params("base", geomParams)
   geomParams <- update_geom_params("point", geomParams, GeomInteractivePoint$default_aes[!names(GeomInteractivePoint$default_aes) %in% c('hover_css', 'selected_css')])
@@ -346,6 +371,14 @@ function(object,
            scores <-
              t(munge(endogenousSubset(object), ~ GeneMatrix,
                      elt = elt)[["GeneMatrix"]])
+           # for ( i in seq_along( heatmapGroup ) ) {
+           #   if ( substr( heatmapGroup[i] , 1, 1) == "_" ) {
+           #     newLabel = substr( heatmapGroup[i] , 2 , nchar( heatmapGroup[i] ) )
+           #     pData( object )[newLabel] <- sData( object )[heatmapGroup[i]]
+           #     heatmapGroup[i] <- newLabel
+           #   }
+           # }
+           
            p <- protoheatmap(scores, log2scale = log2scale,
                              group = heatmapGroup, object = object, ...)
          },
@@ -353,6 +386,13 @@ function(object,
            scores <-
              t(munge(endogenousSubset(object), ~ SignatureMatrix,
                      elt = elt)[["SignatureMatrix"]])
+           # for ( i in seq_along( heatmapGroup ) ) {
+           #   if ( substr( heatmapGroup[i] , 1, 1) == "_" ) {
+           #     newLabel = substr( heatmapGroup[i] , 2 , nchar( heatmapGroup[i] ) )
+           #     pData( object )[newLabel] <- sData( object )[heatmapGroup[i]]
+           #     heatmapGroup[i] <- newLabel
+           #   }
+           # }
            p <- protoheatmap(scores, log2scale = log2scale,
                              group = heatmapGroup, object = object, blacklist = blacklist, ...)
          },
@@ -690,6 +730,20 @@ protoheatmap <-
     annotation_col <- NA
     annotation_colors <- NA
   } else {
+    for ( i in seq_along( group ) ) {
+      if ( substr( group[i] , 1, 1) == "_" ) {
+        newLabel = substr( group[i] , 2 , nchar( group[i] ) )
+        pData( object )[newLabel] <- sData( object )[group[i]]
+        annotation_colors[[newLabel]] <- annotation_colors[[group[i]]]
+        group[i] <- newLabel
+      }
+      if ( substr( group[i] , nchar(group[i]), nchar(group[i])) == "_" ) {
+        newLabel = substr( group[i] , 1 , (nchar( group[i]-1) ) )
+        pData( object )[newLabel] <- sData( object )[group[i]]
+        annotation_colors[[newLabel]] <- annotation_colors[[group[i]]]
+        group[i] <- newLabel
+      }
+    }
     annotation_col <- sData(object)[group]
     annotation_col[] <-
       lapply(annotation_col, function(x) {
