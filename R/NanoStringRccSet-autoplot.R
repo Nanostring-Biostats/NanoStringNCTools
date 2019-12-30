@@ -30,14 +30,6 @@ function(object,
       for (j in seq_along(geomParams[[i]])) {
         if( class( geomParams[[i]][[j]] ) == "name" ) {
           charColName <- as.character( geomParams[[i]][[j]] )
-          if ( substr( charColName , 1, 1) == "_" ) {
-            newLabel = substr( charColName , 2 , nchar( charColName ) )
-            pData( object )[newLabel] <- pData( object )[charColName]
-            if ("palette" %in% names(geomParams) ) {
-              levels(geomParams[["palette"]][["dataframe"]][['Variable']])[levels(geomParams[["palette"]][["dataframe"]][['Variable']])==geomParams[[i]][[j]] ] <- newLabel
-              geomParams[[i]][[j]] <- as.name(newLabel)
-            }
-          }
           if ( substr( charColName , nchar(charColName), nchar(charColName)) == "_" ) {
             newLabel = substr( charColName , 1 , (nchar( charColName ) -1 ) )
             pData( object )[newLabel] <- pData( object )[charColName]
