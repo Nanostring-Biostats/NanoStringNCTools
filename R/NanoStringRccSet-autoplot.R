@@ -723,14 +723,8 @@ protoheatmap <-
     annotation_colors <- NA
   } else {
     for ( i in seq_along( group ) ) {
-      if ( substr( group[i] , 1, 1) == "_" ) {
-        newLabel = substr( group[i] , 2 , nchar( group[i] ) )
-        pData( object )[newLabel] <- sData( object )[group[i]]
-        annotation_colors[[newLabel]] <- annotation_colors[[group[i]]]
-        group[i] <- newLabel
-      }
       if ( substr( group[i] , nchar(group[i]), nchar(group[i])) == "_" ) {
-        newLabel = substr( group[i] , 1 , (nchar( group[i]-1) ) )
+        newLabel = substr( group[i] , 1 , (nchar( group[i] ) - 1 ) ) 
         pData( object )[newLabel] <- sData( object )[group[i]]
         annotation_colors[[newLabel]] <- annotation_colors[[group[i]]]
         group[i] <- newLabel
