@@ -35,8 +35,8 @@ function(object,
             pData( object )[newLabel] <- pData( object )[charColName]
             if ("palette" %in% names(geomParams) ) {
               levels(geomParams[["palette"]][["dataframe"]][['Variable']])[levels(geomParams[["palette"]][["dataframe"]][['Variable']])==geomParams[[i]][[j]] ] <- newLabel
-              geomParams[[i]][[j]] <- as.name(newLabel)
             }
+            geomParams[[i]][[j]] <- as.name(newLabel)
           }
         }
       }
