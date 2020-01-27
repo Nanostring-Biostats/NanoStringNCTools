@@ -637,6 +637,8 @@ function(object,
            }
            # Assign shape based on if panel standard
            mapping[["shape"]] <- PSLabels
+           # Scaling geom point size
+           geomParams[["point"]][["size"]] <- 4 * scalingFactor
            # Remove default shape
            geomParams[["point"]][["shape"]] <- NULL
            # Reset class if setting new color or shape
@@ -654,11 +656,12 @@ function(object,
                          data.frame(h = c(0.75), label = c("75% Passing"),
                                     stringsAsFactors = FALSE),
                        color = "#79706E", 
-                       size = 3, 
+                       size = 3 * scalingFactor, 
                        family = fontFamily, 
                        inherit.aes = FALSE) +
              geom_hline(yintercept = 0.75, linetype = 2L,
-                        colour = "darkgray") + 
+                        colour = "darkgray",
+                        size = 0.5 * scalingFactor) + 
              guides(colour = guide_legend(title = "Imaging Quality",
                                           ncol = 1L,
                                           title.position = "top",
@@ -677,6 +680,19 @@ function(object,
                scale_shape_manual(values = c(2, 16), guide = "none", 
                                     limits= c("Panel Standard", "Sample"),
                                     drop = FALSE)
+             
+           # Add scaling to theme
+             p <- p +
+               theme(
+                 axis.ticks.x = element_line(size = scalingFactor * 0.2),
+                 axis.ticks.length = unit(scalingFactor * 3, "pt"),
+                 axis.text = element_text(size = scalingFactor * 9),
+                 axis.title = element_text(size = scalingFactor * 10, face = "bold"),
+                 legend.title=element_text(size= scalingFactor * 10, face = "bold"),
+                 legend.text=element_text(size= scalingFactor * 8),
+                 panel.border = element_rect(fill=NA, color="black", size = scalingFactor * 0.25) 
+               )
+
          },
          "mean-sd-features" = {
            if (log2scale)
