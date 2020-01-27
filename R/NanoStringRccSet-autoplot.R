@@ -430,21 +430,22 @@ function(object,
            mapping[["shape"]] <- PSLabels
            # Remove default point shape
            geomParams[["point"]][["shape"]] <- NULL
+           geomParams[["point"]][["size"]] <- 4 * scalingFactor
            # Reset class if setting new color or shape
            oldClass(geomParams[["point"]]) <- "uneval"
            
            p <- ggpoint(hkSet, mapping, ...) +
              # Add lines indicating low quality or failing housekeepers
              geom_hline(yintercept = 32, linetype = 2L,
-                          colour = "darkgray") +
+                          colour = "darkgray", size = 0.5 * scalingFactor) +
              geom_hline(yintercept = 100, linetype = 2L,
-                          colour = "darkgray") +
+                          colour = "darkgray", size = 0.5 * scalingFactor) +
              geom_text(aes(cutX, h, label = label, hjust = "right", vjust = 1.25),
                          data =
                            data.frame(h = c(32), label = c("Minimum Threshold = 32 counts"),
                          stringsAsFactors = FALSE),
                          color = "#79706E", 
-                         size = 3, 
+                         size = 3 * scalingFactor, 
                          family = fontFamily, 
                          inherit.aes = FALSE) +
              geom_text(aes(cutX, h, label = label, hjust = "right", vjust = -0.25),
@@ -452,7 +453,7 @@ function(object,
                          data.frame(h = c(100), label = c("Borderline Threshold = 100 counts"),
                                     stringsAsFactors = FALSE),
                        color = "#79706E", 
-                       size = 3, 
+                       size = 3 * scalingFactor, 
                        family = fontFamily, 
                        inherit.aes = FALSE) +
              guides(colour = guide_legend(title = "Housekeeper Quality",
@@ -469,7 +470,7 @@ function(object,
                                    drop = FALSE)
            if( length(hkSet[["x"]]) <= 60L ) {
              p <- p + theme(text = element_text(family=fontFamily), 
-                            axis.text.x.bottom = element_text(angle = 90, hjust = 1, vjust = 0.5))
+                            axis.text.x.bottom = element_text(angle = 90, hjust = 1, vjust = 0.5, size = 8))
            } else {
              p <- p + theme( axis.text.x.bottom = element_blank(),
                              axis.ticks.x = element_blank())
@@ -485,6 +486,18 @@ function(object,
                   scale_shape_manual(values = c(2, 16), guide = "none", 
                                          limits= c("Panel Standard", "Sample"),
                                          drop = FALSE)
+           
+           # Add scaling to theme
+           p <- p +
+             theme(
+                   axis.ticks.x = element_line(size = scalingFactor * 0.2),
+                   axis.ticks.length = unit(3 * scalingFactor, "pt"),
+                   axis.text = element_text(size = scalingFactor * 7),
+                   axis.title = element_text(size = scalingFactor * 10, face = "bold"),
+                   legend.title=element_text(size= scalingFactor * 8, face = "bold"),
+                   legend.text=element_text(size= scalingFactor * 6),
+                   panel.border = element_rect(fill=NA, color="black", size = scalingFactor * 0.25) 
+             )
          },
          "lane-bindingDensity" = {
            instrument <- substr( protocolData( object )[["ScannerID"]] , 5 , 5 )
