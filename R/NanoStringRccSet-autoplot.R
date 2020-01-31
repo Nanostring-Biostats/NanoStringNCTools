@@ -299,9 +299,16 @@ function(object,
            mapping[["shape"]] <- PSLabels
            # Remove default shape
            geomParams[["point"]][["shape"]] <- NULL
+           # Scaling geom point size and stroke
+           geomParams[["point"]][["size"]] <- 2.5 * scalingFactor
+           geomParams[["point"]][["stroke"]] <- 0.5 * scalingFactor
+           # Scaling geom point size and stroke
+           geomParams[["boxplot"]][["size"]] <- 0.5 * scalingFactor
            # Reset class if setting new color or shape
            oldClass(geomParams[["point"]]) <- "uneval"
-
+           # Scaling geom line size
+           geomParams[["line"]][["size"]] <- 0.5 * scalingFactor
+    
            # Rename with sample labels
            if ( !( tooltipID %in% "SampleName" ) )
            {
@@ -317,8 +324,8 @@ function(object,
            # Set x position for cutoff line text
            p <- ggplot(negCtrl, aes_string(x = "x", y = "exprs")) +
              stat_boxplot(geom = "errorbar",
-                          width = geomParams[["boxplot"]][["size"]],
-                          colour = geomParams[["boxplot"]][["colour"]]) +
+                          colour = geomParams[["boxplot"]][["colour"]], 
+                          size= 0.5 * scalingFactor) +
              do.call(geom_boxplot_interactive,
                      c(geomParams[["boxplot"]],
                        outlier.shape = NA)) +
@@ -329,7 +336,8 @@ function(object,
                        alpha = geomParams[["point"]][["alpha"]] ,
                        stroke = geomParams[["point"]][["stroke"]] ,
                        groupOnX = FALSE ) +
-             geom_segment( aes( x = x , xend = xend , y = y , yend = y ) , indThreshold , color = "red" ) +
+             geom_segment( aes( x = x , xend = xend , y = y , yend = y ) , indThreshold , color = "red", size = 0.5 * scalingFactor,
+                           show.legend=FALSE ) +
              scale_y_continuous( name = "Counts" , trans = "log2" ) +
              theme( axis.ticks.x = element_blank() ,
                     axis.title.x = element_blank() ) +
@@ -342,7 +350,7 @@ function(object,
            if ( nrow( posCtrl ) <= 60L )
            {
              p <- p + theme( text = element_text( family = fontFamily ) , 
-                             axis.text.x.bottom = element_text( angle = 90 , hjust = 1 , vjust = 0.5 , size = min( 8 , 180 / nrow( posCtrl ) ) ) )
+                             axis.text.x.bottom = element_text( angle = 90 , hjust = 1 , vjust = 0.5 , size = min( 8 , 420 / nrow( posCtrl ) ) * scalingFactor ) )
            }
            else
            {
@@ -358,6 +366,19 @@ function(object,
              scale_shape_manual(values = c(2, 16), guide = "none", 
                                 limits= c("Panel Standard", "Sample"),
                                 drop = FALSE)
+           
+           # Add scaling to theme
+           p <- p +
+             theme(
+               axis.ticks.y = element_line(size = scalingFactor * 0.2),
+               axis.ticks.length = unit(3 * scalingFactor, "pt"),
+               axis.text = element_text(size = scalingFactor * 7),
+               axis.title = element_text(size = scalingFactor * 10, face = "bold"),
+               legend.title=element_text(size= scalingFactor * 8, face = "bold"),
+               legend.key.size = unit(20 * scalingFactor, "pt"),
+               legend.text=element_text(size= scalingFactor * 6),
+               panel.border = element_rect(fill=NA, color="black", size = scalingFactor * 0.25)
+             )
          },
          "heatmap-genes" = {
            scores <-
