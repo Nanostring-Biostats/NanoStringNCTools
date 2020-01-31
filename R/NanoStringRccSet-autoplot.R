@@ -469,6 +469,7 @@ function(object,
            mapping[["shape"]] <- PSLabels
            # Remove default point shape
            geomParams[["point"]][["shape"]] <- NULL
+           # Scaling geom point size
            geomParams[["point"]][["size"]] <- 4 * scalingFactor
            # Reset class if setting new color or shape
            oldClass(geomParams[["point"]]) <- "uneval"
@@ -598,6 +599,8 @@ function(object,
            mapping[["shape"]] <- PSLabels
            # Remove default shape
            geomParams[["point"]][["shape"]] <- NULL
+           # Scaling geom point size
+           geomParams[["point"]][["size"]] <- 4 * scalingFactor
            # Reset class if setting new color or shape
            oldClass(geomParams[["point"]]) <- "uneval"
            
@@ -609,13 +612,13 @@ function(object,
              scale_y_continuous(name = "Binding Density",
                                 limits = c(0, NA_real_)) +
              geom_hline(yintercept = c(0.1, maxBD), linetype = 2L,
-                        colour = "darkgray") +
+                        colour = "darkgray", size = scalingFactor * 0.5) +
              geom_text(aes(cutX, h, label = label, hjust = 0.55, vjust = 1.25),
                        data =
                          data.frame(h = c(0.1, maxBD), label = c("Minimum Binding Density", "Maximum Binding Density"),
                                     stringsAsFactors = FALSE),
                        color = "#79706E", 
-                       size = 3, 
+                       size = scalingFactor * 3, 
                        family = fontFamily, 
                        inherit.aes = FALSE) + 
              guides(colour = guide_legend(title = "Passing Binding Density",
@@ -634,7 +637,7 @@ function(object,
                            data.frame(h = 1.8, label = "SPRINT Binding Density",
                                       stringsAsFactors = FALSE),
                          color = "#79706E", 
-                         size = 3, 
+                         size = scalingFactor * 3, 
                          family = fontFamily, 
                          inherit.aes = FALSE)
            }
@@ -647,6 +650,18 @@ function(object,
                scale_shape_manual(values = c(2, 16), guide = "none", 
                                   limits= c("Panel Standard", "Sample"),
                                   drop = FALSE)
+
+           # Add scaling to theme
+           p <- p +
+             theme(
+                   axis.ticks.x = element_line(size = scalingFactor * 0.2),
+                   axis.ticks.length = unit(3 * scalingFactor, "pt"),
+                   axis.text = element_text(size = scalingFactor * 7),
+                   axis.title = element_text(size = scalingFactor * 10, face = "bold"),
+                   legend.title=element_text(size= scalingFactor * 8, face = "bold"),
+                   legend.text=element_text(size= scalingFactor * 6),
+                   panel.border = element_rect(fill=NA, color="black", size = scalingFactor * 0.25) 
+             )
          },
          "lane-fov" = {
            extradata <- pData(protocolData(object))
