@@ -237,6 +237,11 @@ function(object,
              }
            }
 
+           geomParams[["line"]][["size"]] <- 0.5 * scalingFactor
+           geomParams[["point"]][["size"]] <- 2.5 * scalingFactor
+           geomParams[["point"]][["stroke"]] <- 0.5 * scalingFactor
+           
+           
            p <- ggline(posCtrl, mapping, extradata = extradata, ...) +
              scale_x_continuous(name = "Concentration (fM)", trans = "log2") +
              scale_y_continuous(trans = "log2") + 
@@ -258,6 +263,19 @@ function(object,
                                     guide = "none", 
                                     limits= c("Panel Standard", "Sample"),
                                     drop = FALSE)
+             
+          # Add scaling to theme
+             p <- p +
+               theme(
+                 axis.ticks.x = element_line(size = scalingFactor * 0.2),
+                 axis.ticks.length = unit(3 * scalingFactor, "pt"),
+                 axis.text = element_text(size = scalingFactor * 7),
+                 axis.title = element_text(size = scalingFactor * 10, face = "bold"),
+                 legend.title=element_text(size= scalingFactor * 8, face = "bold"),
+                 legend.key.size = unit(20 * scalingFactor, "pt"),
+                 legend.text=element_text(size= scalingFactor * 6),
+                 panel.border = element_rect(fill=NA, color="black", size = scalingFactor * 0.25) 
+               )             
          },
          "ercc-lod" = {
            negCtrl <- munge(negativeControlSubset(object),
