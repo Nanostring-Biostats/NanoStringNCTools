@@ -777,7 +777,8 @@ protoheatmap <-
            groupPalette =
              c("#4E79A7", "#F28E2B", "#E15759", "#76B7B2", "#59A14F",
                "#EDC948", "#B07AA1", "#FF9DA7", "#9C755F", "#BAB0AC",
-               "maroon", "#4069FF", "#00FFFF", "#FF0707", "#FF69B4"),
+               "maroon", "#4069FF", "#00FFFF", "#FF0707", "#FF69B4",
+               "#A66293", "#33CDF4", "#FFD861", "#ABABAB", "#318026" ),
            blacklist = NULL,
            annotation_colors = NULL,
            ...)
@@ -844,18 +845,20 @@ protoheatmap <-
       }
     }
     
-    # Set subtype cluster colors
-    for ( i in seq_along( annotation_colors ) ) {
-      if(group[i] == "Subtype"){
-        # Create a color pallette for use in subtype clustering and filter only those in annotation_colors[[i]]
-        subtype_colors <- c( "TIS" = "maroon" ,
-                          "LumA" = "#4069FF" ,
-                          "LumB" = "#00FFFF" ,
-                          "Basal" = "#FF0707" ,
-                          "HER2-E" = "#FF69B4"
-        )
-        annotation_colors[[i]] <- subtype_colors[ which( names( subtype_colors ) %in% names(annotation_colors[[i]]) ) ]
-        break
+    if( !is.null(annotation_colors) ) {
+      # Set subtype cluster colors
+      for ( i in seq_along( annotation_colors ) ) {
+        if(annotation_colors[i] == "Subtype"){
+          # Create a color pallette for use in subtype clustering and filter only those in annotation_colors[[i]]
+          subtype_colors <- c( "TIS" = "maroon" ,
+                            "LumA" = "#4069FF" ,
+                            "LumB" = "#00FFFF" ,
+                            "Basal" = "#FF0707" ,
+                            "HER2-E" = "#FF69B4"
+          )
+          annotation_colors[["Subtype"]] <- subtype_colors[ which( names( subtype_colors ) %in% names(annotation_colors[[i]]) ) ]
+          break
+        }
       }
     }
   }
