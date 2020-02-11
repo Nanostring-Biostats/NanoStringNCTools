@@ -338,7 +338,8 @@ function(object,
            indThreshold <- data.frame( x = seq_along( order(posCtrl[["x"]]) ) - 0.5 ,
                                        xend = seq_along( order(posCtrl[["x"]]) ) + 0.5 ,
                                        y = cutoff[order(posCtrl[["x"]])] ,
-                                       yend = cutoff[order(posCtrl[["x"]])] )
+                                       yend = cutoff[order(posCtrl[["x"]])],
+                                       passingThreshold = rep('Passing Threshold', length(posCtrl[["x"]])) )
            # Set x position for cutoff line text
            p <- ggplot(negCtrl, aes_string(x = "x", y = "exprs")) +
              stat_boxplot(geom = "errorbar",
@@ -354,14 +355,14 @@ function(object,
                        alpha = geomParams[["point"]][["alpha"]] ,
                        stroke = geomParams[["point"]][["stroke"]] ,
                        groupOnX = FALSE ) +
-             geom_segment( aes( x = x , xend = xend , y = y , yend = y ) , indThreshold , color = "red", size = 0.5 * scalingFactor,
-                           show.legend=FALSE ) +
+             geom_segment( aes( x = x , xend = xend , y = y , yend = y, linetype=passingThreshold ) , indThreshold , color = "red", size = 0.5 * scalingFactor ) +
              scale_y_continuous( name = "Counts" , trans = "log2" ) +
              theme( axis.ticks.x = element_blank() ,
                     axis.title.x = element_blank() ) +
              scale_colour_manual(values = c("#7ab800", "#E15759"),
                                  limits = c("Passing", "Failed"),
                                  drop = FALSE) +
+             scale_linetype_manual("Passing Threshold",values=c("Passing Threshold"=1), name=NULL) +
              guides(colour = guide_legend(ncol = 1L,
                                           title.position = "top", 
                                           order=1))
