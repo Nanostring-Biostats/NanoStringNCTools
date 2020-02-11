@@ -261,7 +261,7 @@ function(object,
                theme(legend.position = "right") +
                scale_shape_manual(values = c(2, 16), 
                                     guide = "none", 
-                                    limits= c("Panel Standard", "Sample"),
+                                    limits= c("Panel Standard \n or Reference Sample", "Sample"),
                                     drop = FALSE)
              
           # Add scaling to theme
@@ -383,7 +383,7 @@ function(object,
                                          title.position = "top")) +
              theme(legend.position = "right") +
              scale_shape_manual(values = c(2, 16), guide = "none", 
-                                limits= c("Panel Standard", "Sample"),
+                                limits= c("Panel Standard \n or Reference Sample", "Sample"),
                                 drop = FALSE)
            
            # Add scaling to theme
@@ -525,7 +525,7 @@ function(object,
                            override.aes = list(color=c("#7ab800", "#7ab800")))) +
                   theme(legend.position = "right") +
                   scale_shape_manual(values = c(2, 16), guide = "none", 
-                                         limits= c("Panel Standard", "Sample"),
+                                         limits= c("Panel Standard \n or Reference Sample", "Sample"),
                                          drop = FALSE)
            
            # Add scaling to theme
@@ -649,7 +649,7 @@ function(object,
                                            title.position = "top")) +
                theme(legend.position = "right") +
                scale_shape_manual(values = c(2, 16), guide = "none", 
-                                  limits= c("Panel Standard", "Sample"),
+                                  limits= c("Panel Standard \n or Reference Sample", "Sample"),
                                   drop = FALSE)
 
            # Add scaling to theme
@@ -733,7 +733,7 @@ function(object,
                                            override.aes = list(color=c("#7ab800", "#7ab800")))) +
                theme(legend.position = "right") +
                scale_shape_manual(values = c(2, 16), guide = "none", 
-                                    limits= c("Panel Standard", "Sample"),
+                                    limits= c("Panel Standard \n or Reference Sample", "Sample"),
                                     drop = FALSE)
              
            # Add scaling to theme
