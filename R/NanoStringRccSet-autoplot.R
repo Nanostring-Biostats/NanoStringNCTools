@@ -261,7 +261,7 @@ function(object,
                theme(legend.position = "right") +
                scale_shape_manual(values = c(2, 16), 
                                     guide = "none", 
-                                    limits= c("Panel Standard \n or Reference Sample", "Sample"),
+                                    limits= c("Panel Standard or \n Reference Sample", "Sample"),
                                     drop = FALSE)
              
           # Add scaling to theme
@@ -383,7 +383,7 @@ function(object,
                                          title.position = "top")) +
              theme(legend.position = "right") +
              scale_shape_manual(values = c(2, 16), guide = "none", 
-                                limits= c("Panel Standard \n or Reference Sample", "Sample"),
+                                limits= c("Panel Standard or \n Reference Sample", "Sample"),
                                 drop = FALSE)
            
            # Add scaling to theme
@@ -525,8 +525,9 @@ function(object,
                            override.aes = list(color=c("#7ab800", "#7ab800")))) +
                   theme(legend.position = "right") +
                   scale_shape_manual(values = c(2, 16), guide = "none", 
-                                         limits= c("Panel Standard \n or Reference Sample", "Sample"),
+                                         limits= c("Panel Standard or \n Reference Sample", "Sample"),
                                          drop = FALSE)
+           # \n or Reference Sample
            
            # Add scaling to theme
            p <- p +
@@ -649,7 +650,7 @@ function(object,
                                            title.position = "top")) +
                theme(legend.position = "right") +
                scale_shape_manual(values = c(2, 16), guide = "none", 
-                                  limits= c("Panel Standard \n or Reference Sample", "Sample"),
+                                  limits= c("Panel Standard or \n Reference Sample", "Sample"),
                                   drop = FALSE)
 
            # Add scaling to theme
@@ -733,7 +734,7 @@ function(object,
                                            override.aes = list(color=c("#7ab800", "#7ab800")))) +
                theme(legend.position = "right") +
                scale_shape_manual(values = c(2, 16), guide = "none", 
-                                    limits= c("Panel Standard \n or Reference Sample", "Sample"),
+                                    limits= c("Panel Standard or \n Reference Sample", "Sample"),
                                     drop = FALSE)
              
            # Add scaling to theme
@@ -904,6 +905,6 @@ function(currObj, PSColumn) {
   panelStandardLabels <- pData(currObj)[, PSColumn]
   # Label for legend
   panelStandardLabels[panelStandardLabels == 0] <- "Sample"
-  panelStandardLabels[panelStandardLabels == 1] <- "Panel Standard"
+  panelStandardLabels[panelStandardLabels == 1] <- "Panel Standard or \n Reference Sample"
   return(panelStandardLabels)
 }
