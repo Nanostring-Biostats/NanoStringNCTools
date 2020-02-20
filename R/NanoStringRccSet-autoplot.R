@@ -261,7 +261,7 @@ function(object,
                                              order = 0,
                                              override.aes = list(color=c("#7ab800", "#7ab800", "#7ab800")))) +
                theme(legend.position = "right") +
-               scale_shape_manual_interactive(values = c(2, 0, 16), guide = "none",
+               scale_shape_manual(values = c(2, 0, 16), guide = "none",
                                               limits= c("Panel Standard", "Reference Sample", "Sample"),
                                               drop = FALSE)
              
@@ -385,7 +385,7 @@ function(object,
                                          ncol = 1L,
                                          title.position = "top")) +
              theme(legend.position = "right") +
-              scale_shape_manual_interactive(values = c(2, 0, 16), guide = "none",
+              scale_shape_manual(values = c(2, 0, 16), guide = "none",
                                             limits= c("Panel Standard", "Reference Sample", "Sample"),
                                             drop = FALSE)
            
@@ -535,7 +535,7 @@ function(object,
                            order = 0,
                            override.aes = list(color=c("#7ab800", "#7ab800", "#7ab800")))) +
                   theme(legend.position = "right") +
-                  scale_shape_manual_interactive(values = c(2, 0, 16), guide = "none",
+                  scale_shape_manual(values = c(2, 0, 16), guide = "none",
                                                   limits= c("Panel Standard", "Reference Sample", "Sample"),
                                                   drop = FALSE)
 
@@ -661,7 +661,7 @@ function(object,
               guides(shape = guide_legend(title = "Sample Type",
                                            ncol = 1L,
                                            title.position = "top")) +
-              scale_shape_manual_interactive(values = c(2, 0, 16), guide = "none",
+              scale_shape_manual(values = c(2, 0, 16), guide = "none",
                                             limits= c("Panel Standard", "Reference Sample", "Sample"),
                                             drop = FALSE)
 
@@ -748,7 +748,7 @@ function(object,
                                            order = 0,
                                            override.aes = list(color=c("#7ab800", "#7ab800", "#7ab800")))) +
                theme(legend.position = "right") +
-               scale_shape_manual_interactive(values = c(2, 0, 16), guide = "none",
+               scale_shape_manual(values = c(2, 0, 16), guide = "none",
                                               limits= c("Panel Standard", "Reference Sample", "Sample"),
                                               drop = FALSE)
              
