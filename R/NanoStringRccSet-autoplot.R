@@ -22,6 +22,7 @@ function(object,
          heatmapGroup = NULL,
          blacklist = NULL,
          tooltipID = "SampleName",
+         qcCutoffs = c("failingCutoff" = 32,"passingCutoff" = 100),
          scalingFactor=1L,
          ...)
 {
@@ -438,12 +439,17 @@ function(object,
            # Get plot x limit for cut-off text
            cutX <- length(hkSet[["x"]])
 
+           failingCutoff <- qcCutoffs["failingCutoff"]
+           passingCutoff <- qcCutoffs["passingCutoff"]
+           qcBorderlineText <- sprintf("%s < Borderline < %s", failingCutoff, passingCutoff)
+           qcFailedText <- sprintf("Failed < %s", failingCutoff)
+           qcPassedText <- sprintf("Passing > %s", passingCutoff-1)
            # Default to all values passing
-           hkSet[["Quality"]] <- "Passing >= 100" 
+           hkSet[["Quality"]] <- qcPassedText
            # Indicate which are borderline or failing quality
-           hkSet$Quality[hkSet$GeomMean < 100] <- "Borderline < 100"
-           hkSet$Quality[hkSet$GeomMean < 32] <- "Failed < 32"
-           
+           hkSet$Quality[hkSet$GeomMean < passingCutoff] <- qcBorderlineText
+           hkSet$Quality[hkSet$GeomMean < failingCutoff] <- qcFailedText           
+
            # Reorder by geometric mean value
            hkSet <- transform(hkSet, x=reorder(x, GeomMean) ) 
            mapping <- aes_string(x = "x", y = "GeomMean",
@@ -477,13 +483,13 @@ function(object,
            
            p <- ggpoint(hkSet, mapping, ...) +
              # Add lines indicating low quality or failing housekeepers
-             geom_hline(yintercept = 32, linetype = 2L,
+             geom_hline(yintercept = failingCutoff, linetype = 2L,
                           colour = "darkgray", size = 0.5 * scalingFactor) +
-             geom_hline(yintercept = 100, linetype = 2L,
+             geom_hline(yintercept = passingCutoff, linetype = 2L,
                           colour = "darkgray", size = 0.5 * scalingFactor) +
              geom_text(aes(cutX, h, label = label, hjust = "right", vjust = 1.25),
                          data =
-                           data.frame(h = c(32), label = c("Minimum Threshold = 32 counts"),
+                           data.frame(h = c(failingCutoff), label = c(sprintf("Minimum Threshold = %s counts", failingCutoff)),
                          stringsAsFactors = FALSE),
                          color = "#79706E", 
                          size = 3 * scalingFactor, 
@@ -491,7 +497,7 @@ function(object,
                          inherit.aes = FALSE) +
              geom_text(aes(cutX, h, label = label, hjust = "right", vjust = -0.25),
                        data =
-                         data.frame(h = c(100), label = c("Borderline Threshold = 100 counts"),
+                         data.frame(h = c(passingCutoff), label = c(sprintf("Borderline Threshold = %s counts", passingCutoff)),
                                     stringsAsFactors = FALSE),
                        color = "#79706E", 
                        size = 3 * scalingFactor, 
@@ -505,9 +511,9 @@ function(object,
              scale_y_continuous(name="Geometric Mean") +
              theme(legend.position = "right") +
              scale_colour_manual(values = c("#7ab800", "#BAB0AC", "#E15759"),
-                                   limits = c("Passing >= 100", 
-                                                "Borderline < 100", 
-                                                "Failed < 32"),
+                                   limits = c(qcPassedText, 
+                                                qcBorderlineText, 
+                                                qcFailedText),
                                    drop = FALSE)
            if( length(hkSet[["x"]]) <= 60L ) {
              p <- p + theme(text = element_text(family=fontFamily), 
