@@ -226,6 +226,8 @@ function(object,
                if (!is.null(PSCol) && !is.null(RSCol)) { 
                  # Get panel standard labels
                  PSLabels <- getpslabels(object, PSCol, RSCol)
+               } else if (!is.null(PSCol) && is.null(RSCol)) {
+                 PSLabels <- getpslabels(object, PSCol, RSCol = NULL)
                } else {
                  PSLabels <- rep("Sample", nrows(extradata))
                }
@@ -261,7 +263,7 @@ function(object,
                                              order = 0,
                                              override.aes = list(color=c("#7ab800", "#7ab800", "#7ab800")))) +
                theme(legend.position = "right") +
-               scale_shape_manual_interactive(values = c(2, 0, 16), guide = "none",
+               scale_shape_manual(values = c(2, 0, 16), guide = "none",
                                               limits= c("Panel Standard", "Reference Sample", "Sample"),
                                               drop = FALSE)
              
@@ -312,8 +314,10 @@ function(object,
            if (!is.null(PSCol) && !is.null(RSCol)) { 
              # Get panel standard labels
              PSLabels <- getpslabels(object, PSCol, RSCol)
-           } else {
+           } else if (!is.null(PSCol) && is.null(RSCol)) {
              # Label all as samples
+             PSLabels <- getpslabels(object, PSCol, RSCol = NULL)
+           } else {
              PSLabels <- rep("Sample", nrows(posCtrl))
            }
            # Assign shape based on if panel standard
@@ -385,7 +389,7 @@ function(object,
                                          ncol = 1L,
                                          title.position = "top")) +
              theme(legend.position = "right") +
-              scale_shape_manual_interactive(values = c(2, 0, 16), guide = "none",
+              scale_shape_manual(values = c(2, 0, 16), guide = "none",
                                             limits= c("Panel Standard", "Reference Sample", "Sample"),
                                             drop = FALSE)
            
@@ -471,9 +475,11 @@ function(object,
            if (!is.null(PSCol) && !is.null(RSCol)) { 
               # Get sample and panel standard designations
               PSLabels <- getpslabels(object, PSCol, RSCol)
-           } else {
+           } else if (!is.null(PSCol) && is.null(RSCol)) {
                # Set all to samples if no panel standard
-               PSLabels <- rep("Sample", nrow(hkSet))
+               PSLabels <- getpslabels(object, PSCol, RSCol = NULL)
+           } else {
+             PSLabels <- rep("Sample", nrow(hkSet))
            }
            # Set shape based on label
            mapping[["shape"]] <- PSLabels
@@ -535,7 +541,7 @@ function(object,
                            order = 0,
                            override.aes = list(color=c("#7ab800", "#7ab800", "#7ab800")))) +
                   theme(legend.position = "right") +
-                  scale_shape_manual_interactive(values = c(2, 0, 16), guide = "none",
+                  scale_shape_manual(values = c(2, 0, 16), guide = "none",
                                                   limits= c("Panel Standard", "Reference Sample", "Sample"),
                                                   drop = FALSE)
 
@@ -605,8 +611,10 @@ function(object,
            if (!is.null(PSCol) && !is.null(RSCol)) { 
              # Get panel standard labels
              PSLabels <- getpslabels(object, PSCol, RSCol)
-           } else {
+           } else if (!is.null(PSCol) && is.null(RSCol)) {
              # Set all to samples if no panel standard
+             PSLabels <- getpslabels(object, PSCol, RSCol = NULL)
+           } else {
              PSLabels <- rep("Sample", nrow(hkSet))
            }
            # Assign shape based on if panel standard
@@ -661,7 +669,7 @@ function(object,
               guides(shape = guide_legend(title = "Sample Type",
                                            ncol = 1L,
                                            title.position = "top")) +
-              scale_shape_manual_interactive(values = c(2, 0, 16), guide = "none",
+              scale_shape_manual(values = c(2, 0, 16), guide = "none",
                                             limits= c("Panel Standard", "Reference Sample", "Sample"),
                                             drop = FALSE)
 
@@ -701,9 +709,11 @@ function(object,
            if (!is.null(PSCol) && !is.null(RSCol)) { 
              # Get panel standard labels
              PSLabels <- getpslabels(object, PSCol, RSCol)
-           } else {
+           } else if (!is.null(PSCol) && is.null(RSCol)) {
              # Set all to samples if no panel standard
-             PSLabels <- rep("Sample", nrow(extraData))
+             PSLabels <- getpslabels(object, PSCol, RSCol = NULL)
+           } else {
+             PSLabels <- rep("Sample", nrow(extradata))
            }
            # Assign shape based on if panel standard
            mapping[["shape"]] <- PSLabels
@@ -748,7 +758,7 @@ function(object,
                                            order = 0,
                                            override.aes = list(color=c("#7ab800", "#7ab800", "#7ab800")))) +
                theme(legend.position = "right") +
-               scale_shape_manual_interactive(values = c(2, 0, 16), guide = "none",
+               scale_shape_manual(values = c(2, 0, 16), guide = "none",
                                               limits= c("Panel Standard", "Reference Sample", "Sample"),
                                               drop = FALSE)
              
@@ -935,10 +945,12 @@ function(currObj, PSColumn, RSColumn) {
   # Label for legend
   panelStandardLabels[panelStandardLabels == 0] <- "Sample"
   panelStandardLabels[panelStandardLabels == 1] <- "Panel Standard"
-  referenceSampleLabels <- pData(currObj)[, RSColumn]
-  for(i in 1:length(referenceSampleLabels)){
-    if(referenceSampleLabels[i] == 1){
-      panelStandardLabels[i] <- "Reference Sample"
+  if (!is.null(RSColumn)) {
+    referenceSampleLabels <- pData(currObj)[, RSColumn]
+    for(i in 1:length(referenceSampleLabels)){
+      if(referenceSampleLabels[i] == 1){
+        panelStandardLabels[i] <- "Reference Sample"
+      }
     }
   }
   return(panelStandardLabels)
