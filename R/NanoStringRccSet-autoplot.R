@@ -211,8 +211,9 @@ function(object,
              aes_string(x = "ControlConc", y = elt, group = "SampleName",
                         tooltip = "CustomTooltip")
            
-           # Check if panel standard exists
+           # Check if panel standard and reference sample provided
            PSCol <- pscheck(object)
+           RSCol <- rscheck(object)
            # Add custom aesthetics
            for (i in c("line", "point")) {
              # Separate for editing
@@ -222,9 +223,9 @@ function(object,
              # Remove default color
              geomParams[[i]][["colour"]] <- NULL
              if(i == "point") {
-               if (!is.null(PSCol)) { 
+               if (!is.null(PSCol) && !is.null(RSCol)) { 
                  # Get panel standard labels
-                 PSLabels <- getpslabels(object, PSCol)
+                 PSLabels <- getpslabels(object, PSCol, RSCol)
                } else {
                  PSLabels <- rep("Sample", nrows(extradata))
                }
@@ -239,8 +240,8 @@ function(object,
            }
 
            geomParams[["line"]][["size"]] <- 0.5 * scalingFactor
-           geomParams[["point"]][["size"]] <- 2.5 * scalingFactor
-           geomParams[["point"]][["stroke"]] <- 0.5 * scalingFactor
+           geomParams[["point"]][["size"]] <- 3 * scalingFactor
+           geomParams[["point"]][["stroke"]] <- 1 * scalingFactor
            
            
            p <- ggline(posCtrl, mapping, extradata = extradata, ...) +
@@ -258,12 +259,11 @@ function(object,
                                              ncol = 1L,
                                              title.position = "top",
                                              order = 0,
-                                             override.aes = list(color=c("#7ab800", "#7ab800")))) + 
+                                             override.aes = list(color=c("#7ab800", "#7ab800", "#7ab800")))) +
                theme(legend.position = "right") +
-               scale_shape_manual(values = c(2, 16), 
-                                    guide = "none", 
-                                    limits= c("Panel Standard or \n Reference Sample", "Sample"),
-                                    drop = FALSE)
+               scale_shape_manual_interactive(values = c(2, 0, 16), guide = "none",
+                                              limits= c("Panel Standard", "Reference Sample", "Sample"),
+                                              drop = FALSE)
              
           # Add scaling to theme
              p <- p +
@@ -274,7 +274,8 @@ function(object,
                  axis.title = element_text(size = scalingFactor * 10, face = "bold"),
                  legend.title=element_text(size= scalingFactor * 8, face = "bold"),
                  legend.key.size = unit(20 * scalingFactor, "pt"),
-                 legend.text=element_text(size= scalingFactor * 6),
+                 legend.text=element_text(size= scalingFactor * 6, 
+                                          margin = margin(t = scalingFactor * 5, b = scalingFactor * 5, unit = "pt")),
                  panel.border = element_rect(fill=NA, color="black", size = scalingFactor * 0.25) 
                )             
          },
@@ -298,8 +299,9 @@ function(object,
            posCtrl[["Limit of Detection"]][posCtrl$exprs < cutoff[posCtrl[["SampleName"]]]] <- "Failed"
            mapping <- aes_string(x = "x", y = elt, tooltip = "tooltip")
 
-           # Check if panel standard exists
+           # Check if panel standard and reference sample provided
            PSCol <- pscheck(object)
+           RSCol <- rscheck(object)
            # Discriminate outliers and panel standards if designated
            # Separate for editing
            geomParams[["point"]] <- unclass(geomParams[["point"]])
@@ -307,9 +309,9 @@ function(object,
            mapping[["colour"]] <- as.name("Limit of Detection")
            # Remove default point color
            geomParams[["point"]][["colour"]] <- NULL
-           if (!is.null(PSCol)) { 
+           if (!is.null(PSCol) && !is.null(RSCol)) { 
              # Get panel standard labels
-             PSLabels <- getpslabels(object, PSCol)
+             PSLabels <- getpslabels(object, PSCol, RSCol)
            } else {
              # Label all as samples
              PSLabels <- rep("Sample", nrows(posCtrl))
@@ -319,8 +321,8 @@ function(object,
            # Remove default shape
            geomParams[["point"]][["shape"]] <- NULL
            # Scaling geom point size and stroke
-           geomParams[["point"]][["size"]] <- 2.5 * scalingFactor
-           geomParams[["point"]][["stroke"]] <- 0.5 * scalingFactor
+           geomParams[["point"]][["size"]] <- 3 * scalingFactor
+           geomParams[["point"]][["stroke"]] <- 1 * scalingFactor
            # Scaling geom point size and stroke
            geomParams[["boxplot"]][["size"]] <- 0.5 * scalingFactor
            # Reset class if setting new color or shape
@@ -383,9 +385,9 @@ function(object,
                                          ncol = 1L,
                                          title.position = "top")) +
              theme(legend.position = "right") +
-             scale_shape_manual(values = c(2, 16), guide = "none", 
-                                limits= c("Panel Standard or \n Reference Sample", "Sample"),
-                                drop = FALSE)
+              scale_shape_manual_interactive(values = c(2, 0, 16), guide = "none",
+                                            limits= c("Panel Standard", "Reference Sample", "Sample"),
+                                            drop = FALSE)
            
            # Add scaling to theme
            p <- p +
@@ -396,8 +398,9 @@ function(object,
                axis.title = element_text(size = scalingFactor * 10, face = "bold"),
                legend.title=element_text(size= scalingFactor * 8, face = "bold"),
                legend.key.size = unit(20 * scalingFactor, "pt"),
-               legend.text=element_text(size= scalingFactor * 6),
-               panel.border = element_rect(fill=NA, color="black", size = scalingFactor * 0.25)
+               legend.text=element_text(size= scalingFactor * 6, 
+                                      margin = margin(t = scalingFactor * 5, b = scalingFactor * 5, unit = "pt")),
+                panel.border = element_rect(fill=NA, color="black", size = scalingFactor * 0.25)
              )
          },
          "heatmap-genes" = {
@@ -454,9 +457,9 @@ function(object,
            hkSet <- transform(hkSet, x=reorder(x, GeomMean) ) 
            mapping <- aes_string(x = "x", y = "GeomMean",
                                  tooltip = "tooltip")
-           # function call to check if panel standard exists
+           # Check if panel standard and reference sample provided
            PSCol <- pscheck(object)
-
+           RSCol <- rscheck(object)
            # Discriminate lower quality values by color and panel standards by shape 
            # Separate for editing
            geomParams[["point"]] <- unclass(geomParams[["point"]])
@@ -464,10 +467,10 @@ function(object,
            mapping[["colour"]] <- as.name("Quality")
            # Remove default point color
            geomParams[["point"]][["colour"]] <- NULL
-           # Set shapes based on panel standards
-           if (!is.null(PSCol)) { 
-               # Get sample and panel standard designations
-               PSLabels <- getpslabels(object, PSCol)
+           # Set shapes based on panel standards & reference samples
+           if (!is.null(PSCol) && !is.null(RSCol)) { 
+              # Get sample and panel standard designations
+              PSLabels <- getpslabels(object, PSCol, RSCol)
            } else {
                # Set all to samples if no panel standard
                PSLabels <- rep("Sample", nrow(hkSet))
@@ -477,7 +480,9 @@ function(object,
            # Remove default point shape
            geomParams[["point"]][["shape"]] <- NULL
            # Scaling geom point size
-           geomParams[["point"]][["size"]] <- 4 * scalingFactor
+           geomParams[["point"]][["size"]] <- 3 * scalingFactor
+           geomParams[["point"]][["stroke"]] <- 1 * scalingFactor
+
            # Reset class if setting new color or shape
            oldClass(geomParams[["point"]]) <- "uneval"
            
@@ -528,13 +533,12 @@ function(object,
                            ncol = 1L,
                            title.position = "top",
                            order = 0,
-                           override.aes = list(color=c("#7ab800", "#7ab800")))) +
+                           override.aes = list(color=c("#7ab800", "#7ab800", "#7ab800")))) +
                   theme(legend.position = "right") +
-                  scale_shape_manual(values = c(2, 16), guide = "none", 
-                                         limits= c("Panel Standard or \n Reference Sample", "Sample"),
-                                         drop = FALSE)
-           # \n or Reference Sample
-           
+                  scale_shape_manual_interactive(values = c(2, 0, 16), guide = "none",
+                                                  limits= c("Panel Standard", "Reference Sample", "Sample"),
+                                                  drop = FALSE)
+
            # Add scaling to theme
            p <- p +
              theme(
@@ -543,7 +547,8 @@ function(object,
                    axis.text = element_text(size = scalingFactor * 7),
                    axis.title = element_text(size = scalingFactor * 10, face = "bold"),
                    legend.title=element_text(size= scalingFactor * 8, face = "bold"),
-                   legend.text=element_text(size= scalingFactor * 6),
+                   legend.text=element_text(size= scalingFactor * 6, 
+                                            margin = margin(t = scalingFactor * 5, b = scalingFactor * 5, unit = "pt")),
                    panel.border = element_rect(fill=NA, color="black", size = scalingFactor * 0.25) 
              )
          },
@@ -587,8 +592,9 @@ function(object,
            mapping <- aes_string(x = "LaneID", y = "BindingDensity",
                                  tooltip = "CustomTooltip")
            
-           # Check if panel standard provided
+           # Check if panel standard and reference sample provided
            PSCol <- pscheck(object)
+           RSCol <- rscheck(object)
            # Discriminate outliers and panel standards if designated
            # Separate for editing
            geomParams[["point"]] <- unclass(geomParams[["point"]])
@@ -596,9 +602,9 @@ function(object,
            mapping[["colour"]] <- as.name("PassingBD")
            # Remove default point color
            geomParams[["point"]][["colour"]] <- NULL
-           if (!is.null(PSCol)) {
+           if (!is.null(PSCol) && !is.null(RSCol)) { 
              # Get panel standard labels
-             PSLabels <- getpslabels(object, PSCol)
+             PSLabels <- getpslabels(object, PSCol, RSCol)
            } else {
              # Set all to samples if no panel standard
              PSLabels <- rep("Sample", nrow(hkSet))
@@ -608,7 +614,8 @@ function(object,
            # Remove default shape
            geomParams[["point"]][["shape"]] <- NULL
            # Scaling geom point size
-           geomParams[["point"]][["size"]] <- 4 * scalingFactor
+           geomParams[["point"]][["size"]] <- 3 * scalingFactor
+           geomParams[["point"]][["stroke"]] <- 1 * scalingFactor
            # Reset class if setting new color or shape
            oldClass(geomParams[["point"]]) <- "uneval"
            
@@ -654,10 +661,9 @@ function(object,
               guides(shape = guide_legend(title = "Sample Type",
                                            ncol = 1L,
                                            title.position = "top")) +
-               theme(legend.position = "right") +
-               scale_shape_manual(values = c(2, 16), guide = "none", 
-                                  limits= c("Panel Standard or \n Reference Sample", "Sample"),
-                                  drop = FALSE)
+              scale_shape_manual_interactive(values = c(2, 0, 16), guide = "none",
+                                            limits= c("Panel Standard", "Reference Sample", "Sample"),
+                                            drop = FALSE)
 
            # Add scaling to theme
            p <- p +
@@ -667,7 +673,8 @@ function(object,
                    axis.text = element_text(size = scalingFactor * 7),
                    axis.title = element_text(size = scalingFactor * 10, face = "bold"),
                    legend.title=element_text(size= scalingFactor * 8, face = "bold"),
-                   legend.text=element_text(size= scalingFactor * 6),
+                   legend.text=element_text(size= scalingFactor * 6,
+                                            margin = margin(t = scalingFactor * 5, b = scalingFactor * 5, unit = "pt")),
                    panel.border = element_rect(fill=NA, color="black", size = scalingFactor * 0.25) 
              )
          },
@@ -682,17 +689,18 @@ function(object,
            extradata[["CustomTooltip"]] <- object[[tooltipID]]
            mapping <- aes_string( x = "LaneID" , y = "FOVCounted" ,
                                   tooltip = "CustomTooltip" )
-           # Check if panel standard provided
+           # Check if panel standard and reference sample provided
            PSCol <- pscheck(object)
+           RSCol <- rscheck(object)
            # Discriminate outliers and/or panel standards if designated
            geomParams[["point"]] <- unclass(geomParams[["point"]])
            # Set color based on quality
            mapping[["colour"]] <- as.name("Imaging Quality")
            # Remove default point color
            geomParams[["point"]][["colour"]] <- NULL
-           if (!is.null(PSCol)) { 
+           if (!is.null(PSCol) && !is.null(RSCol)) { 
              # Get panel standard labels
-             PSLabels <- getpslabels(object, PSCol)
+             PSLabels <- getpslabels(object, PSCol, RSCol)
            } else {
              # Set all to samples if no panel standard
              PSLabels <- rep("Sample", nrow(extraData))
@@ -700,7 +708,8 @@ function(object,
            # Assign shape based on if panel standard
            mapping[["shape"]] <- PSLabels
            # Scaling geom point size
-           geomParams[["point"]][["size"]] <- 4 * scalingFactor
+           geomParams[["point"]][["size"]] <- 3 * scalingFactor
+           geomParams[["point"]][["stroke"]] <- 1 * scalingFactor
            # Remove default shape
            geomParams[["point"]][["shape"]] <- NULL
            # Reset class if setting new color or shape
@@ -737,11 +746,11 @@ function(object,
                                            ncol = 1L,
                                            title.position = "top",
                                            order = 0,
-                                           override.aes = list(color=c("#7ab800", "#7ab800")))) +
+                                           override.aes = list(color=c("#7ab800", "#7ab800", "#7ab800")))) +
                theme(legend.position = "right") +
-               scale_shape_manual(values = c(2, 16), guide = "none", 
-                                    limits= c("Panel Standard or \n Reference Sample", "Sample"),
-                                    drop = FALSE)
+               scale_shape_manual_interactive(values = c(2, 0, 16), guide = "none",
+                                              limits= c("Panel Standard", "Reference Sample", "Sample"),
+                                              drop = FALSE)
              
            # Add scaling to theme
              p <- p +
@@ -751,7 +760,8 @@ function(object,
                  axis.text = element_text(size = scalingFactor * 9),
                  axis.title = element_text(size = scalingFactor * 10, face = "bold"),
                  legend.title=element_text(size= scalingFactor * 10, face = "bold"),
-                 legend.text=element_text(size= scalingFactor * 8),
+                 legend.text=element_text(size= scalingFactor * 6, 
+                                            margin = margin(t = scalingFactor * 5, b = scalingFactor * 5, unit = "pt")),
                  panel.border = element_rect(fill=NA, color="black", size = scalingFactor * 0.25) 
                )
 
@@ -904,13 +914,32 @@ function(currObj) {
   }
   return(panelStdCol)
 }
+# Check if reference samples were provided
+rscheck <-
+function(currObj) {
+  # Check if reference sample column attached to rcc set dimLabels
+  if(length(dimLabels(currObj)) > 3) {
+    # Get reference sample column label
+    refSampleCol <- dimLabels(currObj)[4]
+  } else {
+    # Reference Sample not required for assay
+    refSampleCol <- NULL
+  }
+  return(refSampleCol)
+}
 
-# Get panel standard and sample designations
+# Get panel standard, reference sample, and sample designations
 getpslabels <-
-function(currObj, PSColumn) {
+function(currObj, PSColumn, RSColumn) {
   panelStandardLabels <- pData(currObj)[, PSColumn]
   # Label for legend
   panelStandardLabels[panelStandardLabels == 0] <- "Sample"
-  panelStandardLabels[panelStandardLabels == 1] <- "Panel Standard or \n Reference Sample"
+  panelStandardLabels[panelStandardLabels == 1] <- "Panel Standard"
+  referenceSampleLabels <- pData(currObj)[, RSColumn]
+  for(i in 1:length(referenceSampleLabels)){
+    if(referenceSampleLabels[i] == 1){
+      panelStandardLabels[i] <- "Reference Sample"
+    }
+  }
   return(panelStandardLabels)
 }
