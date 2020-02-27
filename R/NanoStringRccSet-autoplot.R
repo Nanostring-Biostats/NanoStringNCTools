@@ -130,10 +130,14 @@ function(object,
            df <- data.frame(x = x, score = y, tooltip = tooltip,
                             stringsAsFactors = FALSE)
            df[["colour"]] <- colour
+           
+           errorbar_width <- geomParams[["boxplot"]][["size"]]
+           geomParams[["boxplot"]][["size"]] <- rel(0.2)*scalingFactor
+             
            p <- ggplot(df, aes_string(x = "x", y = "score")) +
              stat_boxplot(geom = "errorbar",
-                          lwd = 0.5*scalingFactor, # add this to boxplot geomParams later, sets error bar line width = box line width
-                          width = geomParams[["boxplot"]][["size"]],
+                          lwd = rel(0.3)*scalingFactor,
+                          width = errorbar_width,
                           colour = geomParams[["boxplot"]][["colour"]]) +
              do.call(geom_boxplot_interactive,
                      c(list(aes_string(tooltip = "x")),
