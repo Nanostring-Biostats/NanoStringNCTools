@@ -452,9 +452,9 @@ function(object,
 
            failingCutoff <- qcCutoffs["failingCutoff"]
            passingCutoff <- qcCutoffs["passingCutoff"]
-           qcBorderlineText <- sprintf("%s < Borderline < %s", failingCutoff, passingCutoff)
+           qcBorderlineText <- sprintf("Borderline < %s", passingCutoff)
            qcFailedText <- sprintf("Failed < %s", failingCutoff)
-           qcPassedText <- sprintf("Passing > %s", passingCutoff-1)
+           qcPassedText <- sprintf("Passing >= %s", passingCutoff)
            # Default to all values passing
            hkSet[["Quality"]] <- qcPassedText
            # Indicate which are borderline or failing quality
