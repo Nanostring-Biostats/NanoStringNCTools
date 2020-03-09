@@ -48,7 +48,7 @@ function(object,
   geomParams <- update_geom_params("point", geomParams, GeomInteractivePoint$default_aes[!names(GeomInteractivePoint$default_aes) %in% c('hover_css', 'selected_css')])
   geomParams <- update_geom_params("line", geomParams, GeomInteractiveLine$default_aes[!names(GeomInteractiveLine$default_aes) %in% c('hover_css', 'selected_css')])
   geomParams <- update_geom_params("boxplot", geomParams, GeomInteractiveBoxplot$default_aes[!names(GeomInteractiveBoxplot$default_aes) %in% c('hover_css', 'selected_css')])
-  
+
   fontFamily <- ifelse( is.null( theme_get()$text$family ) , "Arial" , theme_get()$text$family )
 
   ggpoint <- function(object, mapping, ...) {
@@ -130,10 +130,10 @@ function(object,
            df <- data.frame(x = x, score = y, tooltip = tooltip,
                             stringsAsFactors = FALSE)
            df[["colour"]] <- colour
-           
+
            errorbar_width <- geomParams[["boxplot"]][["size"]]
            geomParams[["boxplot"]][["size"]] <- rel(0.2)*scalingFactor
-             
+
            p <- ggplot(df, aes_string(x = "x", y = "score")) +
              stat_boxplot(geom = "errorbar",
                           lwd = rel(0.3)*scalingFactor,
@@ -214,7 +214,7 @@ function(object,
            mapping <-
              aes_string(x = "ControlConc", y = elt, group = "SampleName",
                         tooltip = "CustomTooltip")
-           
+
            # Check if panel standard and reference sample provided
            PSCol <- pscheck(object)
            RSCol <- rscheck(object)
@@ -227,7 +227,7 @@ function(object,
              # Remove default color
              geomParams[[i]][["colour"]] <- NULL
              if(i == "point") {
-               if (!is.null(PSCol) && !is.null(RSCol)) { 
+               if (!is.null(PSCol) && !is.null(RSCol)) {
                  # Get panel standard labels
                  PSLabels <- getpslabels(object, PSCol, RSCol)
                } else if (!is.null(PSCol) && is.null(RSCol)) {
@@ -236,7 +236,7 @@ function(object,
                  PSLabels <- rep("Sample", nrows(extradata))
                }
                # Assign shape based on if panel standard
-               mapping[["shape"]] <- 
+               mapping[["shape"]] <-
                rep(PSLabels, each = length(featureData(posCtrl)[["ControlConc"]]))
                # Remove default shape
                geomParams[[i]][["shape"]] <- NULL
@@ -248,19 +248,19 @@ function(object,
            geomParams[["line"]][["size"]] <- 0.5 * scalingFactor
            geomParams[["point"]][["size"]] <- 3 * scalingFactor
            geomParams[["point"]][["stroke"]] <- 1 * scalingFactor
-           
-           
+
+
            p <- ggline(posCtrl, mapping, extradata = extradata, ...) +
              scale_x_continuous(name = "Concentration (fM)", trans = "log2") +
-             scale_y_continuous(trans = "log2") + 
+             scale_y_continuous(trans = "log2") +
              scale_colour_manual(values = c("#7ab800", "#E15759"),
                                    limits = c(TRUE, FALSE),
                                    drop = FALSE) +
               guides(colour = guide_legend(ncol = 1L,
-                                             title.position = "top", 
+                                             title.position = "top",
                                              order=1))
            # Add legend if panel standard provided
-             p <- p + 
+             p <- p +
                guides(shape = guide_legend(title = "Sample Type",
                                              ncol = 1L,
                                              title.position = "top",
@@ -270,7 +270,7 @@ function(object,
                scale_shape_manual(values = c(2, 16), guide = "none",
                                               limits= c("Panel Standard", "Sample"),
                                               drop = FALSE)
-             
+
           # Add scaling to theme
              p <- p +
                theme(
@@ -280,10 +280,10 @@ function(object,
                  axis.title = element_text(size = scalingFactor * 10, face = "bold"),
                  legend.title=element_text(size= scalingFactor * 8, face = "bold"),
                  legend.key.size = unit(20 * scalingFactor, "pt"),
-                 legend.text=element_text(size= scalingFactor * 6, 
+                 legend.text=element_text(size= scalingFactor * 6,
                                           margin = margin(t = scalingFactor * 5, b = scalingFactor * 5, unit = "pt")),
-                 panel.border = element_rect(fill=NA, color="black", size = scalingFactor * 0.25) 
-               )             
+                 panel.border = element_rect(fill=NA, color="black", size = scalingFactor * 0.25)
+               )
          },
          "ercc-lod" = {
            negCtrl <- munge(negativeControlSubset(object),
@@ -315,7 +315,7 @@ function(object,
            mapping[["colour"]] <- as.name("Limit of Detection")
            # Remove default point color
            geomParams[["point"]][["colour"]] <- NULL
-           if (!is.null(PSCol) && !is.null(RSCol)) { 
+           if (!is.null(PSCol) && !is.null(RSCol)) {
              # Get panel standard labels
              PSLabels <- getpslabels(object, PSCol, RSCol)
            } else if (!is.null(PSCol) && is.null(RSCol)) {
@@ -337,7 +337,7 @@ function(object,
            oldClass(geomParams[["point"]]) <- "uneval"
            # Scaling geom line size
            geomParams[["line"]][["size"]] <- 0.5 * scalingFactor
-    
+
            # Rename with sample labels
            if ( !( tooltipID %in% "SampleName" ) )
            {
@@ -354,7 +354,7 @@ function(object,
            # Set x position for cutoff line text
            p <- ggplot(negCtrl, aes_string(x = "x", y = "exprs")) +
              stat_boxplot(geom = "errorbar",
-                          colour = geomParams[["boxplot"]][["colour"]], 
+                          colour = geomParams[["boxplot"]][["colour"]],
                           size= 0.5 * scalingFactor) +
              do.call(geom_boxplot_interactive,
                      c(geomParams[["boxplot"]],
@@ -375,11 +375,11 @@ function(object,
                                  drop = FALSE) +
              scale_linetype_manual("Passing Threshold",values=c("Passing Threshold"=1), name=NULL) +
              guides(colour = guide_legend(ncol = 1L,
-                                          title.position = "top", 
+                                          title.position = "top",
                                           order=1))
            if ( nrow( posCtrl ) <= 60L )
            {
-             p <- p + theme( text = element_text( family = fontFamily ) , 
+             p <- p + theme( text = element_text( family = fontFamily ) ,
                              axis.text.x.bottom = element_text( angle = 90 , hjust = 1 , vjust = 0.5 , size = min( 8 , 420 / nrow( posCtrl ) ) * scalingFactor ) )
            }
            else
@@ -388,7 +388,7 @@ function(object,
                              axis.ticks.x = element_blank() )
            }
            # Add panel standard legend
-           p <- p + 
+           p <- p +
              guides(shape = guide_legend(title = "Sample Type",
                                          ncol = 1L,
                                          title.position = "top")) +
@@ -396,7 +396,7 @@ function(object,
               scale_shape_manual(values = c(2, 16), guide = "none",
                                             limits= c("Panel Standard", "Sample"),
                                             drop = FALSE)
-           
+
            # Add scaling to theme
            p <- p +
              theme(
@@ -406,7 +406,7 @@ function(object,
                axis.title = element_text(size = scalingFactor * 10, face = "bold"),
                legend.title=element_text(size= scalingFactor * 8, face = "bold"),
                legend.key.size = unit(20 * scalingFactor, "pt"),
-               legend.text=element_text(size= scalingFactor * 6, 
+               legend.text=element_text(size= scalingFactor * 6,
                                       margin = margin(t = scalingFactor * 5, b = scalingFactor * 5, unit = "pt")),
                 panel.border = element_rect(fill=NA, color="black", size = scalingFactor * 0.25)
              )
@@ -422,7 +422,7 @@ function(object,
            #     heatmapGroup[i] <- newLabel
            #   }
            # }
-           
+
            p <- protoheatmap(scores, log2scale = log2scale,
                              group = heatmapGroup, object = object, ...)
          },
@@ -440,10 +440,10 @@ function(object,
            p <- protoheatmap(scores, log2scale = log2scale,
                              group = heatmapGroup, object = object, blacklist = blacklist, ...)
          },
-         "housekeep-geom" = { 
+         "housekeep-geom" = {
            # Extract housekeeping geometric mean data
            hkSet <- as.data.frame(object[["hkStats"]])
-           hkSet[["tooltip"]] <- 
+           hkSet[["tooltip"]] <-
              sprintf("%s | Geometric&nbsp;Mean&nbsp;=&nbsp;%s", object[[tooltipID]],
                      signif(hkSet[["GeomMean"]], tooltipDigits))
            hkSet[["x"]] <- rownames(hkSet)
@@ -459,16 +459,16 @@ function(object,
            hkSet[["Quality"]] <- qcPassedText
            # Indicate which are borderline or failing quality
            hkSet$Quality[hkSet$GeomMean < passingCutoff] <- qcBorderlineText
-           hkSet$Quality[hkSet$GeomMean < failingCutoff] <- qcFailedText           
+           hkSet$Quality[hkSet$GeomMean < failingCutoff] <- qcFailedText
 
            # Reorder by geometric mean value
-           hkSet <- transform(hkSet, x=reorder(x, GeomMean) ) 
+           hkSet <- transform(hkSet, x=reorder(x, GeomMean) )
            mapping <- aes_string(x = "x", y = "GeomMean",
                                  tooltip = "tooltip")
            # Check if panel standard and reference sample provided
            PSCol <- pscheck(object)
            RSCol <- rscheck(object)
-           # Discriminate lower quality values by color and panel standards by shape 
+           # Discriminate lower quality values by color and panel standards by shape
            # Separate for editing
            geomParams[["point"]] <- unclass(geomParams[["point"]])
            # Set color based on quality
@@ -476,7 +476,7 @@ function(object,
            # Remove default point color
            geomParams[["point"]][["colour"]] <- NULL
            # Set shapes based on panel standards & reference samples
-           if (!is.null(PSCol) && !is.null(RSCol)) { 
+           if (!is.null(PSCol) && !is.null(RSCol)) {
               # Get sample and panel standard designations
               PSLabels <- getpslabels(object, PSCol, RSCol)
            } else if (!is.null(PSCol) && is.null(RSCol)) {
@@ -495,7 +495,7 @@ function(object,
 
            # Reset class if setting new color or shape
            oldClass(geomParams[["point"]]) <- "uneval"
-           
+
            p <- ggpoint(hkSet, mapping, ...) +
              # Add lines indicating low quality or failing housekeepers
              geom_hline(yintercept = failingCutoff, linetype = 2L,
@@ -506,17 +506,17 @@ function(object,
                          data =
                            data.frame(h = c(failingCutoff), label = c(sprintf("Minimum Threshold = %s counts", failingCutoff)),
                          stringsAsFactors = FALSE),
-                         color = "#79706E", 
-                         size = 3 * scalingFactor, 
-                         family = fontFamily, 
+                         color = "#79706E",
+                         size = 3 * scalingFactor,
+                         family = fontFamily,
                          inherit.aes = FALSE) +
              geom_text(aes(cutX, h, label = label, hjust = "right", vjust = -0.25),
                        data =
                          data.frame(h = c(passingCutoff), label = c(sprintf("Borderline Threshold = %s counts", passingCutoff)),
                                     stringsAsFactors = FALSE),
-                       color = "#79706E", 
-                       size = 3 * scalingFactor, 
-                       family = fontFamily, 
+                       color = "#79706E",
+                       size = 3 * scalingFactor,
+                       family = fontFamily,
                        inherit.aes = FALSE) +
              guides(colour = guide_legend(title = "Housekeeper Quality",
                                             ncol = 1L,
@@ -526,19 +526,19 @@ function(object,
              scale_y_continuous(name="Geometric Mean") +
              theme(legend.position = "right") +
              scale_colour_manual(values = c("#7ab800", "#BAB0AC", "#E15759"),
-                                   limits = c(qcPassedText, 
-                                                qcBorderlineText, 
+                                   limits = c(qcPassedText,
+                                                qcBorderlineText,
                                                 qcFailedText),
                                    drop = FALSE)
            if( length(hkSet[["x"]]) <= 60L ) {
-             p <- p + theme(text = element_text(family=fontFamily), 
+             p <- p + theme(text = element_text(family=fontFamily),
                             axis.text.x.bottom = element_text(angle = 90, hjust = 1, vjust = 0.5, size = 8))
            } else {
              p <- p + theme( axis.text.x.bottom = element_blank(),
                              axis.ticks.x = element_blank())
            }
           # Add shape legend
-           p <- p + 
+           p <- p +
                   guides(shape = guide_legend(title = "Sample Type",
                            ncol = 1L,
                            title.position = "top",
@@ -557,9 +557,9 @@ function(object,
                    axis.text = element_text(size = scalingFactor * 7),
                    axis.title = element_text(size = scalingFactor * 10, face = "bold"),
                    legend.title=element_text(size= scalingFactor * 8, face = "bold"),
-                   legend.text=element_text(size= scalingFactor * 6, 
+                   legend.text=element_text(size= scalingFactor * 6,
                                             margin = margin(t = scalingFactor * 5, b = scalingFactor * 5, unit = "pt")),
-                   panel.border = element_rect(fill=NA, color="black", size = scalingFactor * 0.25) 
+                   panel.border = element_rect(fill=NA, color="black", size = scalingFactor * 0.25)
              )
          },
          "lane-bindingDensity" = {
@@ -586,7 +586,7 @@ function(object,
                data.frame("PassingBD" = unlist( apply( data.frame( bd = protocolData(object)[["BindingDensity"]] , i = instrument , min = minBD ) , 1 ,
                               function( x )
                                 {
-                                  maxBD <- switch( x[2] , 
+                                  maxBD <- switch( x[2] ,
                                                    A = 2.25 ,
                                                    B = 2.25 ,
                                                    C = 2.25 ,
@@ -595,13 +595,13 @@ function(object,
                                                    H = 2.25 ,
                                                    P = 1.8 ,
                                                    default = 2.25 )
-                                  return( x[1] > x[3] & x[1] < maxBD )
+                                  return( x[1] >= x[3] & x[1] <= maxBD )
                               } ) ) ,
                           row.names = sampleNames( object ) )
            extradata[["CustomTooltip"]] <- object[[tooltipID]]
            mapping <- aes_string(x = "LaneID", y = "BindingDensity",
                                  tooltip = "CustomTooltip")
-           
+
            # Check if panel standard and reference sample provided
            PSCol <- pscheck(object)
            RSCol <- rscheck(object)
@@ -612,7 +612,7 @@ function(object,
            mapping[["colour"]] <- as.name("PassingBD")
            # Remove default point color
            geomParams[["point"]][["colour"]] <- NULL
-           if (!is.null(PSCol) && !is.null(RSCol)) { 
+           if (!is.null(PSCol) && !is.null(RSCol)) {
              # Get panel standard labels
              PSLabels <- getpslabels(object, PSCol, RSCol)
            } else if (!is.null(PSCol) && is.null(RSCol)) {
@@ -630,7 +630,7 @@ function(object,
            geomParams[["point"]][["stroke"]] <- 1 * scalingFactor
            # Reset class if setting new color or shape
            oldClass(geomParams[["point"]]) <- "uneval"
-           
+
            # Set x position for cutoff line text
            cutX = 11
            p <- ggpoint(object, mapping, extradata = extradata, ...) +
@@ -644,10 +644,10 @@ function(object,
                        data =
                          data.frame(h = c(0.1, maxBD), label = c("Minimum Binding Density", "Maximum Binding Density"),
                                     stringsAsFactors = FALSE),
-                       color = "#79706E", 
-                       size = scalingFactor * 3, 
-                       family = fontFamily, 
-                       inherit.aes = FALSE) + 
+                       color = "#79706E",
+                       size = scalingFactor * 3,
+                       family = fontFamily,
+                       inherit.aes = FALSE) +
              guides(colour = guide_legend(title = "Passing Binding Density",
                                           ncol = 1L,
                                           title.position = "top",
@@ -663,13 +663,13 @@ function(object,
                          data =
                            data.frame(h = 1.8, label = "SPRINT Binding Density",
                                       stringsAsFactors = FALSE),
-                         color = "#79706E", 
-                         size = scalingFactor * 3, 
-                         family = fontFamily, 
+                         color = "#79706E",
+                         size = scalingFactor * 3,
+                         family = fontFamily,
                          inherit.aes = FALSE)
            }
            # Add legend for panel standard
-           p <- p + 
+           p <- p +
               guides(shape = guide_legend(title = "Sample Type",
                                            ncol = 1L,
                                            title.position = "top")) +
@@ -687,7 +687,7 @@ function(object,
                    legend.title=element_text(size= scalingFactor * 8, face = "bold"),
                    legend.text=element_text(size= scalingFactor * 6,
                                             margin = margin(t = scalingFactor * 5, b = scalingFactor * 5, unit = "pt")),
-                   panel.border = element_rect(fill=NA, color="black", size = scalingFactor * 0.25) 
+                   panel.border = element_rect(fill=NA, color="black", size = scalingFactor * 0.25)
              )
          },
          "lane-fov" = {
@@ -710,7 +710,7 @@ function(object,
            mapping[["colour"]] <- as.name("Imaging Quality")
            # Remove default point color
            geomParams[["point"]][["colour"]] <- NULL
-           if (!is.null(PSCol) && !is.null(RSCol)) { 
+           if (!is.null(PSCol) && !is.null(RSCol)) {
              # Get panel standard labels
              PSLabels <- getpslabels(object, PSCol, RSCol)
            } else if (!is.null(PSCol) && is.null(RSCol)) {
@@ -740,13 +740,13 @@ function(object,
                        data =
                          data.frame(h = c(0.75), label = c("75% Passing"),
                                     stringsAsFactors = FALSE),
-                       color = "#79706E", 
-                       size = 3 * scalingFactor, 
-                       family = fontFamily, 
+                       color = "#79706E",
+                       size = 3 * scalingFactor,
+                       family = fontFamily,
                        inherit.aes = FALSE) +
              geom_hline(yintercept = 0.75, linetype = 2L,
                         colour = "darkgray",
-                        size = 0.5 * scalingFactor) + 
+                        size = 0.5 * scalingFactor) +
              guides(colour = guide_legend(title = "Imaging Quality",
                                           ncol = 1L,
                                           title.position = "top",
@@ -755,7 +755,7 @@ function(object,
                                  limits = c("Passing >= 75%", "Failed < 75%"),
                                  drop = FALSE)
            # Add legend for panel standard
-             p <- p + 
+             p <- p +
                guides(shape = guide_legend(title = "Sample Type",
                                            ncol = 1L,
                                            title.position = "top",
@@ -765,7 +765,7 @@ function(object,
                scale_shape_manual(values = c(2, 16), guide = "none",
                                               limits= c("Panel Standard", "Sample"),
                                               drop = FALSE)
-             
+
            # Add scaling to theme
              p <- p +
                theme(
@@ -774,9 +774,9 @@ function(object,
                  axis.text = element_text(size = scalingFactor * 9),
                  axis.title = element_text(size = scalingFactor * 10, face = "bold"),
                  legend.title=element_text(size= scalingFactor * 10, face = "bold"),
-                 legend.text=element_text(size= scalingFactor * 6, 
+                 legend.text=element_text(size= scalingFactor * 6,
                                             margin = margin(t = scalingFactor * 5, b = scalingFactor * 5, unit = "pt")),
-                 panel.border = element_rect(fill=NA, color="black", size = scalingFactor * 0.25) 
+                 panel.border = element_rect(fill=NA, color="black", size = scalingFactor * 0.25)
                )
 
          },
@@ -827,21 +827,21 @@ protoheatmap <-
     object <- object[, ok]
     scores <- scores[, ok, drop = FALSE]
   }
-  
+
   if (log2scale) {
     scores <- log2t(scores)
   }
-  
+
   scaleCutoff <- abs(scaleCutoff)
   scores <- pmin(pmax(t(scale(t(scores))), - scaleCutoff), scaleCutoff)
-  
+
   if (is.null(group)) {
     annotation_col <- NA
     annotation_colors <- NA
   } else {
     for ( i in seq_along( group ) ) {
       if ( substr( group[i] , nchar(group[i]), nchar(group[i])) == "_" ) {
-        newLabel = substr( group[i] , 1 , (nchar( group[i] ) - 1 ) ) 
+        newLabel = substr( group[i] , 1 , (nchar( group[i] ) - 1 ) )
         pData( object )[newLabel] <- sData( object )[group[i]]
         annotation_colors[[newLabel]] <- annotation_colors[[group[i]]]
         group[i] <- newLabel
@@ -876,7 +876,7 @@ protoheatmap <-
         names(annotation_colors[[j]]) <- levels(annotation_col[[j]])
       }
     }
-    
+
     if( !is.null(annotation_colors) ) {
       # Set subtype cluster colors
       for ( i in seq_along( annotation_colors ) ) {
@@ -894,7 +894,7 @@ protoheatmap <-
       }
     }
   }
-  
+
   pheatmap(scores,
            color =
              colorRampPalette(c("darkblue",
@@ -907,8 +907,8 @@ protoheatmap <-
            show_rownames = (nrow(scores) <= 60L),
            show_colnames = (ncol(scores) <= 36L),
            silent = TRUE, legend.position = "bottom",
-           fontsize = labelsize, 
-           angle_col = 90, 
+           fontsize = labelsize,
+           angle_col = 90,
            cellheight = ifelse(nrow(scores) <= 60L, labelsize + 2, NA),
            cellwidth = ifelse(ncol(scores) <= 36L, labelsize + 2, NA),
            fontfamily = ifelse( is.null( theme_get()$text$family ) , "HersheySans" , theme_get()$text$family ) ,
