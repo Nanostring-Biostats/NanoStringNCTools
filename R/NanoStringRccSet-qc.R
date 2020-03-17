@@ -9,6 +9,7 @@ function(object,
          hkGenes = NULL,
          minHKGeoMean = 32,
          blHKGeoMean = 100,
+         ReferenceSampleColumn = NULL,
          ...)
 {
   stopifnot(isSinglePercent(fovPercentLB))
@@ -40,6 +41,14 @@ function(object,
   }
   #Get geometric mean
   hkStats <- summary( subHKGenes , 2L , elt = "exprs" )
+  # If reference samples are present update their HK stats to discard non PAM50 HK genes
+  if ( !is.null( ReferenceSampleColumn ) )
+  {
+    pam50HKGenes <- c( "MRPL19" , "SF3A1" , "PUM1" , "ACTB" , "PSMC4" , "RPLP0" , "GUSB" , "TFRC" )
+    subHKGenes <- subHKGenes[which( featureData( subHKGenes )[["GeneName"]] %in% pam50HKGenes ),which( as.logical( pData( subHKGenes )[[ReferenceSampleColumn]] ) )]
+    thkStats <- summary( subHKGenes , 2L , elt = "exprs" )
+    hkStats[rownames( thkStats ),] <- thkStats
+  }
 
   # Set binding density threshold by SPRINT and not SPRINT
   Binding <- unlist( apply( data.frame( prData[["BindingDensity"]] , substr( protocolData( object )[["ScannerID"]] , 5 , 5 ) , bindDenRange[1L] ) , 1 ,
