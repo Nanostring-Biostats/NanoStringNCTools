@@ -24,6 +24,7 @@ function(object,
          tooltipID = "SampleName",
          qcCutoffs = c("failingCutoff" = 32,"passingCutoff" = 100),
          scalingFactor=1L,
+         show_rownames_limit=60L,
          ...)
 {
   if ( (length( geomParams) > 0 ) ) {
@@ -424,7 +425,8 @@ function(object,
            # }
 
            p <- protoheatmap(scores, log2scale = log2scale,
-                             group = heatmapGroup, object = object, ...)
+                             group = heatmapGroup, object = object, 
+                             show_rownames_limit = show_rownames_limit, ...)
          },
          "heatmap-signatures" = {
            scores <-
@@ -813,6 +815,7 @@ protoheatmap <-
                "#A66293", "#33CDF4", "#FFD861", "#ABABAB", "#318026" ),
            blacklist = NULL,
            annotation_colors = NULL,
+           show_rownames_limit  = 60L,
            ...)
   {
   if (anyNA(rownames(scores))) {
@@ -904,7 +907,7 @@ protoheatmap <-
            annotation_colors = annotation_colors,
            cluster_rows = (nrow(scores) > 2),
            cluster_cols = (ncol(scores) > 2),
-           show_rownames = (nrow(scores) <= 60L),
+           show_rownames = (nrow(scores) <= show_rownames_limit),
            show_colnames = (ncol(scores) <= 36L),
            silent = TRUE, legend.position = "bottom",
            fontsize = labelsize,
