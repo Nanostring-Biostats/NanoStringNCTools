@@ -24,7 +24,11 @@ function(object,
          tooltipID = "SampleName",
          qcCutoffs = c("failingCutoff" = 32,"passingCutoff" = 100),
          scalingFactor=1L,
-         show_rownames_limit=60L,
+         show_rownames_gene_limit=60L,
+         show_colnames_gene_limit=36L,
+         show_rownames_sig_limit=60L,
+         show_colnames_sig_limit=36L,
+         
          ...)
 {
   if ( (length( geomParams) > 0 ) ) {
@@ -426,7 +430,8 @@ function(object,
 
            p <- protoheatmap(scores, log2scale = log2scale,
                              group = heatmapGroup, object = object, 
-                             show_rownames_limit = show_rownames_limit, ...)
+                             show_rownames_limit = show_rownames_gene_limit, 
+                             show_colnames_limit = show_colnames_gene_limit, ...)
          },
          "heatmap-signatures" = {
            scores <-
@@ -440,7 +445,9 @@ function(object,
            #   }
            # }
            p <- protoheatmap(scores, log2scale = log2scale,
-                             group = heatmapGroup, object = object, blacklist = blacklist, ...)
+                             group = heatmapGroup, object = object, blacklist = blacklist, 
+                             show_rownames_limit = show_rownames_sig_limit, 
+                             show_colnames_limit = show_colnames_sig_limit, ...)
          },
          "housekeep-geom" = {
            # Extract housekeeping geometric mean data
@@ -815,7 +822,8 @@ protoheatmap <-
                "#A66293", "#33CDF4", "#FFD861", "#ABABAB", "#318026" ),
            blacklist = NULL,
            annotation_colors = NULL,
-           show_rownames_limit  = 60L,
+           show_rownames_limit = 60L,
+           show_colnames_limit = 36L,
            ...)
   {
   if (anyNA(rownames(scores))) {
@@ -908,7 +916,7 @@ protoheatmap <-
            cluster_rows = (nrow(scores) > 2),
            cluster_cols = (ncol(scores) > 2),
            show_rownames = (nrow(scores) <= show_rownames_limit),
-           show_colnames = (ncol(scores) <= 36L),
+           show_colnames = (ncol(scores) <= show_colnames_limit),
            silent = TRUE, legend.position = "bottom",
            fontsize = labelsize,
            angle_col = 90,
