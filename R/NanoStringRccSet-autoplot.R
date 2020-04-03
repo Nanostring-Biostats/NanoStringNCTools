@@ -22,7 +22,13 @@ function(object,
          heatmapGroup = NULL,
          blacklist = NULL,
          tooltipID = "SampleName",
-         qcCutoffs = c("failingCutoff" = 32,"passingCutoff" = 100),
+         qcCutoffs = list(
+           Housekeeper = c("failingCutoff" = 32,"passingCutoff" = 100) ,
+           Imaging = c("fovCutoff" = 0.75) ,
+           BindingDensity = c("minimumBD" = 0.1, "maximumBD" = 2.25, "maximumBDSprint" = 1.8) ,
+           ERCCLinearity = c("correlationValue" = 0.95) ,
+           ERCCLoD = c("standardDeviations" = 2)
+         ),
          scalingFactor=1L,
          show_rownames_gene_limit=60L,
          show_colnames_gene_limit=36L,
@@ -211,7 +217,7 @@ function(object,
                           assayDataApply(posCtrl, 2L,
                                          function(y) cor(x, log2t(y, 0.5))^2,
                                          elt = elt))
-           extradata[["Passing Correlation Value"]] <- extradata[["RSquared"]] >= 0.95
+           extradata[["Passing Correlation Value"]] <- extradata[["RSquared"]] >= qcCutoffs[["ERCCLinearity"]][["correlationValue"]]
            extradata[["CustomTooltip"]] <-
              sprintf("%s | R-Squared = %.4f", object[[tooltipID]],
                      extradata[["RSquared"]])
@@ -296,7 +302,7 @@ function(object,
            negCtrl[["x"]] <- negCtrl[["SampleName"]]
            cutoff <- negCtrl[["exprs"]]
            cutoff <- tapply(cutoff, negCtrl[["SampleName"]] ,function( x ) mean( x , na.rm = TRUE ) ) +
-               2 * tapply( cutoff , negCtrl[["SampleName"]] , function( x ) sd( x , na.rm = TRUE ) )
+             qcCutoffs[["ERCCLoD"]][["standardDeviations"]] * tapply( cutoff , negCtrl[["SampleName"]] , function( x ) sd( x , na.rm = TRUE ) )
 
            posCtrl <- positiveControlSubset(object)
            posCtrl <- subset(posCtrl,
@@ -459,8 +465,8 @@ function(object,
            # Get plot x limit for cut-off text
            cutX <- length(hkSet[["x"]])
 
-           failingCutoff <- qcCutoffs["failingCutoff"]
-           passingCutoff <- qcCutoffs["passingCutoff"]
+           failingCutoff <- qcCutoffs[["Housekeeper"]][["failingCutoff"]]
+           passingCutoff <- qcCutoffs[["Housekeeper"]][["passingCutoff"]]
            qcBorderlineText <- sprintf("Borderline < %s", passingCutoff)
            qcFailedText <- sprintf("Failed < %s", failingCutoff)
            qcPassedText <- sprintf("Passing >= %s", passingCutoff)
@@ -573,14 +579,15 @@ function(object,
          },
          "lane-bindingDensity" = {
            instrument <- substr( protocolData( object )[["ScannerID"]] , 5 , 5 )
-           minBD <- 0.1
-           maxBD <- 2.25
+           minBD <- qcCutoffs[["BindingDensity"]][["minimumBD"]]
+           maxBD <- qcCutoffs[["BindingDensity"]][["maximumBD"]]
+           maxBDSprint <- qcCutoffs[["BindingDensity"]][["maximumBDSprint"]]
            if ( any( instrument %in% "P" ) )
            {
              SPRINT <- TRUE
              if ( all( instrument ) %in% "P" )
              {
-               maxBD <- 1.8
+               maxBD <- maxBDSprint
              }
            }
            else
@@ -589,21 +596,21 @@ function(object,
            }
            if ( length( unique( instrument ) ) > 1 )
            {
-             warning( "More than one instrument type in RCC set.  Using SPRINT threshold of 1.8 instead of 2.25.\n" )
+             warning( sprintf("More than one instrument type in RCC set.  Using SPRINT threshold of %s instead of %s.", maxBDSprint, maxBD ))
            }
              extradata <-
                data.frame("PassingBD" = unlist( apply( data.frame( bd = protocolData(object)[["BindingDensity"]] , i = instrument , min = minBD ) , 1 ,
                               function( x )
                                 {
                                   maxBD <- switch( x[2] ,
-                                                   A = 2.25 ,
-                                                   B = 2.25 ,
-                                                   C = 2.25 ,
-                                                   D = 2.25 ,
-                                                   G = 2.25 ,
-                                                   H = 2.25 ,
-                                                   P = 1.8 ,
-                                                   default = 2.25 )
+                                                   A = qcCutoffs[["BindingDensity"]][["maximumBD"]] ,
+                                                   B = qcCutoffs[["BindingDensity"]][["maximumBD"]] ,
+                                                   C = qcCutoffs[["BindingDensity"]][["maximumBD"]] ,
+                                                   D = qcCutoffs[["BindingDensity"]][["maximumBD"]] ,
+                                                   G = qcCutoffs[["BindingDensity"]][["maximumBD"]] ,
+                                                   H = qcCutoffs[["BindingDensity"]][["maximumBD"]] ,
+                                                   P = qcCutoffs[["BindingDensity"]][["maximumBDSprint"]] ,
+                                                   default = qcCutoffs[["BindingDensity"]][["maximumBD"]] )
                                   return( x[1] >= x[3] & x[1] <= maxBD )
                               } ) ) ,
                           row.names = sampleNames( object ) )
@@ -647,11 +654,11 @@ function(object,
                                 limits = c(1L, 12L)) +
              scale_y_continuous(name = "Binding Density",
                                 limits = c(0, NA_real_)) +
-             geom_hline(yintercept = c(0.1, maxBD), linetype = 2L,
+             geom_hline(yintercept = c(minBD, maxBD), linetype = 2L,
                         colour = "darkgray", size = scalingFactor * 0.5) +
              geom_text(aes(cutX, h, label = label, hjust = 0.55, vjust = 1.25),
                        data =
-                         data.frame(h = c(0.1, maxBD), label = c("Minimum Binding Density", "Maximum Binding Density"),
+                         data.frame(h = c(minBD, maxBD), label = c("Minimum Binding Density", "Maximum Binding Density"),
                                     stringsAsFactors = FALSE),
                        color = "#79706E",
                        size = scalingFactor * 3,
@@ -666,11 +673,11 @@ function(object,
                                  drop = FALSE)
            if ( SPRINT )
            {
-             p <- p + geom_hline(yintercept = 1.8, linetype = 2L,
+             p <- p + geom_hline(yintercept = maxBDSprint, linetype = 2L,
                         colour = "darkgray") +
                geom_text(aes(cutX, h, label = label, hjust = 0.55, vjust = 1.25),
                          data =
-                           data.frame(h = 1.8, label = "SPRINT Binding Density",
+                           data.frame(h = maxBDSprint, label = "SPRINT Binding Density",
                                       stringsAsFactors = FALSE),
                          color = "#79706E",
                          size = scalingFactor * 3,
@@ -705,8 +712,8 @@ function(object,
              data.frame(FOVCounted =
                           extradata[["FovCounted"]] / extradata[["FovCount"]],
                         row.names = rownames(extradata))
-           extradata[["Imaging Quality"]] <- "Passing >= 75%"
-           extradata$"Imaging Quality"[extradata$"FOVCounted" < 0.75] <- "Failed < 75%"
+           extradata[["Imaging Quality"]] <- sprintf("Passing >= %s%%", qcCutoffs[["Imaging"]][["fovCutoff"]]*100)
+           extradata$"Imaging Quality"[extradata$"FOVCounted" < qcCutoffs[["Imaging"]][["fovCutoff"]]] <- sprintf("Failed < %s%%", qcCutoffs[["Imaging"]][["fovCutoff"]]*100)
            extradata[["CustomTooltip"]] <- object[[tooltipID]]
            mapping <- aes_string( x = "LaneID" , y = "FOVCounted" ,
                                   tooltip = "CustomTooltip" )
@@ -747,13 +754,13 @@ function(object,
                                 limits = c(0, 1)) +
              geom_text(aes(cutX, h, label = label, hjust = 0.1, vjust = 1.25),
                        data =
-                         data.frame(h = c(0.75), label = c("75% Passing"),
+                         data.frame(h = c(qcCutoffs[["Imaging"]][["fovCutoff"]]), label = c(sprintf("%s%% Passing", qcCutoffs[["Imaging"]][["fovCutoff"]]*100)),
                                     stringsAsFactors = FALSE),
                        color = "#79706E",
                        size = 3 * scalingFactor,
                        family = fontFamily,
                        inherit.aes = FALSE) +
-             geom_hline(yintercept = 0.75, linetype = 2L,
+             geom_hline(yintercept = qcCutoffs[["Imaging"]][["fovCutoff"]], linetype = 2L,
                         colour = "darkgray",
                         size = 0.5 * scalingFactor) +
              guides(colour = guide_legend(title = "Imaging Quality",
@@ -761,7 +768,7 @@ function(object,
                                           title.position = "top",
                                           order = 1)) +
              scale_colour_manual(values = c("#7ab800", "#E15759"),
-                                 limits = c("Passing >= 75%", "Failed < 75%"),
+                                 limits = c(sprintf("Passing >= %s%%", qcCutoffs[["Imaging"]][["fovCutoff"]]*100), sprintf("Failed < %s%%", qcCutoffs[["Imaging"]][["fovCutoff"]]*100)),
                                  drop = FALSE)
            # Add legend for panel standard
              p <- p +

@@ -2,16 +2,26 @@ setGeneric("setQCFlags", signature = "object",
            function(object, ...) standardGeneric("setQCFlags"))
 setMethod("setQCFlags", "NanoStringRccSet",
 function(object,
-         fovPercentLB = 0.75,
-         bindDenRange = c(0.1, 2.25),
-         posCtrlRsqLB = 0.95,
-         negCtrlSDUB = 2,
+         qcCutoffs = list(
+           Housekeeper = c("failingCutoff" = 32,"passingCutoff" = 100) ,
+           Imaging = c("fovCutoff" = 0.75) ,
+           BindingDensity = c("minimumBD" = 0.1, "maximumBD" = 2.25, "maximumBDSprint" = 1.8) ,
+           ERCCLinearity = c("correlationValue" = 0.95) ,
+           ERCCLoD = c("standardDeviations" = 2)
+         ),
          hkGenes = NULL,
-         minHKGeoMean = 32,
-         blHKGeoMean = 100,
          ReferenceSampleColumn = NULL,
          ...)
 {
+  fovPercentLB = qcCutoffs[["Imaging"]][["fovCutoff"]]
+  bindDenRange = c(qcCutoffs[["BindingDensity"]][["minimumBD"]], qcCutoffs[["BindingDensity"]][["maximumBD"]])
+  posCtrlRsqLB = qcCutoffs[["ERCCLinearity"]][["correlationValue"]]
+  negCtrlSDUB = qcCutoffs[["ERCCLoD"]][["standardDeviations"]]
+  minHKGeoMean = qcCutoffs[["Housekeeper"]][["failingCutoff"]]
+  blHKGeoMean = qcCutoffs[["Housekeeper"]][["passingCutoff"]]
+  maxBindDen = qcCutoffs[["BindingDensity"]][["maximumBD"]]
+  maxBindDenSprint = qcCutoffs[["BindingDensity"]][["maximumBDSprint"]]
+  
   stopifnot(isSinglePercent(fovPercentLB))
   stopifnot(is.numeric(bindDenRange) &&
               length(bindDenRange) == 2L &&
@@ -55,20 +65,20 @@ function(object,
                  function( x )
                  {
                    maxBD <- switch( x[2] , 
-                                    A = 2.25 ,
-                                    B = 2.25 ,
-                                    C = 2.25 ,
-                                    D = 2.25 ,
-                                    G = 2.25 ,
-                                    H = 2.25 ,
-                                    P = 1.8 ,
-                                    default = 2.25 )
+                                    A = maxBindDen ,
+                                    B = maxBindDen ,
+                                    C = maxBindDen ,
+                                    D = maxBindDen ,
+                                    G = maxBindDen ,
+                                    H = maxBindDen ,
+                                    P = maxBindDenSprint ,
+                                    default = maxBindDen )
                    return( x[1] < x[3] | x[1] > maxBD )
                  } ) )
   negCtrld <- munge( negCtrl , mapping = aes_( exprs = as.name( "exprs" ) ) )
   cutoff <- negCtrld[["exprs"]]
   cutoff <- tapply(cutoff, negCtrld[["SampleName"]] ,function( x ) mean( x , na.rm = TRUE ) ) +
-    2 * tapply( cutoff , negCtrld[["SampleName"]] , function( x ) sd( x , na.rm = TRUE ) )
+    negCtrlSDUB * tapply( cutoff , negCtrld[["SampleName"]] , function( x ) sd( x , na.rm = TRUE ) )
   prData[["QCFlags"]] <-
     cbind( Imaging = prData[["FovCounted"]] / prData[["FovCount"]] < fovPercentLB,
            Binding = Binding ,
