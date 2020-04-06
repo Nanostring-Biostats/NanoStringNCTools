@@ -34,7 +34,7 @@ function(object,
          show_colnames_gene_limit=36L,
          show_rownames_sig_limit=60L,
          show_colnames_sig_limit=36L,
-         
+         subSet = NULL ,
          ...)
 {
   if ( (length( geomParams) > 0 ) ) {
@@ -103,6 +103,10 @@ function(object,
              ytitle <- rownames(scores)[index]
            }
            colnames(scores) <- sData(object)[[dimLabels(object)[2L]]]
+           if ( !is.null( subSet ) )
+           {
+             scores <- scores[,subSet]
+           }
            y <- scores[index, ]
            if (!is.name(geomParams[["base"]][["x"]])) {
              x <- rep.int("", ncol(scores))
