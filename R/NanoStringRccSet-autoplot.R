@@ -112,14 +112,28 @@ function(object,
              x <- rep.int("", ncol(scores))
              xtitle <- ""
            } else {
-             x <- as.character(eval(geomParams[["base"]][["x"]], sData(object)))
+             if ( is.null( subSet ) )
+             {
+               x <- as.character(eval(geomParams[["base"]][["x"]], sData(object)))
+             }
+             else
+             {
+               x <- as.character(eval(geomParams[["base"]][["x"]], sData(object)))[subSet]
+             }
              xtitle <- as.character(geomParams[["base"]][["x"]])
            }
            if (!is.name(geomParams[["point"]][["colour"]])) {
              colour <- NULL
              colourtitle <- ""
            } else {
-             colour <- eval(geomParams[["point"]][["colour"]], sData(object))
+             if ( is.null( subSet ) )
+             {
+               colour <- eval(geomParams[["point"]][["colour"]], sData(object))
+             }
+             else
+             {
+               colour <- eval(geomParams[["point"]][["colour"]], sData(object))[subSet]
+             }
              colourtitle <- as.character(geomParams[["point"]][["colour"]])
              geomParams[["point"]] <- unclass(geomParams[["point"]])
              geomParams[["point"]][["colour"]] <- NULL
