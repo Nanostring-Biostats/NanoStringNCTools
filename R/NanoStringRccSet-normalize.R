@@ -15,11 +15,12 @@ function(object,
            mat <- .safe.as.integer(2 ^ sCenter(mat, stats))
          },
          "nSolver" = {
+           assayDataElement2( object , toElt ) ) <- 1 + assayDataElement2( object , fromElt ) )
            posCtrl <- positiveControlSubset(object)
-           pcG <- summary(posCtrl, 2L, elt = fromElt)[, "GeomMean"]
+           pcG <- summary(posCtrl, 2L, elt = toElt)[, "GeomMean"]
            pcM <- mean( pcG )
            pcR <- pcM / pcG
-           assayDataElement2( object , toElt ) ) <- pcR * assayDataElement2( object , fromElt ) )
+           assayDataElement2( object , toElt ) ) <- pcR * assayDataElement2( object , toElt ) )
            housekeepingSet <- housekeepingSubset( object )
            hkG <- summary( housekeepingSet , 2L , elt = toElt )[, "GeomMean"]
            hkM <- mean( hkG )
