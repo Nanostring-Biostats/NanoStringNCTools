@@ -16,16 +16,12 @@ function(object,
          },
          "nSolver" = {
            assayDataElement2( object , toElt ) ) <- 1 + assayDataElement2( object , fromElt ) )
-           posCtrl <- positiveControlSubset(object)
-           pcG <- summary(posCtrl, 2L, elt = toElt)[, "GeomMean"]
-           pcM <- mean( pcG )
-           pcR <- pcM / pcG
-           assayDataElement2( object , toElt ) ) <- pcR * assayDataElement2( object , toElt ) )
+           posCtrl <- positiveControlSubset( object )
+           pcG <- summary( object , 2L , elt = toElt )[, "GeomMean"]
+           assayDataElement( object , toElt ) <- sweep( assayDataElement( object , toElt ) , 2L , mean( pcG ) / pcG , FUN = "*" )
            housekeepingSet <- housekeepingSubset( object )
            hkG <- summary( housekeepingSet , 2L , elt = toElt )[, "GeomMean"]
-           hkM <- mean( hkG )
-           hkR <- hkM / hkG
-           mat <- log2( hkR * assayDataElement2( object , toElt ) )
+           mat <- log2( sweep( assayDataElement( object , toElt ) , 2L , mean( hkG ) / hkG , FUN = "*" ) )
          },
          "PositiveControl-Log2Log2" = {
            # Get the coefficient estimates for log2-log2 regression
