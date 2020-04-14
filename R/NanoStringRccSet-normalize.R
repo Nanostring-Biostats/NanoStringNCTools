@@ -1,7 +1,8 @@
 setMethod("normalize", "NanoStringRccSet",
 function(object,
-         type = c("PositiveControl-Log2Log2",
-                  "Housekeeping-Log2"),
+         type = c( "nSolver",
+                   "PositiveControl-Log2Log2",
+                   "Housekeeping-Log2"),
          fromElt = "exprs", toElt = "exprs_norm", ...)
 {
   type <- match.arg(type)
