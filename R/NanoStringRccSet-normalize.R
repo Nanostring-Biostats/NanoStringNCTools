@@ -14,6 +14,18 @@ function(object,
            mat <- log2t(assayDataElement2(object, fromElt))
            mat <- .safe.as.integer(2 ^ sCenter(mat, stats))
          },
+         "nSolver" = {
+           posCtrl <- positiveControlSubset(object)
+           pcG <- summary(posCtrl, 2L, elt = fromElt)[, "GeomMean"]
+           pcM <- mean( pcG )
+           pcR <- pcM / pcG
+           assayDataElement2( object , toElt ) ) <- pcR * assayDataElement2( object , fromElt ) )
+           housekeepingSet <- housekeepingSubset( object )
+           hkG <- summary( housekeepingSet , 2L , elt = toElt )[, "GeomMean"]
+           hkM <- mean( hkG )
+           hkR <- hkM / hkG
+           mat <- log2( hkR * assayDataElement2( object , toElt ) )
+         },
          "PositiveControl-Log2Log2" = {
            # Get the coefficient estimates for log2-log2 regression
            posCtrl <- positiveControlSubset(object)
