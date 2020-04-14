@@ -16,7 +16,7 @@ function(object,
            mat <- .safe.as.integer(2 ^ sCenter(mat, stats))
          },
          "nSolver" = {
-           assayDataElement2( object , toElt ) <- 1 + assayDataElement2( object , fromElt )
+           assayDataElement( object , toElt ) <- 1 + assayDataElement( object , fromElt )
            posCtrl <- positiveControlSubset( object )
            pcG <- summary( object , 2L , elt = toElt )[, "GeomMean"]
            assayDataElement( object , toElt ) <- sweep( assayDataElement( object , toElt ) , 2L , mean( pcG ) / pcG , FUN = "*" )
