@@ -554,7 +554,8 @@ function(object,
              guides(colour = guide_legend(title = "Housekeeper Quality",
                                             ncol = 1L,
                                             title.position = "top",
-                                            order = 1)) +
+                                            order = 1,
+                                            title.hjust = 0)) +
              scale_x_discrete(name="Sample") +
              scale_y_continuous(name="Geometric Mean") +
              theme(legend.position = "right") +
@@ -565,7 +566,7 @@ function(object,
                                    drop = FALSE)
            if( length(hkSet[["x"]]) <= 60L ) {
              p <- p + theme(text = element_text(family=fontFamily),
-                            axis.text.x.bottom = element_text(angle = 90, hjust = 1, vjust = 0.5, size = 8))
+                            axis.text.x.bottom = element_text(angle = 90, hjust = 1, vjust = 0.5, size = 6 * scalingFactor))
            } else {
              p <- p + theme( axis.text.x.bottom = element_blank(),
                              axis.ticks.x = element_blank())
@@ -587,9 +588,9 @@ function(object,
              theme(
                    axis.ticks.x = element_line(size = scalingFactor * 0.2),
                    axis.ticks.length = unit(3 * scalingFactor, "pt"),
-                   axis.text = element_text(size = scalingFactor * 7),
+                   axis.text = element_text(size = scalingFactor * 6),
                    axis.title = element_text(size = scalingFactor * 10, face = "bold"),
-                   legend.title=element_text(size= scalingFactor * 8, face = "bold"),
+                   legend.title=element_text(size= scalingFactor * 6, face = "bold"),
                    legend.text=element_text(size= scalingFactor * 6,
                                             margin = margin(t = scalingFactor * 5, b = scalingFactor * 5, unit = "pt")),
                    panel.border = element_rect(fill=NA, color="black", size = scalingFactor * 0.25)
