@@ -156,6 +156,9 @@ function(object,
            if (is.name(geomParams[["point"]][["colour"]])) {
              tooltip <- sprintf("%s | %s&nbsp;=&nbsp;%s", tooltip, colourtitle, colour)
            }
+           x <-   gsub(pattern = "\n", replacement = "", x)
+           tooltip <-   gsub(pattern = "\n", replacement = "", tooltip)
+           
            df <- data.frame(x = x, score = y, tooltip = tooltip,
                             stringsAsFactors = FALSE)
            df[["colour"]] <- colour
@@ -172,7 +175,7 @@ function(object,
                      c(list(aes_string(tooltip = "x")),
                        geomParams[["boxplot"]],
                        outlier.shape = NA)) +
-             scale_x_discrete(name = xtitle) +
+             scale_x_discrete(name = xtitle, labels = lapply( levels( factor(df[["x"]]) ), strwrpr )) +
              scale_y_continuous(name = "Score",
                                 labels = function(x) {sprintf("%.1f", x)})
            if (is.null(colour)) {
