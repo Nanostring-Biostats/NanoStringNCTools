@@ -96,18 +96,32 @@ function(object,
              ytitle <- fData(object)[index, dimLabels(object)[1L]]
            } else {
              scores <- signatureScores(object, elt)
+             ytitle <- rownames(scores)[index]
              if ( !is.null( blacklist ) )
              {
                scores <- scores[!rownames(scores) %in% blacklist, , drop = FALSE]
              }
-             ytitle <- rownames(scores)[index]
            }
            colnames(scores) <- sData(object)[[dimLabels(object)[2L]]]
            if ( !is.null( subSet ) )
            {
              scores <- scores[,subSet]
            }
-           y <- scores[index, ]
+           if ( type == "boxplot-feature" )
+           {
+             y <- scores[index, ]
+           }
+           else
+           {
+             if ( ytitle %in% rownames( scores ) )
+             {
+               y <- scores[ytitle, ]
+             }
+             else
+             {
+               return( NULL )
+             }
+           }
            if (!is.name(geomParams[["base"]][["x"]])) {
              x <- rep.int("", ncol(scores))
              xtitle <- ""
