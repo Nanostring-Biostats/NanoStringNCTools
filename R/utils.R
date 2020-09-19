@@ -17,6 +17,10 @@ function(x, thresh = 0.5)
   log2(x)
 }
 
+ngeoMean <- function(v) {
+  v[v == 0] <- 1
+  return(geoMean(v, na.rm = T))
+}
 
 # Convenience wrappers around sweep function
 .safe.as.integer <- function(x) {

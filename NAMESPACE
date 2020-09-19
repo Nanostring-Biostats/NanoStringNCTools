@@ -24,6 +24,11 @@ importFrom(pheatmap, pheatmap)
 importFrom(RColorBrewer, brewer.pal)
 importFrom(stats, as.formula, coef, lm, model.frame, qnorm, quantile, update)
 importFrom(utils, read.csv, write.csv)
+importFrom(rjson, fromJSON)
+importFrom(readxl, read_xlsx)
+importFrom(reshape2, dcast)
+importFrom(EnvStats, geoMean)
+
 
 ### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ### Export S4 classes
