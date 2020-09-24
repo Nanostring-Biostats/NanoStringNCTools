@@ -670,6 +670,9 @@ function(object,
              # Set all to samples if no panel standard
              PSLabels <- getpslabels(object, PSCol, RSCol = NULL)
            } else {
+             hkGenes <- housekeepingSubset( object )
+             hkStats <- summary( hkGenes , 2L , elt = "exprs" )
+             hkSet <- as.data.frame(hkStats)
              PSLabels <- rep("Sample", nrow(hkSet))
            }
            # Assign shape based on if panel standard
