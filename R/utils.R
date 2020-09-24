@@ -17,6 +17,12 @@ function(x, thresh = 0.5)
   log2(x)
 }
 
+strwrpr <- function(x) {
+  if(!grepl(' ', x)) {
+    x <- gsub('(.{16})', '\\1 ', x)
+  }
+  paste(strwrap(x, 16), collapse = '\n')
+}
 
 # Convenience wrappers around sweep function
 .safe.as.integer <- function(x) {
