@@ -94,9 +94,11 @@ function(object,
            if (type == "boxplot-feature") {
              scores <- assayDataElement2(object, elt)
              ytitle <- fData(object)[index, dimLabels(object)[1L]]
+             data_label <- "Expression"
            } else {
              scores <- signatureScores(object, elt)
              ytitle <- rownames(scores)[index]
+             data_label <- "Score"
              if ( !is.null( blacklist ) )
              {
                scores <- scores[!rownames(scores) %in% blacklist, , drop = FALSE]
@@ -190,7 +192,7 @@ function(object,
                        geomParams[["boxplot"]],
                        outlier.shape = NA)) +
              scale_x_discrete(name = xtitle, labels = lapply( levels( factor(df[["x"]]) ), strwrpr )) +
-             scale_y_continuous(name = "Score",
+             scale_y_continuous(name = data_label,
                                 labels = function(x) {sprintf("%.1f", x)})
            if (is.null(colour)) {
              p <- p +
