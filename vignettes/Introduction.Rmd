@@ -114,8 +114,6 @@ with( negativeControlSubset( demoData ) , table( CodeClass ) )
 with( positiveControlSubset( demoData ) , table( CodeClass ) )
 with( controlSubset( demoData ) , table( CodeClass ) )
 with( nonControlSubset( demoData ) , table( CodeClass ) )
-
-######### Add esBy example once bug fixed ############
 ```
 
 
@@ -128,6 +126,12 @@ assayDataElement( demoData, "demoElem" ) <-
   assayDataApply( demoData, MARGIN=2, FUN=log, base=10, elt="exprs" )
 assayDataElement( demoData, "demoElem" )[1:3, 1:2]
 assayDataApply( demoData, MARGIN=1, FUN=mean, elt="demoElem")[1:5]
+
+head( esBy( demoData, 
+            GROUP = "Mutational Status", 
+            FUN = function( x ) { 
+              assayDataApply( x, MARGIN = 1, FUN=mean, elt="demoElem" ) 
+            } ) )
 ```
 
 There is also a preloaded nCounter normalization method that comes with the NanoStringRCCSet class. This includes the default normalization performed in nSolver.
