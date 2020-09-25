@@ -59,7 +59,7 @@ function(file)
     as.Date(output[["Header"]][["Date"]], format = "%Y-%m-%d")
 
   # Coerce numeric data in Lane Attributes
-  cols <- c("umiLimit", "Raw", "Trimmed", "Stitched", "Aligned")
+  cols <- c( "Raw", "Trimmed", "Stitched", "Aligned", "umiQ30", "rtsQ30" )
   output[["NGS_Processing_Attributes"]][, cols] <-
     lapply(output[["NGS_Processing_Attributes"]][, cols], as.integer)
 

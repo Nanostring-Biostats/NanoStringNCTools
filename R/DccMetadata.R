@@ -37,7 +37,8 @@
                            row.names =
                              c("SeqSetId", "tamperedIni", "trimGaloreOpts", "flash2Opts",
                                "umiExtractOpts", "bowtie2Opts", "umiDedupOpts",
-                               "umiLimit", "Raw", "Trimmed", "Stitched", "Aligned", "Overcounts"),
+                               "Raw", "Trimmed", "Stitched", "Aligned", "umiQ30",
+                               "rtsQ30"),
                            stringsAsFactors = FALSE),
               "Code_Summary" =
                 data.frame(labelDescription =
@@ -51,7 +52,7 @@
 
 .dccMetadata[["protocolData"]] <-
   do.call(rbind,
-          unname(head(.dccMetadata[["schema"]], 2L)))[, "labelDescription",
+          unname(head(.dccMetadata[["schema"]], 3L)))[, "labelDescription",
                                                       drop = FALSE]
 
 
