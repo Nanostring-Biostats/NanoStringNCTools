@@ -124,7 +124,7 @@ function(dccFiles,
   if( !identical(annotation, paste0(sort(unique(probe_assay[['Pool']])), ".pkc")) ) {
     stop("Name mismatch between pool and PKC files")
   }
-  browser()
+
   # Create protocolData
   protocol <-
     do.call(rbind,
