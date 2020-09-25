@@ -43,8 +43,10 @@ library(ggiraph)
 ## Building a NanoStringRCCSet from .RCC files 
 
 ```{r}
+###### Need to update once data up in repo###########
 setwd("~/NAS_data/dhenderson/360TestData/IO/demo")
-rcc_files <- list.files( file.path( "." , "RCCs" ) , full.names = TRUE , pattern = ".RCC" )
+#####################################################
+rcc_files <- list.files(file.path( "." , "RCCs" ) , full.names = TRUE , pattern = ".RCC" )
 rlf_file <- file.path( "." , "NS_IO_360_v1.0.rlf" )
 sample_annotation <- file.path( "." , "TRTDEMO_Annotation.csv" )
 
@@ -174,7 +176,7 @@ head( protocolData( demoData )[["QCBorderlineFlags"]], 2 )
 
 Binding Density QC
 ```{r}
-theme_set( theme_gray( base_family = "Arial" ) )
+theme_set( theme_gray( base_family = "sans" ) )
 
 ###### Remove tooltip call after bug fix
 girafe( ggobj = autoplot( demoData , "bindingDensity-mean", tooltipID = dimLabels( demoData )[2]  ) )
@@ -233,11 +235,7 @@ strwrpr <- function(x) {
 
 girafe( ggobj = autoplot( demoData , "boxplot-feature" , index = "Endogenous_TAP2_NM_018833.2" , elt = "exprs" ) )
 
-####### Remove once bug fixed ##########
-plot.new()
-########################################
-
-autoplot( demoData , "heatmap-genes" , elt = "exprs_norm" )
+as.ggplot(autoplot( demoData , "heatmap-genes" , elt = "exprs_norm" ))
 ```
 
 ```{r}
