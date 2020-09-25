@@ -34,6 +34,7 @@ importFrom(EnvStats, geoMean)
 ### Export S4 classes
 
 exportClasses(SignatureSet, NanoStringRccSet)
+exportClasses(SignatureSet, NanoStringDccSet)
 
 ### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ### Export S4 generics
@@ -74,6 +75,9 @@ export(SignatureSet,
        readRccFile,
        readRlfFile,
        writeNanoStringRccSet,
+       readNanoStringDccSet,
+       readDccFile,
+       readPKCFile,
        fThresh, fCenter, fScale,
        sThresh, sCenter, sScale,
        fIntThresh, fIntCenter, fIntScale,
