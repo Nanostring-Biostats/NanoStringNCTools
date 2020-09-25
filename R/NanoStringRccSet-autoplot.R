@@ -21,7 +21,7 @@ function(object,
          tooltipDigits = 4L,
          heatmapGroup = NULL,
          blacklist = NULL,
-         tooltipID = "SampleName",
+         tooltipID = dimLabels( object )[2L],
          qcCutoffs = list(
            Housekeeper = c("failingCutoff" = 32,"passingCutoff" = 100) ,
            Imaging = c("fovCutoff" = 0.75) ,
