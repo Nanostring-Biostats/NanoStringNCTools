@@ -4,22 +4,33 @@ function(dccFiles,
          phenoDataFile = NULL,
          phenoDataSheet = NULL,
          phenoDataDccColName = "Sample_ID",
-         phenoDataColPrefix = "")
+         phenoDataColPrefix = "",
+         protocolDataColNames = c("slide name"),
+         experimentDataColNames = c("panel"))
 {
   # Read data rccFiles
   data <- structure(lapply(dccFiles, readDccFile), names = basename(dccFiles))
 
+  # remove any zero reads in Dcc files
+  zeroRead <- which(sapply(seq_len(length(data)), 
+                           function(x) nrow(data[[x]]$Code_Summary))==0)
+  if(length(zeroRead) > 0){
+    warning("The following DCC files are removed: ", names(data)[zeroRead])
+    data <- data[-zeroRead]
+    dccFiles <- dccFiles[-zeroRead]
+  }
+  
   # Create assayData
   assay <- lapply(data, function(x)
     structure(x[["Code_Summary"]][["Count"]],
               names = rownames(x[["Code_Summary"]])))
-
+  
   # Create phenoData
   if (is.null(phenoDataFile)) {
     pheno <- annotatedDataFrameFrom(assay, byrow = FALSE)
   } else {
     pheno <- read_xlsx(phenoDataFile, col_names = TRUE, sheet = phenoDataSheet)
-    pheno <- data.frame(pheno, stringsAsFactors = FALSE)
+    pheno <- data.frame(pheno, stringsAsFactors = FALSE, check.names = FALSE)
     j <- grep(phenoDataDccColName, colnames(pheno), ignore.case = TRUE)
     if (length(j) == 0L){
       stop("Column `phenoDataDccColName` not found in `phenoDataFile`")
@@ -43,6 +54,12 @@ function(dccFiles,
                                 dimLabels = c("sampleNames", "sampleColumns"))
   }
 
+  #remove template control
+  removeIndex <- 1 
+  dccFiles <- dccFiles[-grep(sampleNames(pheno)[removeIndex], dccFiles)]
+  pheno <- pheno[-removeIndex, ]
+  data <- data[sampleNames(pheno)]
+  
   #stopifnot(all(sapply(feature, function(x) identical(feature[[1L]], x))))
   if (is.null(pkcFile)) {
     pkcHeader <- list()
@@ -52,9 +69,12 @@ function(dccFiles,
     pkcHeader <- metadata(pkcData)
     pkcHeader[["PKCFileDate"]] <- as.character(pkcHeader[["PKCFileDate"]])
 
+    #chang RNA to RTS00
+    pkcData$RTS_ID <- gsub("RNA", "RTS00", pkcData$RTS_ID)
+    
     pkcData <- as.data.frame(pkcData)
     rownames(pkcData) <- pkcData[["RTS_ID"]]
-
+    
   }
   
   for (index in seq_len(length(data))) {
@@ -91,46 +111,37 @@ function(dccFiles,
                                 dimLabels = c("featureNames", "featureColumns"))
 
   # Create experimentData
-  construct <- unique(na.omit(pheno@data[["construct"]]))
-  instrument_type <- unique(na.omit(pheno@data[["instrument_type"]]))
-  read_pattern <- unique(na.omit(pheno@data[["read_pattern"]]))
-  panel <- unique(na.omit(pheno@data[["panel"]]))
-  pooling <- unique(na.omit(pheno@data[["pooling"]]))
+  experimentList<- lapply(experimentDataColNames, 
+                            function(experimentDataColName) 
+                              unique(na.omit(pheno@data[[experimentDataColName]])))
+  names(experimentList) <- experimentDataColNames
   
   experiment <- MIAME(name = "", 
-                      other = list(construct = construct, 
-                                   instrument_type = instrument_type,
-                                   read_pattern = read_pattern,
-                                   panel = panel,
-                                   pooling = pooling))
-
+                      other = c(experimentList, pkcHeader))
+  
   # Create annotation
   annotation <- sort(sapply(strsplit(pkcFile, "/"), function(x) x[length(x)]))
   if( !identical(annotation, paste0(sort(unique(probe_assay[['Pool']])), ".pkc")) ) {
     stop("Name mismatch between pool and PKC files")
   }
-
+  browser()
   # Create protocolData
   protocol <-
     do.call(rbind,
             lapply(seq_along(dccFiles), function(i) {
-              cbind(data[[i]][["Header"]], data[[i]][["Scan_Attributes"]])
+              cbind(data[[i]][["Header"]], data[[i]][["Scan_Attributes"]],
+                    data[[i]][["NGS_Processing_Attributes"]])
             }))
   
   protocol <- data.frame(protocol, 
-                         pheno@data[, which(colnames(pheno@data) %in% 
-                            c("dsp_scan", "dsp_collection_plate", "dsp_collection_well", 
-                              "pcr_primer_plate", "pcr_primer_well"))])
+                         pheno@data[, which(colnames(pheno@data) %in% protocolDataColNames)])
+  
+  pheno <- pheno[, setdiff(colnames(pheno@data), 
+                           c(protocolDataColNames, experimentDataColNames))]
   
   annot_labelDescription <-  data.frame(labelDescription =
-                                           c(NA_character_,
-                                             NA_character_,
-                                             NA_character_,
-                                             NA_character_,
-                                             NA_character_),
-                                         row.names =
-                                           c("dsp_scan", "dsp_collection_plate", "dsp_collection_well", 
-                                             "pcr_primer_plate", "pcr_primer_well"),
+                                           rep(NA_character_, length(protocolDataColNames)),
+                                         row.names = protocolDataColNames,
                                          stringsAsFactors = FALSE)
   
   protocol <- AnnotatedDataFrame(protocol,
