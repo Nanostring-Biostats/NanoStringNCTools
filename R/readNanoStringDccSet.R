@@ -97,7 +97,14 @@ function(dccFiles,
                       value.var = 'Count', fun.aggregate = ngeoMean, fill = 1)
   
   if ( length(unique(gene_assay$Gene)) != nrow(gene_assay) ) {
-    stop('Some genes are listed in multiple pools.')
+    duplicatedGenes <- gene_assay$Gene[which(duplicated(gene_assay$Gene))]
+    warning(sprintf('Some genes are listed in multiple pools including %s', 
+            paste0(duplicatedGenes, collapse = ",")))
+    for (duplicatedGene in duplicatedGenes ){
+      gene_assay$Gene[which(gene_assay$Gene == duplicatedGene)] <- 
+        sapply(which(gene_assay$Gene == "ACY1"), 
+                      function(index) paste0(gene_assay[index, c("Gene", "Pool")], collapse = "_"))
+    }
   }
   
   rownames(gene_assay) <- gene_assay[, "Gene"]
