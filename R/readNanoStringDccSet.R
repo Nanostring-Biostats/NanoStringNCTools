@@ -102,11 +102,11 @@ function(dccFiles,
             paste0(duplicatedGenes, collapse = ",")))
     for (duplicatedGene in duplicatedGenes ){
       gene_assay$Gene[which(gene_assay$Gene == duplicatedGene)] <- 
-        sapply(which(gene_assay$Gene == "ACY1"), 
+        sapply(which(gene_assay$Gene == duplicatedGene), 
                       function(index) paste0(gene_assay[index, c("Gene", "Pool")], collapse = "_"))
     }
   }
-  
+
   rownames(gene_assay) <- gene_assay[, "Gene"]
   assay <- as.matrix(gene_assay[, -c(1:2)])
   
