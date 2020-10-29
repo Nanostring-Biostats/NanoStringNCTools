@@ -1,6 +1,6 @@
 readNanoStringDccSet <-
 function(dccFiles,
-         pkcFile = NULL,
+         pkcFiles = NULL,
          phenoDataFile = NULL,
          phenoDataSheet = NULL,
          phenoDataDccColName = "Sample_ID",
@@ -61,10 +61,10 @@ function(dccFiles,
   data <- data[sampleNames(pheno)]
   
   #stopifnot(all(sapply(feature, function(x) identical(feature[[1L]], x))))
-  if (is.null(pkcFile)) {
+  if (is.null(pkcFiles)) {
     pkcHeader <- list()
-  } else if (!is.null(pkcFile)) {
-    pkcData <- readPKCFile(pkcFile)
+  } else if (!is.null(pkcFiles)) {
+    pkcData <- readPKCFile(pkcFiles)
 
     pkcHeader <- metadata(pkcData)
     pkcHeader[["PKCFileDate"]] <- as.character(pkcHeader[["PKCFileDate"]])
@@ -127,7 +127,7 @@ function(dccFiles,
                       other = c(experimentList, pkcHeader))
   
   # Create annotation
-  annotation <- sort(sapply(strsplit(pkcFile, "/"), function(x) x[length(x)]))
+  annotation <- sort(sapply(strsplit(pkcFiles, "/"), function(x) x[length(x)]))
   if( !identical(annotation, paste0(sort(unique(probe_assay[['Pool']])), ".pkc")) ) {
     stop("Name mismatch between pool and PKC files")
   }
