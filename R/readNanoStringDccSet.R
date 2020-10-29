@@ -53,12 +53,6 @@ function(dccFiles,
     pheno <- AnnotatedDataFrame(pheno,
                                 dimLabels = c("sampleNames", "sampleColumns"))
   }
-
-  #remove template control
-  removeIndex <- 1 
-  dccFiles <- dccFiles[-grep(sampleNames(pheno)[removeIndex], dccFiles)]
-  pheno <- pheno[-removeIndex, ]
-  data <- data[sampleNames(pheno)]
   
   #stopifnot(all(sapply(feature, function(x) identical(feature[[1L]], x))))
   if (is.null(pkcFiles)) {
