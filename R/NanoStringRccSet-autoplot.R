@@ -11,7 +11,6 @@ function(object,
                   "housekeep-geom",
                   "lane-bindingDensity",
                   "lane-fov",
-                  "lod",
                   "mean-sd-features",
                   "mean-sd-samples"),
          log2scale = TRUE,
@@ -492,7 +491,9 @@ function(object,
          },
          "housekeep-geom" = {
            # Extract housekeeping geometric mean data
-           hkSet <- as.data.frame(object[["hkStats"]])
+           hkGenes <- housekeepingSubset( object )
+           hkStats <- summary( hkGenes , 2L , elt = "exprs" )
+           hkSet <- as.data.frame(hkStats)
            hkSet[["tooltip"]] <-
              sprintf("%s | Geometric&nbsp;Mean&nbsp;=&nbsp;%s", object[[tooltipID]],
                      signif(hkSet[["GeomMean"]], tooltipDigits))
