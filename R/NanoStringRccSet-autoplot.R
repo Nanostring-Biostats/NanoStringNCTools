@@ -20,7 +20,7 @@ function(object,
          tooltipDigits = 4L,
          heatmapGroup = NULL,
          blacklist = NULL,
-         tooltipID = "SampleName",
+         tooltipID = dimLabels( object )[2L],
          qcCutoffs = list(
            Housekeeper = c("failingCutoff" = 32,"passingCutoff" = 100) ,
            Imaging = c("fovCutoff" = 0.75) ,
@@ -93,9 +93,11 @@ function(object,
            if (type == "boxplot-feature") {
              scores <- assayDataElement2(object, elt)
              ytitle <- fData(object)[index, dimLabels(object)[1L]]
+             data_label <- "Expression"
            } else {
              scores <- signatureScores(object, elt)
              ytitle <- rownames(scores)[index]
+             data_label <- "Score"
              if ( !is.null( blacklist ) )
              {
                scores <- scores[!rownames(scores) %in% blacklist, , drop = FALSE]
@@ -189,7 +191,7 @@ function(object,
                        geomParams[["boxplot"]],
                        outlier.shape = NA)) +
              scale_x_discrete(name = xtitle, labels = lapply( levels( factor(df[["x"]]) ), strwrpr )) +
-             scale_y_continuous(name = "Score",
+             scale_y_continuous(name = data_label,
                                 labels = function(x) {sprintf("%.1f", x)})
            if (is.null(colour)) {
              p <- p +
@@ -491,7 +493,9 @@ function(object,
          },
          "housekeep-geom" = {
            # Extract housekeeping geometric mean data
-           hkSet <- as.data.frame(object[["hkStats"]])
+           hkGenes <- housekeepingSubset( object )
+           hkStats <- summary( hkGenes , 2L , elt = "exprs" )
+           hkSet <- as.data.frame(hkStats)
            hkSet[["tooltip"]] <-
              sprintf("%s | Geometric&nbsp;Mean&nbsp;=&nbsp;%s", object[[tooltipID]],
                      signif(hkSet[["GeomMean"]], tooltipDigits))
@@ -670,6 +674,9 @@ function(object,
              # Set all to samples if no panel standard
              PSLabels <- getpslabels(object, PSCol, RSCol = NULL)
            } else {
+             hkGenes <- housekeepingSubset( object )
+             hkStats <- summary( hkGenes , 2L , elt = "exprs" )
+             hkSet <- as.data.frame(hkStats)
              PSLabels <- rep("Sample", nrow(hkSet))
            }
            # Assign shape based on if panel standard
