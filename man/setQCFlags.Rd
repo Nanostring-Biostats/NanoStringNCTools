@@ -21,18 +21,12 @@ Flag NanoStringRccSet samples that do not meet QC threshold requirements.
 }
 \arguments{
   \item{object}{A NanoStringRccSet object}
-  \item{qcCutoffs}{A list of QC cutoffs}
-  \item{hkGenes}{A vector of housekeeping gene names}
-  \item{ReferenceSampleColumn}{A string indicating the \code{pData} column containing reference sample information}
+  \item{qcCutoffs}{An optional \code{list} of QC cutoffs }
+  \item{hkGenes}{An optional \code{vector} of housekeeping gene names}
+  \item{ReferenceSampleColumn}{An optional string indicating the \code{pData} column containing reference sample information}
 }
 \value{
-  An instance of the \code{\linkS4class{NanoStringRccSet}} class with QC flags.
-}
-\source{
-%%  ~~ reference to a publication or URL from which the data were obtained ~~
-}
-\references{
-%%  ~~ possibly secondary sources and usages ~~
+  An instance of the \code{\linkS4class{NanoStringRccSet}} class with QC flag information added to sample data.
 }
 \examples{
 # Create NanoStringRccSet from data files
@@ -47,18 +41,22 @@ solidTumor <-
 #Set QC flags with default cutoffs
 solidTumorDefaultQC <- setQCFlags(solidTumor)
 
-
-
 #Update cutoffs
 newQCCutoffs <- list(
-               Housekeeper = c("failingCutoff" = 10,"passingCutoff" = 100) ,
-               Imaging = c("fovCutoff" = 0.5) ,
-               BindingDensity = c("minimumBD" = 0.1, "maximumBD" = 2.25, "maximumBDSprint" = 1.8) ,
-               ERCCLinearity = c("correlationValue" = 0.96) ,
-               ERCCLoD = c("standardDeviations" = 3)
-             )
+  Housekeeper = c("failingCutoff" = 32,"passingCutoff" = 100) ,
+  Imaging = c("fovCutoff" = 0.75) ,
+  BindingDensity = c("minimumBD" = 0.1, "maximumBD" = 2.25, "maximumBDSprint" = 1.8) ,
+  ERCCLinearity = c("correlationValue" = 0.98) ,
+  ERCCLoD = c("standardDeviations" = 2)
+  )
 
 #Set QC flags with new cutoffs
 solidTumorNewQC <- setQCFlags(solidTumor, qcCutoffs=newQCCutoffs)
+
+#Compare QC results with default and new cutoffs
+sData(solidTumorDefaultQC)["QCFlags"]
+sData(solidTumorNewQC)["QCFlags"]
+sData(solidTumorDefaultQC)["QCBorderlineFlags"]
+sData(solidTumorNewQC)["QCBorderlineFlags"]
 }
 \keyword{datasets}
