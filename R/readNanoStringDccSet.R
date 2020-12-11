@@ -1,8 +1,8 @@
 readNanoStringDccSet <-
 function(dccFiles,
-         pkcFiles = NULL,
-         phenoDataFile = NULL,
-         phenoDataSheet = NULL,
+         pkcFiles,
+         phenoDataFile,
+         phenoDataSheet,
          phenoDataDccColName = "Sample_ID",
          phenoDataColPrefix = "",
          protocolDataColNames = c("slide name"),
@@ -27,7 +27,7 @@ function(dccFiles,
   
   # Create phenoData
   if (is.null(phenoDataFile)) {
-    pheno <- annotatedDataFrameFrom(assay, byrow = FALSE)
+    stop("Please specify an input for phenoDataFile.")
   } else {
     pheno <- read_xlsx(phenoDataFile, col_names = TRUE, sheet = phenoDataSheet)
     pheno <- data.frame(pheno, stringsAsFactors = FALSE, check.names = FALSE)
@@ -56,7 +56,7 @@ function(dccFiles,
   
   #stopifnot(all(sapply(feature, function(x) identical(feature[[1L]], x))))
   if (is.null(pkcFiles)) {
-    pkcHeader <- list()
+    stop("Please specify an input for pkcFiles")
   } else if (!is.null(pkcFiles)) {
     pkcData <- readPKCFile(pkcFiles)
 
