@@ -49,6 +49,7 @@ function(dccFiles,
     }
     if (phenoDataColPrefix != "") {
       colnames(pheno) <- paste0(phenoDataColPrefix, colnames(pheno))
+      protocolDataColNames <- paste0(phenoDataColPrefix, protocolDataColNames)
     }
     pheno <- AnnotatedDataFrame(pheno,
                                 dimLabels = c("sampleNames", "sampleColumns"))
@@ -100,7 +101,7 @@ function(dccFiles,
                       function(index) paste0(gene_assay[index, c("Gene", "Pool")], collapse = "_"))
     }
   }
-
+  
   rownames(gene_assay) <- gene_assay[, "Gene"]
   assay <- as.matrix(gene_assay[, -c(1:2)])
   
