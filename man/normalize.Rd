@@ -4,17 +4,17 @@
 Normalize RCCSet
 }
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+This package performs normalization on NanoStringRccSet data using one of three methods.
 }
 \usage{
 \code{normalize(object, type, fromElt = "exprs", toElt = "exprs_norm", \ldots)}
 }
 \arguments{
   \item{object}{
-    \code{object} NanoStringRCCSet object
+    \code{object} NanoStringRccSet object
 }
   \item{type}{
-    \code{object} normalization method to use
+    \code{object} normalization method to use.  Options are \code{nSolver}, \code{Housekeeping-Log2}, and \code{PositiveControl-Log2Log2}
 }
   \item{fromElt}{
     \code{object} assayData slot from which to pull raw data
@@ -27,28 +27,16 @@ Normalize RCCSet
 }
 }
 \details{
-%%  ~~ If necessary, more details than the description above ~~
+Normalization is performed in one of three ways with data pulled from one slot of assayData and inserted into another.  It is possible to overwrite the original slot of assayData if the fromElt and toElt are set to the same slot.  \code{nSolver} normalization uses positive controls to scale and housekeepers to standardize the data and mimics the normalization performed by default in the nSolver software.  The \code{Housekeeping-Log2} normalization calculates the log2 sizeFactor of the housekeeping genes and then takes 2^ log2 expression data centered by the log transformed sizeFactor.  \code{PositiveControl-Log2Log2} regresses the log2 positive control probes greater than 0.5 concentration on their geometric mean and then uses the intercept and slope to predict normalized values from the log2 transformed expression values.  The predictions are then rescaled by 2^.
 }
 \value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
+The function returns a new NanoStringRccSet with either an additional assayData slot of normalized data, or overwrites the original assayData depending on whether fromElt and toElt are identical.
 }
 \references{
-%% ~put references to the literature/web site here ~
+NanoString nSolver User Manual
+https://www.nanostring.com/download_file/view/1168
 }
 \author{Patrick Aboyoun}
-\note{
-%%  ~~further notes~~
-}
-
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
-\seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
-}
 \examples{
 datadir <- system.file("extdata", "3D_Bio_Example_Data",
                        package = "NanoStringNCTools")
@@ -60,5 +48,6 @@ solidTumor <-
   readNanoStringRccSet(rccs, rlfFile = rlf, phenoDataFile = pheno)
 
 solidTumor <- normalize(solidTumor, "nSolver" , fromElt = "exprs", toElt = "exprs_norm")
+head( assayDataElement( solidTumor , elt = "exprs_norm" ) )
 }
 \keyword{ normalize }
