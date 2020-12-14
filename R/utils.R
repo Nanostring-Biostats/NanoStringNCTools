@@ -24,11 +24,6 @@ strwrpr <- function(x) {
   paste(strwrap(x, 16), collapse = '\n')
 }
 
-ngeoMean <- function(v) {
-  v[v == 0] <- 1
-  return(geoMean(v, na.rm = T))
-}
-
 # Convenience wrappers around sweep function
 .safe.as.integer <- function(x) {
   x <- round(x)

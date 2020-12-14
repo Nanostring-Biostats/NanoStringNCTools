@@ -76,8 +76,7 @@ export(SignatureSet,
        sIntThresh, sIntCenter, sIntScale,
        fAbove, fBelow, fAtLeast, fAtMost,
        sAbove, sBelow, sAtLeast, sAtMost,
-       logt, log2t, 
-       ngeoMean,
+       logt, log2t,
        geom_beeswarm_interactive, update_geom_params)
 
 ### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

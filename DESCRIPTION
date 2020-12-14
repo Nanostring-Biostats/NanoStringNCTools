@@ -1,7 +1,7 @@
 Package: NanoStringNCTools
 Title: NanoString nCounter Tools
 Description: Tools for NanoString Technologies nCounter Technology.
-Version: 0.0.1
+Version: 1.1.0
 Encoding: UTF-8
 Author: Patrick Aboyoun
 Maintainer: Nicole Ortogero <nortogero@nanostring.com>, Zhi Yang <zyang@nanostring.com>
