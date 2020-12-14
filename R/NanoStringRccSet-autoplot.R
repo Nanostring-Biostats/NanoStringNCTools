@@ -20,7 +20,7 @@ function(object,
          tooltipDigits = 4L,
          heatmapGroup = NULL,
          blacklist = NULL,
-         tooltipID = dimLabels( object )[2L],
+         tooltipID = NULL,
          qcCutoffs = list(
            Housekeeper = c("failingCutoff" = 32,"passingCutoff" = 100) ,
            Imaging = c("fovCutoff" = 0.75) ,
@@ -36,6 +36,10 @@ function(object,
          subSet = NULL ,
          ...)
 {
+  if(is.null(tooltipID)) {
+      tooltipID <- dimLabels(object)[2L]
+  }
+
   if ( (length( geomParams) > 0 ) ) {
     for (i in seq_along(geomParams)) {
       for (j in seq_along(geomParams[[i]])) {
@@ -255,7 +259,7 @@ function(object,
                                          elt = elt))
            extradata[["Passing Correlation Value"]] <- extradata[["RSquared"]] >= qcCutoffs[["ERCCLinearity"]][["correlationValue"]]
            extradata[["CustomTooltip"]] <-
-             sprintf("%s | R-Squared = %.4f", object[[tooltipID]],
+             sprintf("%s | R-Squared = %.4f", sData(object)[[tooltipID]],
                      extradata[["RSquared"]])
 
            mapping <-
@@ -280,7 +284,7 @@ function(object,
                } else if (!is.null(PSCol) && is.null(RSCol)) {
                  PSLabels <- getpslabels(object, PSCol, RSCol = NULL)
                } else {
-                 PSLabels <- rep("Sample", nrows(extradata))
+                 PSLabels <- rep("Sample", nrow(extradata))
                }
                # Assign shape based on if panel standard
                mapping[["shape"]] <-
@@ -345,7 +349,7 @@ function(object,
                              featureData(posCtrl)[["ControlConc"]] == 0.5)
            posCtrl <- munge(posCtrl, mapping = aes_(exprs = as.name(elt)))
            posCtrl[["tooltip"]] <-
-             sprintf("%s | POS_E(0.5)&nbsp;=&nbsp;%s", object[[tooltipID]],
+             sprintf("%s | POS_E(0.5)&nbsp;=&nbsp;%s", sData(object)[[tooltipID]],
                      signif(posCtrl[["exprs"]], tooltipDigits))
            posCtrl[["x"]] <- posCtrl[["SampleName"]]
            posCtrl[["Limit of Detection"]] <- "Passing"
@@ -369,7 +373,7 @@ function(object,
              # Label all as samples
              PSLabels <- getpslabels(object, PSCol, RSCol = NULL)
            } else {
-             PSLabels <- rep("Sample", nrows(posCtrl))
+             PSLabels <- rep("Sample", nrow(posCtrl))
            }
            # Assign shape based on if panel standard
            mapping[["shape"]] <- PSLabels
@@ -388,8 +392,8 @@ function(object,
            # Rename with sample labels
            if ( !( tooltipID %in% "SampleName" ) )
            {
-             negCtrl[["x"]] <- rep( pData( object )[[tooltipID]] , each = nrow( negativeControlSubset(object) ) )
-             posCtrl[["x"]] <- pData( object )[[tooltipID]]
+             negCtrl[["x"]] <- rep( sData( object )[[tooltipID]] , each = nrow( negativeControlSubset(object) ) )
+             posCtrl[["x"]] <- sData( object )[[tooltipID]]
            }
 
            # Create data for critical value threshold lines
@@ -497,7 +501,7 @@ function(object,
            hkStats <- summary( hkGenes , 2L , elt = "exprs" )
            hkSet <- as.data.frame(hkStats)
            hkSet[["tooltip"]] <-
-             sprintf("%s | Geometric&nbsp;Mean&nbsp;=&nbsp;%s", object[[tooltipID]],
+             sprintf("%s | Geometric&nbsp;Mean&nbsp;=&nbsp;%s", sData(object)[[tooltipID]],
                      signif(hkSet[["GeomMean"]], tooltipDigits))
            hkSet[["x"]] <- rownames(hkSet)
            # Get plot x limit for cut-off text
@@ -621,20 +625,16 @@ function(object,
            minBD <- qcCutoffs[["BindingDensity"]][["minimumBD"]]
            maxBD <- qcCutoffs[["BindingDensity"]][["maximumBD"]]
            maxBDSprint <- qcCutoffs[["BindingDensity"]][["maximumBDSprint"]]
-           if ( any( instrument %in% "P" ) )
-           {
+           if ( any( instrument %in% "P" ) ) {
              SPRINT <- TRUE
              if ( all( instrument ) %in% "P" )
              {
                maxBD <- maxBDSprint
              }
-           }
-           else
-           {
+           } else {
              SPRINT <- FALSE
            }
-           if ( length( unique( instrument ) ) > 1 )
-           {
+           if ( length( unique( instrument ) ) > 1 ) {
              warning( sprintf("More than one instrument type in RCC set.  Using SPRINT threshold of %s instead of %s.", maxBDSprint, maxBD ))
            }
              extradata <-
@@ -653,7 +653,7 @@ function(object,
                                   return( x[1] >= x[3] & x[1] <= maxBD )
                               } ) ) ,
                           row.names = sampleNames( object ) )
-           extradata[["CustomTooltip"]] <- object[[tooltipID]]
+           extradata[["CustomTooltip"]] <- sData(object)[[tooltipID]]
            mapping <- aes_string(x = "LaneID", y = "BindingDensity",
                                  tooltip = "CustomTooltip")
 
@@ -756,7 +756,7 @@ function(object,
                         row.names = rownames(extradata))
            extradata[["Imaging Quality"]] <- sprintf("Passing >= %s%%", qcCutoffs[["Imaging"]][["fovCutoff"]]*100)
            extradata$"Imaging Quality"[extradata$"FOVCounted" < qcCutoffs[["Imaging"]][["fovCutoff"]]] <- sprintf("Failed < %s%%", qcCutoffs[["Imaging"]][["fovCutoff"]]*100)
-           extradata[["CustomTooltip"]] <- object[[tooltipID]]
+           extradata[["CustomTooltip"]] <- sData(object)[[tooltipID]]
            mapping <- aes_string( x = "LaneID" , y = "FOVCounted" ,
                                   tooltip = "CustomTooltip" )
            # Check if panel standard and reference sample provided
