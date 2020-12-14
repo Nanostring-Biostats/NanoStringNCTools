@@ -24,17 +24,12 @@ importFrom(pheatmap, pheatmap)
 importFrom(RColorBrewer, brewer.pal)
 importFrom(stats, as.formula, coef, lm, model.frame, qnorm, quantile, update)
 importFrom(utils, read.csv, write.csv)
-importFrom(rjson, fromJSON)
-importFrom(readxl, read_xlsx)
-importFrom(reshape2, dcast)
-importFrom(EnvStats, geoMean)
 
 
 ### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ### Export S4 classes
 
 exportClasses(SignatureSet, NanoStringRccSet)
-exportClasses(SignatureSet, NanoStringDccSet)
 
 ### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ### Export S4 generics
@@ -75,16 +70,14 @@ export(SignatureSet,
        readRccFile,
        readRlfFile,
        writeNanoStringRccSet,
-       readNanoStringDccSet,
-       readDccFile,
-       readPKCFile,
        fThresh, fCenter, fScale,
        sThresh, sCenter, sScale,
        fIntThresh, fIntCenter, fIntScale,
        sIntThresh, sIntCenter, sIntScale,
        fAbove, fBelow, fAtLeast, fAtMost,
        sAbove, sBelow, sAtLeast, sAtMost,
-       logt, log2t,
+       logt, log2t, 
+       ngeoMean,
        geom_beeswarm_interactive, update_geom_params)
 
 ### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

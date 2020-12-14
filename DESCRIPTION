@@ -1,27 +1,21 @@
 Package: NanoStringNCTools
 Title: NanoString nCounter Tools
 Description: Tools for NanoString Technologies nCounter Technology.
-Version: 0.0.2
+Version: 0.0.1
 Encoding: UTF-8
 Author: Patrick Aboyoun
-Maintainer: Patrick Aboyoun <paboyoun@nanostring.com>, Zhi Yang <zyang@nanostring.com>
+Maintainer: Nicole Ortogero <nortogero@nanostring.com>, Zhi Yang <zyang@nanostring.com>
 Depends: R (>= 3.3.0), Biobase, S4Vectors, ggplot2
 Imports: BiocGenerics, Biostrings, ggbeeswarm, ggiraph, grDevices, IRanges,
-         methods, pheatmap, RColorBrewer, stats, utils, rjson, readxl, reshape2, 
-         EnvStats
+         methods, pheatmap, RColorBrewer, stats, utils
 Suggests: biovizBase, ggbio, RUnit
 License: Artistic-2.0
 Collate: SignatureSet-class.R
          RccMetadata.R
-         DccMetadata.R
          NanoStringRccSet-class.R
-         NanoStringDccSet-class.R
          NanoStringRccSet-validity.R
-         NanoStringDccSet-validity.R
          NanoStringRccSet-accessors.R
-         NanoStringDccSet-accessors.R
          NanoStringRccSet-signatures.R
-         NanoStringDccSet-signatures.R
          NanoStringRccSet-subset.R
          NanoStringRccSet-utils.R
          NanoStringRccSet-summary.R
@@ -31,11 +25,8 @@ Collate: SignatureSet-class.R
          NanoStringRccSet-ggplot.R
          NanoStringRccSet-autoplot.R
          readRccFile.R
-         readDccFile.R
-         readPKCFile.R
          readRlfFile.R
          readNanoStringRccSet.R
-         readNanoStringDccSet.R
          writeNanoStringRccSet.R
          utils.R
          zzz.R
