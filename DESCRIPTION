@@ -31,6 +31,6 @@ Collate: SignatureSet-class.R
          utils.R
          zzz.R
 biocViews: GeneExpression, Transcription, CellBasedAssays, DataImport, 
-           Transcriptomics, Proteomics, StructuralGenomics, mRNAMicroaray, 
-           ProprietaryPlatforms, RNASeq, TechnologyData
+           Transcriptomics, Proteomics, mRNAMicroarray, 
+           ProprietaryPlatforms, RNASeq
 VignetteEngine: knitr
