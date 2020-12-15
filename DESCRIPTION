@@ -5,7 +5,7 @@ Version: 1.0.0
 Encoding: UTF-8
 Author: Patrick Aboyoun
 Maintainer: Nicole Ortogero <nortogero@nanostring.com>, Zhi Yang <zyang@nanostring.com>
-Depends: R (>= 3.3.0), Biobase, S4Vectors, ggplot2
+Depends: R (>= 3.6), Biobase, S4Vectors, ggplot2
 Imports: BiocGenerics, Biostrings, ggbeeswarm, ggiraph, grDevices, IRanges,
          methods, pheatmap, RColorBrewer, stats, utils
 Suggests: biovizBase, ggbio, RUnit
@@ -30,3 +30,7 @@ Collate: SignatureSet-class.R
          writeNanoStringRccSet.R
          utils.R
          zzz.R
+biocViews: GeneExpression, Transcription, CellBasedAssays, DataImport, 
+           Transcriptomics, Proteomics, StructuralGenomics, mRNAMicroaray, 
+           ProprietaryPlatforms, RNASeq, TechnologyData
+VignetteEngine: knitr

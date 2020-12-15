@@ -211,7 +211,7 @@ setMethod("names", "SignatureSet",
           })
 setMethod("lengths", "SignatureSet",
           function(x, use.names = TRUE) {
-            sapply(weights(x),
+            vapply(weights(x),
                    function(x) sum(names(x) != "(Intercept)"),
                    USE.NAMES = use.names)
           })
