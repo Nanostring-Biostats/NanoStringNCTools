@@ -43,7 +43,7 @@ function(object,
   if ( (length( geomParams) > 0 ) ) {
     for (i in seq_along(geomParams)) {
       for (j in seq_along(geomParams[[i]])) {
-        if( class( geomParams[[i]][[j]] ) == "name" ) {
+        if( is( geomParams[[i]][[j]], "name" ) ) {
           charColName <- as.character( geomParams[[i]][[j]] )
           if ( substr( charColName , nchar(charColName), nchar(charColName)) == "_" ) {
             newLabel = substr( charColName , 1 , (nchar( charColName ) -1 ) )
