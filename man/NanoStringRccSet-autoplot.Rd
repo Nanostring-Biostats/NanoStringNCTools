@@ -66,6 +66,9 @@ Generate common plots to visualize and QC NanoStringRccSet data.
  \item{show_rownames_sig_limit}{An optional integer limit on number of signatures to display row-wise}
  \item{show_colnames_sig_limit}{An optional integer limit on number of signatures to display column-wise}
 }
+\value{
+  A \code{ggplot} or \code{pheatmap} plot depending on the type of plot generated
+}
 \details{
    \describe{
       \item{\code{"boxplot-feature"}}{Generate feature boxplots}

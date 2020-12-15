@@ -42,7 +42,7 @@ geom_beeswarm_interactive(mapping = NULL, data = NULL,
     See \code{\link[ggbeeswarm]{geom_beeswarm}}.}
 }
 
-\details{
+\value{
   The interactive geometry based on \code{\link[ggbeeswarm]{geom_beeswarm}}.
 }
 

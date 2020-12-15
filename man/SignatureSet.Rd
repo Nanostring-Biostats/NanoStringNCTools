@@ -37,6 +37,10 @@
   \item{\ldots}{Additional arguments for future use.}
 }
 
+\value{
+  A \code{SignatureSet} object
+}
+
 \section{Utilities}{
     \describe{
       \item{}{
