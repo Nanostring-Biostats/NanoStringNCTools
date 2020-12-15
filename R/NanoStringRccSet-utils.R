@@ -95,7 +95,7 @@ function(X, GROUP, FUN, ..., simplify = TRUE)
   values <- do.call(GROUP, list(X))[[names(GROUP)]]
   keys <- sort(unique(values), na.last = TRUE)
   names(keys) <- as.character(keys)
-  vapply(keys,
+  sapply(keys,
          function(k) {
            if (is.na(k))
              keep <- which(is.na(values))

@@ -46,7 +46,7 @@ function(rccFiles,
   feature <- lapply(data, function(x) {
     x[["Code_Summary"]][, c("CodeClass", "GeneName", "Accession")]
   })
-  stopifnot(all(vapply(feature, function(x) identical(feature[[1L]], x))))
+  stopifnot(all(sapply(feature, function(x) identical(feature[[1L]], x))))
   feature <- feature[[1L]]
   feature[["IsControl"]] <- NA
   feature[["IsControl"]][feature[["CodeClass"]] %in%
@@ -89,12 +89,12 @@ function(rccFiles,
                                 dimLabels = c("featureNames", "featureColumns"))
 
   # Create experimentData
-  name <- vapply(data, function(x) x[["Sample_Attributes"]][["SampleOwner"]])
+  name <- sapply(data, function(x) x[["Sample_Attributes"]][["SampleOwner"]])
   name <- unique(na.omit(name))
   experiment <- MIAME(name = name, other = rlfHeader)
 
   # Create annotation
-  annotation <- vapply(data, function(x) x[["Sample_Attributes"]][["GeneRLF"]])
+  annotation <- sapply(data, function(x) x[["Sample_Attributes"]][["GeneRLF"]])
   annotation <- unique(annotation)
   if (length(annotation) > 1L)
     stop("RCC files do not have the same GeneRLF attribute")

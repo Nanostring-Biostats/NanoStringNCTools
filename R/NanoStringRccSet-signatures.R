@@ -15,7 +15,7 @@ setReplaceMethod("signatures", c("NanoStringRccSet", "SignatureSet"),
 # signatureScores Accessor and Replacer
 .sigCalc <- function(X, sigWeights)
 {
-  t(vapply(sigWeights,
+  t(sapply(sigWeights,
            function(wts) {
              if ("(Intercept)" %in% names(wts)) {
                X <- cbind("(Intercept)" = 1, X)
@@ -52,7 +52,7 @@ setMethod("signatureScores", "NanoStringRccSet",
               else
                 scores[idx, ] <- subscores
             }
-            nonLinScores <- t( vapply( nonLinFuncs , function( x , elt ) eval( parse( text = paste( x , "( object , fromElt = \"" , elt , "\" )" , sep = "" ) ) ) , elt ) )
+            nonLinScores <- t( sapply( nonLinFuncs , function( x , elt ) eval( parse( text = paste( x , "( object , fromElt = \"" , elt , "\" )" , sep = "" ) ) ) , elt ) )
             if (ncol(nonLinScores) > 0) {
                 scores <- rbind( scores , nonLinScores )
             }

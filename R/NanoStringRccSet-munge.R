@@ -87,7 +87,7 @@ function(data, mapping = update(design(data), exprs ~ .), extradata = NULL,
     assayDataElts <- intersect(vars, assayDataElementNames(data))
     if (useSignatures) {
       df <-
-        vapply(assayDataElts, function(elt) {
+        sapply(assayDataElts, function(elt) {
           as.vector(signatureScores(data, elt))
         })
       df <-
@@ -99,7 +99,7 @@ function(data, mapping = update(design(data), exprs ~ .), extradata = NULL,
                    stringsAsFactors = FALSE)
     } else {
       df <-
-        vapply(assayDataElts, function(elt) {
+        sapply(assayDataElts, function(elt) {
           as.vector(assayDataElement2(data, elt))
         })
       df <-
