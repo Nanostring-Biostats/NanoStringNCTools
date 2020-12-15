@@ -43,7 +43,7 @@ function(object,
   if ( (length( geomParams) > 0 ) ) {
     for (i in seq_along(geomParams)) {
       for (j in seq_along(geomParams[[i]])) {
-        if( class( geomParams[[i]][[j]] ) == "name" ) {
+        if( is(geomParams[[i]][[j]], "name" ) {
           charColName <- as.character( geomParams[[i]][[j]] )
           if ( substr( charColName , nchar(charColName), nchar(charColName)) == "_" ) {
             newLabel = substr( charColName , 1 , (nchar( charColName ) -1 ) )
@@ -692,7 +692,7 @@ function(object,
            # Set x position for cutoff line text
            cutX = 11
            p <- ggpoint(object, mapping, extradata = extradata, ...) +
-             scale_x_continuous(name = "Lane", breaks = 1:12,
+             scale_x_continuous(name = "Lane", breaks = seq_len(12),
                                 limits = c(1L, 12L)) +
              scale_y_continuous(name = "Binding Density",
                                 limits = c(0, NA_real_)) +
@@ -790,7 +790,7 @@ function(object,
            # Set x position for cutoff line text
            cutX = 11
            p <- ggpoint(object, mapping, extradata = extradata, ...) +
-             scale_x_continuous(name = "Lane", breaks = 1:12,
+             scale_x_continuous(name = "Lane", breaks = seq_len(12),
                                 limits = c(1L, 12L)) +
              scale_y_continuous(name = "FOV Counted", labels = format_percent,
                                 limits = c(0, 1)) +
@@ -924,7 +924,7 @@ protoheatmap <-
       })
     rownames(annotation_col) <- make.unique(colnames(scores), sep = "_")
     if(is.null(annotation_colors)) {
-      annotation_colors <- cumsum(sapply(annotation_col, nlevels))
+      annotation_colors <- cumsum(vapply(annotation_col, nlevels))
       annotation_colors <- Map(`:`, c(1L, head(annotation_colors, -1L) + 1L),
                                annotation_colors)
       annotation_colors <- structure(lapply(annotation_colors, function(x) {
@@ -1011,7 +1011,7 @@ function(currObj, PSColumn, RSColumn) {
   panelStandardLabels[panelStandardLabels == 1] <- "Panel Standard"
   if (!is.null(RSColumn)) {
     referenceSampleLabels <- pData(currObj)[, RSColumn]
-    for(i in 1:length(referenceSampleLabels)){
+    for(i in seq_len(length(referenceSampleLabels))){
       if(referenceSampleLabels[i] == 1){
         panelStandardLabels[i] <- "Reference Sample"
       }

@@ -326,6 +326,10 @@ NanoStringRccSet(assayData,
   }
 }
 
+\value{
+  An S4 class containing NanoString Expression Level Assays
+}
+
 \author{Patrick Aboyoun}
 
 \seealso{
