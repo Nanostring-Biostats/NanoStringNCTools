@@ -16,13 +16,17 @@ importFrom(ggiraph, geom_boxplot_interactive, geom_line_interactive,
 importFrom(ggplot2, aes, aes_, aes_string, autoplot, element_blank,
            element_text, geom_hline, ggplot, guide_legend, guides, layer,
            scale_x_continuous, scale_x_discrete, scale_y_continuous,
-           stat_boxplot, theme)
+           stat_boxplot, theme, theme_get, rel, scale_colour_manual, 
+           scale_shape_manual, element_line, unit, margin, 
+           element_rect, geom_segment, scale_linetype_manual, 
+           geom_text)
 importFrom(grDevices, colorRampPalette)
 importFrom(IRanges, NumericList)
 importFrom(methods, as, callGeneric, callNextMethod, is, validObject)
 importFrom(pheatmap, pheatmap)
 importFrom(RColorBrewer, brewer.pal)
-importFrom(stats, as.formula, coef, lm, model.frame, qnorm, quantile, update)
+importFrom(stats, as.formula, coef, lm, model.frame, qnorm, quantile, update,
+           reorder)
 importFrom(utils, read.csv, write.csv)
 
 
