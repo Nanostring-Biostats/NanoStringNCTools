@@ -8,7 +8,7 @@ Maintainer: Nicole Ortogero <nortogero@nanostring.com>, Zhi Yang <zyang@nanostri
 Depends: R (>= 3.6), Biobase, S4Vectors, ggplot2
 Imports: BiocGenerics, Biostrings, ggbeeswarm, ggiraph, grDevices, IRanges,
          methods, pheatmap, RColorBrewer, stats, utils
-Suggests: biovizBase, ggbio, RUnit, markdown
+Suggests: biovizBase, ggbio, RUnit, rmarkdown, knitr
 License: Artistic-2.0
 Collate: SignatureSet-class.R
          RccMetadata.R
