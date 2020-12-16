@@ -34,3 +34,4 @@ biocViews: GeneExpression, Transcription, CellBasedAssays, DataImport,
            Transcriptomics, Proteomics, mRNAMicroarray, 
            ProprietaryPlatforms, RNASeq
 VignetteEngine: knitr
+VignetteBuilder: knitr
