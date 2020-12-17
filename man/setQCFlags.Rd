@@ -13,21 +13,22 @@ This function takes a list containing the quality control (QC) thresholds for da
   \item{object}{
   A valid NanoStringRccSet object with all housekeeping genes, positive control probes, and negative control probes present
   }
-  \item{qcCutoffs}{
-  An optional list with members named \code{Housekeeper}, \code{Imaging}, \code{BindingDensity}, \code{ERCCLinearity}, and \code{ERCCLoD}
-  }
-  \item{hkGenes}{
-  An optional vector of housekeeping gene names if alternative genes to those defined in the panel are to be used
-  }
-  \item{ReferenceSampleColumn}{
-  An optional character string indicating the \code{pData} column containing reference sample information
-  }
+
   \item{\dots}{
   Additional arguments to pass
   }
 }
 \details{
-This function checks that the housekeeping genes, positive control, and negative control probes or genes are within acceptable boundaries.  Borderline thresholds and fail thresholds are defined and each sample receives a row in a matrix that contains flags indicating either borderline or failing performance.
+This function checks that the housekeeping genes, positive control, and negative control probes or genes are within acceptable boundaries.
+Additional parameters with NanoStringRccSet method include:
+
+\code{qcCutoffs} An optional list with members named \code{Housekeeper}, \code{Imaging}, \code{BindingDensity}, \code{ERCCLinearity}, and \code{ERCCLoD}
+
+\code{hkGenes} An optional vector of housekeeping gene names if alternative genes to those defined in the panel are to be used
+
+\code{ReferenceSampleColumn} An optional character string indicating the \code{pData} column containing reference sample information
+
+Borderline thresholds and fail thresholds are defined and each sample receives a row in a matrix that contains flags indicating either borderline or failing performance.
 
 \code{Housekeeper} is a vector with names members.  \code{failingCutoff} sets the lower bound of housekeeper gene expression such that samples with a value below this threshold are labeled as failures.  \code{passingCutoff} sets a lower bound of housekeeper gene expression such that samples with a value below this threshold are labeled as borderline.  Values greater than or equal to either threshold are labeled as either borderline or passing.  The default values are \code{failingCutoff} = 32 and \code{passingCutoff} = 100.
 
