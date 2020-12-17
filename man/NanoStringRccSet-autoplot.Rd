@@ -11,7 +11,7 @@ Plot NanoStringRccSet Data
 Generate common plots to visualize and QC NanoStringRccSet data.
 }
 \usage{
-       autoplot.NanoStringRccSet(object,
+       \method{autoplot}{NanoStringRccSet}(object,
            type = c("boxplot-feature",
                     "boxplot-signature",
                     "bindingDensity-mean",
