@@ -74,7 +74,6 @@
 \alias{with,NanoStringRccSet-method}
 
 % quality control
-\alias{setQCFlags}
 \alias{setQCFlags,NanoStringRccSet-method}
 
 % normalization
@@ -82,7 +81,6 @@
 
 % plotting
 \alias{ggplot.NanoStringRccSet}
-\alias{autoplot.NanoStringRccSet}
 \alias{update_geom_params}
 
 \title{Class to Contain NanoString Expression Level Assays}
