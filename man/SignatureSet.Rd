@@ -20,6 +20,18 @@
 \alias{weights<-,SignatureSet,NULL-method}
 \alias{weights<-,SignatureSet,NumericList-method}
 \alias{weights<-,SignatureSet,list-method}
+\alias{weights<-,SignatureSet,CompressedNumericList-method}
+\alias{getSigFuncs,SignatureSet-method}
+\alias{groups,SignatureSet-method}
+\alias{groups<-}
+\alias{groups<-,SignatureSet,ANY-method}
+\alias{groups<-,SignatureSet,NULL-method}
+\alias{groups<-,SignatureSet,factor-method}
+\alias{version,SignatureSet-method}
+\alias{version<-}
+\alias{version<-,SignatureSet,ANY-method}
+\alias{version<-,SignatureSet,NULL-method}
+\alias{version<-,SignatureSet,character-method}
 
 \title{Class to Contain Signature Definitions}
 

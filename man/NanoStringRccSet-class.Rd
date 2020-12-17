@@ -85,6 +85,13 @@
 \alias{autoplot.NanoStringRccSet}
 \alias{update_geom_params}
 
+% utilities
+\alias{setSignatureFuncs<-,NanoStringRccSet,character-method}
+\alias{setSignatureGroups<-,NanoStringRccSet,character-method}
+\alias{setSignatureGroups<-,NanoStringRccSet,factor-method}
+\alias{signatureFuncs<-,NanoStringRccSet}
+\alias{signatureGroups<-,NanoStringRccSet}
+
 \title{Class to Contain NanoString Expression Level Assays}
 
 \description{
