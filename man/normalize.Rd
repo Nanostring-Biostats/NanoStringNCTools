@@ -7,7 +7,7 @@ Normalize RCCSet
 This package performs normalization on NanoStringRccSet data using one of three methods.
 }
 \usage{
-normalize(object, type, fromElt = "exprs", toElt = "exprs_norm", \ldots)
+normalize(object, \ldots)
 }
 \arguments{
   \item{object}{

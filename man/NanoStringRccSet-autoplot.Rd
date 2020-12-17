@@ -64,6 +64,8 @@ Generate common plots to visualize and QC NanoStringRccSet data.
  \item{show_colnames_gene_limit}{An optional integer limit on number of features to display column-wise}
  \item{show_rownames_sig_limit}{An optional integer limit on number of signatures to display row-wise}
  \item{show_colnames_sig_limit}{An optional integer limit on number of signatures to display column-wise}
+ \item{subSet}{An optional subset to plot on}
+ \item{\dots}{Additional arguments to pass on to autoplot function}
 }
 \value{
   A \code{ggplot} or \code{pheatmap} plot depending on the type of plot generated
