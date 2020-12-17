@@ -32,7 +32,7 @@ Generate common plots to visualize and QC NanoStringRccSet data.
            tooltipDigits = 4L,
            heatmapGroup = NULL,
            blacklist = NULL,
-           tooltipID = dimLabels( object )[2L],
+           tooltipID = NULL,
            qcCutoffs = list(
              Housekeeper = c("failingCutoff" = 32,"passingCutoff" = 100) ,
              Imaging = c("fovCutoff" = 0.75) ,
