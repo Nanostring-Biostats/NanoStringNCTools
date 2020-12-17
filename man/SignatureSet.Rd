@@ -102,8 +102,5 @@
   \code{\link{NanoStringRccSet}}
 }
 
-\examples{
-}
-
 \keyword{classes}
 \keyword{methods}

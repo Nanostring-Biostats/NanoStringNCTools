@@ -7,7 +7,7 @@ Set flags for QC of the assayData in a NanoStringRccSet.
 This function takes a list containing the quality control (QC) thresholds for data in a NanoStringRccSet and then returns a matrix of QC retults by sample to protocolData.
 }
 \usage{
-  \code{setQCFlags(object,
+       setQCFlags(object,
              qcCutoffs = list(
                Housekeeper = c("failingCutoff" = 32,"passingCutoff" = 100) ,
                Imaging = c("fovCutoff" = 0.75) ,
@@ -17,7 +17,7 @@ This function takes a list containing the quality control (QC) thresholds for da
              ),
              hkGenes = NULL,
              ReferenceSampleColumn = NULL,
-             \ldots)}
+             \ldots)
 }
 \arguments{
   \item{object}{
