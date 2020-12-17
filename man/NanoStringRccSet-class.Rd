@@ -31,6 +31,15 @@
 \alias{signatures<-,NanoStringRccSet,SignatureSet-method}
 \alias{signatureScores}
 \alias{signatureScores,NanoStringRccSet-method}
+\alias{signatureFuncs}
+\alias{signatureFuncs,NanoStringRccSet-method}
+\alias{signatureGroups}
+\alias{signatureGroups,NanoStringRccSet-method}
+\alias{setSignatureFuncs<-}
+\alias{setSignatureFuncs<-,NanoStringRccSet,character-method}
+\alias{setSignatureGroups<-}
+\alias{setSignatureGroups<-,NanoStringRccSet,character-method}
+\alias{setSignatureGroups<-,NanoStringRccSet,factor-method}
 \alias{design,NanoStringRccSet-method}
 \alias{design<-,NanoStringRccSet,ANY-method}
 \alias{design<-,NanoStringRccSet,NULL-method}
@@ -84,13 +93,6 @@
 \alias{ggplot.NanoStringRccSet}
 \alias{autoplot.NanoStringRccSet}
 \alias{update_geom_params}
-
-% utilities
-\alias{setSignatureFuncs<-,NanoStringRccSet,character-method}
-\alias{setSignatureGroups<-,NanoStringRccSet,character-method}
-\alias{setSignatureGroups<-,NanoStringRccSet,factor-method}
-\alias{signatureFuncs<-,NanoStringRccSet}
-\alias{signatureGroups<-,NanoStringRccSet}
 
 \title{Class to Contain NanoString Expression Level Assays}
 
@@ -181,6 +183,18 @@ NanoStringRccSet(assayData,
       \code{design(object) <- value}: replaces the one-sided formula
       representing the experimental design based on columns from
       \code{\link[Biobase]{phenoData}}.
+    }
+    \item{}{
+      \code{setSignatureFuncs(object)}: returns the signature functions.
+    }
+    \item{}{
+      \code{setSignatureFuncs(object) <- value}: replaces the signature functions.
+    }
+    \item{}{
+      \code{setSignatureGroups(object) <- value}: returns the signature groups.
+    }
+    \item{}{
+      \code{setSignatureGroups(object) <- value}: replaces the signature groups.
     }
   }
 }

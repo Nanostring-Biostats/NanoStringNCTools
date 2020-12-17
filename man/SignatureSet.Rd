@@ -77,6 +77,22 @@
         \code{weights(object) <- value}: replaces the \code{\link{NumericList}}
         that defines the linear combination based signatures.
       }
+      \item{}{
+        \code{getSigFuncs(object)}: returns a the signature functions.
+      }
+      \item{}{
+        \code{groups(object)}: returns a factor vector representing the signature groups.
+      }
+      \item{}{
+        \code{groups(object) <- value}: replaces the factor vector representing the 
+        signature groups.
+      }
+      \item{}{
+        \code{version(object)}: returns the signature version.
+      }
+      \item{}{
+        \code{version(object) <- value}: replaces the signature version.
+      }
     }
 }
 
