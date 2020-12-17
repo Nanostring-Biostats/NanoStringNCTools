@@ -28,12 +28,15 @@
 }
 
 \usage{
-  SignatureSet(weights = NumericList(), \ldots)
+  SignatureSet(weights = NumericList(), groups = "factor", func = "character", version = "character", \ldots)
 }
 
 \arguments{
   \item{weights}{A named \code{NumericList} defining signatures based on linear
     combinations of genes.}
+  \item{groups}{A factor vector indicating groups in the \code{SignatureSet}}
+  \item{func}{Character indicating function to use}
+  \item{version}{Character indicating version to use}
   \item{\ldots}{Additional arguments for future use.}
 }
 
