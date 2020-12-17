@@ -39,26 +39,6 @@ rcc <-
                                        row.names = sprintf("%s.RCC", LETTERS[1:3]),
                                        stringsAsFactors = FALSE),
                             NanoStringNCTools:::.rccMetadata[["protocolData"]],
-                            dimLabels = c("sampleNames", "sampleColumns")),
-       signatures =
-         SignatureSet(weights = list(x = c(a = 1),
-                                     y = c(b = 1/3, d = 2/3),
-                                     z = c(a = 2, c = 4))))
+                            dimLabels = c("sampleNames", "sampleColumns"))
+       )
 
-# Signatures
-test_NanoStringRccSet_signatures_lengths <- function() {
-  checkIdentical(c(x = 1L, y = 2L, z = 2L), lengths(signatures(rcc)))
-}
-
-test_NanoStringRccSet_signatureScores <- function() {
-  checkEquals(matrix(c(0, 7, 24, 12, 19, 96, 24, 31, 168)/3,
-                     nrow = 3L, ncol = 3L,
-                     dimnames = list(c("x", "y", "z"), sampleNames(rcc))),
-                 signatureScores(rcc))
-
-  rcc2 <- transform(rcc, exprs3 = 3 * exprs)
-  checkEquals(matrix(c(0, 7, 24, 12, 19, 96, 24, 31, 168),
-                     nrow = 3L, ncol = 3L,
-                     dimnames = list(c("x", "y", "z"), sampleNames(rcc2))),
-              signatureScores(rcc2, "exprs3"))
-}

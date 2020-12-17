@@ -39,11 +39,8 @@ rcc <-
                                        row.names = sprintf("%s.RCC", LETTERS[1:3]),
                                        stringsAsFactors = FALSE),
                             NanoStringNCTools:::.rccMetadata[["protocolData"]],
-                            dimLabels = c("sampleNames", "sampleColumns")),
-       signatures =
-         SignatureSet(weights = list(x = c(a = 1),
-                                     y = c(b = 1/3, d = 2/3),
-                                     z = c(a = 2, c = 4))))
+                            dimLabels = c("sampleNames", "sampleColumns"))
+  )
 
 # Munging data for plotting
 test_NanoStringRccSet_munge_exception_missing_mapping <- function() {
@@ -184,38 +181,6 @@ test_NanoStringRccSet_munge_assayData <- function() {
   checkIdentical(target, munge(rcc, exprs ~ Treatment + Age))
 }
 
-test_NanoStringRccSet_munge_signatures <- function() {
-  target <- data.frame(SignatureName = names(signatures(rcc)),
-                       stringsAsFactors = FALSE)
-  checkIdentical(target, munge(rcc, ~ SignatureName))
-
-  target <-
-    data.frame(SignatureName = c("x", "y", "z"),
-               MeanLog2 = c(1.333333333, 2.418197081, 4.602451641),
-               stringsAsFactors = FALSE)
-  checkEquals(target, munge(rcc, MeanLog2 ~ SignatureName))
-
-  target <-
-    data.frame(SignatureName = c("x", "y", "z"),
-               Mean = c(4, 19 / 3, 32),
-               stringsAsFactors = FALSE)
-  checkEquals(target, munge(rcc, Mean ~ SignatureName))
-
-  target <- data.frame(SignatureName = rep.int(names(signatures(rcc)), ncol(rcc)),
-                       SampleName = rep(sampleNames(rcc), each = length(sampleNames(rcc))),
-                       exprs = c(0, 7, 24, 12, 19, 96, 24, 31, 168) / 3,
-                       stringsAsFactors = FALSE)
-  checkEquals(target, munge(rcc, exprs ~ SignatureName))
-
-  target <- data.frame(SignatureName = rep.int(names(signatures(rcc)), ncol(rcc)),
-                       SampleName = rep(sampleNames(rcc), each = length(sampleNames(rcc))),
-                       exprs = c(0, 7, 24, 12, 19, 96, 24, 31, 168) / 3,
-                       Treatment = rep(pData(rcc)[["Treatment"]], each = ncol(rcc)),
-                       Age = rep(pData(rcc)[["Age"]], each = ncol(rcc)),
-                       stringsAsFactors = FALSE)
-  checkEquals(target, munge(rcc, exprs ~ SignatureName + Treatment + Age))
-}
-
 test_NanoStringRccSet_munge_GeneMatrix <- function() {
   exprs <- t(exprs(rcc))
   rownames(exprs) <- sData(rcc)[[dimLabels(rcc)[2L]]]
@@ -237,36 +202,3 @@ test_NanoStringRccSet_munge_GeneMatrix <- function() {
   checkEquals(target, munge(rcc, GeneMatrix ~ Treatment + Age))
 }
 
-test_NanoStringRccSet_munge_SignatureMatrix <- function() {
-  exprs <- t(exprs(rcc))
-  rownames(exprs) <- sData(rcc)[[dimLabels(rcc)[2L]]]
-  colnames(exprs) <- featureData(rcc)[["GeneName"]]
-
-  sigs <- t(signatureScores(rcc))
-  rownames(sigs) <- sData(rcc)[[dimLabels(rcc)[2L]]]
-
-  target <- DataFrame(SignatureMatrix = sigs[,1L], row.names = sampleNames(rcc))
-  target[["SignatureMatrix"]] <- sigs
-  checkEquals(target, munge(rcc, ~ SignatureMatrix))
-
-  target <- DataFrame(SignatureMatrix = sigs[,1L],
-                      SampleName = sampleNames(rcc),
-                      row.names = sampleNames(rcc))
-  target[["SignatureMatrix"]] <- sigs
-  checkEquals(target, munge(rcc, SignatureMatrix ~ SampleName))
-
-  target <- DataFrame(SignatureMatrix = sigs[,1L], row.names = sampleNames(rcc))
-  target[["SignatureMatrix"]] <- sigs
-  target <- cbind(target, pData(rcc)[, c("Treatment", "Age")])
-  checkEquals(target, munge(rcc, SignatureMatrix ~ Treatment + Age))
-
-  target <- DataFrame(SignatureMatrix = sigs[,1L],
-                      GeneMatrix = exprs[,1L],
-                      row.names = sampleNames(rcc))
-  target[["SignatureMatrix"]] <- sigs
-  target[["GeneMatrix"]] <- exprs
-  checkEquals(target, munge(rcc, SignatureMatrix ~ GeneMatrix))
-
-  target <- cbind(target, pData(rcc)[, c("Age", "Treatment")])
-  checkEquals(target, munge(rcc, SignatureMatrix ~ GeneMatrix + Age + Treatment))
-}

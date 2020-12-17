@@ -39,18 +39,15 @@ rcc <-
                                        row.names = sprintf("%s.RCC", LETTERS[1:3]),
                                        stringsAsFactors = FALSE),
                             NanoStringNCTools:::.rccMetadata[["protocolData"]],
-                            dimLabels = c("sampleNames", "sampleColumns")),
-       signatures =
-         SignatureSet(weights = list(x = c(a = 1),
-                                     y = c(b = 1/3, d = 2/3),
-                                     z = c(a = 2, c = 4))))
+                            dimLabels = c("sampleNames", "sampleColumns"))
+       )
 
 # Subsetting
 test_NanoStringRccSet_subset <- function() {
   checkEquals(rcc[featureData(rcc)[["CodeClass"]] == "Endogenous", ],
               subset(rcc, CodeClass == "Endogenous"))
-  checkEquals(IRanges::NumericList(x = c(a = 1), compress = FALSE),
-              weights(signatures(subset(rcc, CodeClass == "Endogenous"))))
+  #checkEquals(IRanges::NumericList(x = c(a = 1), compress = FALSE),
+  #            weights(signatures(subset(rcc, CodeClass == "Endogenous"))))
 
   checkEquals(rcc[, phenoData(rcc)[["Treatment"]] == "A"],
               subset(rcc, select = Treatment == "A"))
@@ -60,9 +57,9 @@ test_NanoStringRccSet_subset <- function() {
   checkEquals(rcc[featureData(rcc)[["CodeClass"]] == "Endogenous",
                   phenoData(rcc)[["Treatment"]] == "A"],
               subset(rcc, CodeClass == "Endogenous", Treatment == "A"))
-  checkEquals(IRanges::NumericList(x = c(a = 1), compress = FALSE),
-              weights(signatures(subset(rcc, CodeClass == "Endogenous",
-                                        Treatment == "A"))))
+  #checkEquals(IRanges::NumericList(x = c(a = 1), compress = FALSE),
+  #            weights(signatures(subset(rcc, CodeClass == "Endogenous",
+  #                                      Treatment == "A"))))
 }
 
 test_NanoStringRccSet_subset_in_function <- function() {
@@ -111,11 +108,4 @@ test_NanoStringRccSet_controlSubset <- function() {
 
 test_NanoStringRccSet_nonControlSubset <- function() {
   checkEquals(rcc[!featureData(rcc)[["IsControl"]], ], nonControlSubset(rcc))
-}
-
-test_NanoStringRccSet_signatureSubset <- function() {
-  x <- rcc
-  weights(signatures(x)) <- weights(signatures(x))[1L]
-  checkEquals(rcc[featureData(rcc)[["GeneName"]] == "a", ],
-              signatureSubset(x))
 }

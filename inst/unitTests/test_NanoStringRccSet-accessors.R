@@ -39,11 +39,9 @@ rcc <-
                                        row.names = sprintf("%s.RCC", LETTERS[1:3]),
                                        stringsAsFactors = FALSE),
                             NanoStringNCTools:::.rccMetadata[["protocolData"]],
-                            dimLabels = c("sampleNames", "sampleColumns")),
-       signatures =
-         SignatureSet(weights = list(x = c(a = 1),
-                                     y = c(b = 1/3, d = 2/3),
-                                     z = c(a = 2, c = 4))))
+                            dimLabels = c("sampleNames", "sampleColumns"))
+  )
+
 
 # Accessing
 test_NanoStringRccSet_sData <- function() {

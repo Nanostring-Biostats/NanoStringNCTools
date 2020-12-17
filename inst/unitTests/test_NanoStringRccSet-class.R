@@ -282,22 +282,6 @@ test_NanoStringRccSet_exception_duplicate_names <- function() {
   checkException(validObject(y))
 }
 
-test_NanoStringRccSet_valid_signatures <- function() {
-  wts <- list(a = c(b = 1, d = 3), b = c(a = 2, c = 4))
-  sigs <- SignatureSet(weights = wts)
-  x <- NanoStringRccSet(rcc$assayData,
-                        phenoData = rcc$phenoData,
-                        featureData = rcc$featureData,
-                        annotation = rcc$annotation,
-                        protocolData = rcc$protocolData,
-                        signatures = sigs)
-  checkTrue(validObject(x))
-  checkIdentical(weights(signatures(x)), as(wts, "NumericList"))
-
-  weights(signatures(x)) <- wts[1L]
-  checkTrue(validObject(x))
-  checkIdentical(weights(signatures(x)), as(wts[1L], "NumericList"))
-}
 
 test_NanoStringRccSet_exception_signatures_unnamed <- function() {
   checkException(NanoStringRccSet(rcc$assayData,
