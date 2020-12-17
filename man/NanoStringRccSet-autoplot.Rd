@@ -38,8 +38,7 @@ Generate common plots to visualize and QC NanoStringRccSet data.
              Imaging = c("fovCutoff" = 0.75) ,
              BindingDensity = c("minimumBD" = 0.1, "maximumBD" = 2.25, "maximumBDSprint" = 1.8) ,
              ERCCLinearity = c("correlationValue" = 0.95) ,
-             ERCCLoD = c("standardDeviations" = 2)
-           ),
+             ERCCLoD = c("standardDeviations" = 2) ),
            scalingFactor=1L,
            show_rownames_gene_limit=60L,
            show_colnames_gene_limit=36L,
