@@ -1,3 +1,5 @@
+setGeneric("normalize", signature = "object",
+           function(object, ...) standardGeneric("normalize"))
 setMethod("normalize", "NanoStringRccSet",
 function(object,
          type = c( "nSolver",
