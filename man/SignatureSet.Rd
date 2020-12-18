@@ -78,10 +78,18 @@
         that defines the linear combination based signatures.
       }
       \item{}{
-        \code{getSigFuncs(object)}: returns a the signature functions.
+        \code{getSigFuncs(object)}: returns the signature functions of an object.
+      }
+      \item{}{
+        \code{\S4method{getSigFuncs}{NanoStringRccSet}(object)}: returns the signature 
+        functions of a \code{\link{NanoStringRccSet}}
       }
       \item{}{
         \code{groups(object)}: returns a factor vector representing the signature groups.
+      }
+      \item{}{
+        \code{\S4method{groups}{NanoStringRccSet}(object)}: returns the a factor vector 
+        representing the signature groups of a \code{\link{NanoStringRccSet}}
       }
       \item{}{
         \code{groups(object) <- value}: replaces the factor vector representing the 
@@ -89,6 +97,10 @@
       }
       \item{}{
         \code{version(object)}: returns the signature version.
+      }
+      \item{}{
+        \code{\S4method{version}{NanoStringRccSet}(object)}: returns the signature version
+        of a \code{\link{NanoStringRccSet}}
       }
       \item{}{
         \code{version(object) <- value}: replaces the signature version.
