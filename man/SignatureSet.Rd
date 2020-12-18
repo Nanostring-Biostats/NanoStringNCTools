@@ -21,12 +21,15 @@
 \alias{weights<-,SignatureSet,NumericList-method}
 \alias{weights<-,SignatureSet,list-method}
 \alias{weights<-,SignatureSet,CompressedNumericList-method}
+\alias{getSigFuncs}
 \alias{getSigFuncs,SignatureSet-method}
+\alias{groups}
 \alias{groups,SignatureSet-method}
 \alias{groups<-}
 \alias{groups<-,SignatureSet,ANY-method}
 \alias{groups<-,SignatureSet,NULL-method}
 \alias{groups<-,SignatureSet,factor-method}
+\alias{version}
 \alias{version,SignatureSet-method}
 \alias{version<-}
 \alias{version<-,SignatureSet,ANY-method}
@@ -41,10 +44,6 @@
 
 \usage{
   SignatureSet(weights = NumericList(), groups = factor(), func = character(), version = character(), \ldots)
-
-  \S4method{getSigFuncs}{NanoStringRccSet}(object)
-  \S4method{groups}{NanoStringRccSet}(object)
-  \S4method{version}{NanoStringRccSet}(object)
 }
 
 \arguments{
