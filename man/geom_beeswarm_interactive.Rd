@@ -50,7 +50,4 @@ geom_beeswarm_interactive(mapping = NULL, data = NULL,
 
 \seealso{\code{\link[ggbeeswarm]{geom_beeswarm}}}
 
-\examples{
-}
-
 \keyword{graphics}
