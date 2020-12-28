@@ -36,7 +36,8 @@ Generate common plots to visualize and QC NanoStringRccSet data.
            qcCutoffs = list(
              Housekeeper = c("failingCutoff" = 32,"passingCutoff" = 100) ,
              Imaging = c("fovCutoff" = 0.75) ,
-             BindingDensity = c("minimumBD" = 0.1, "maximumBD" = 2.25, "maximumBDSprint" = 1.8) ,
+             BindingDensity = c("minimumBD" = 0.1, "maximumBD" = 2.25, 
+                                "maximumBDSprint" = 1.8) ,
              ERCCLinearity = c("correlationValue" = 0.95) ,
              ERCCLoD = c("standardDeviations" = 2) ),
            scalingFactor=1L,

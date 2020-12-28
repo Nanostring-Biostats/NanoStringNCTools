@@ -43,7 +43,8 @@
 }
 
 \usage{
-  SignatureSet(weights = NumericList(), groups = factor(), func = character(), version = character(), \ldots)
+  SignatureSet(weights = NumericList(), groups = factor(), func = character(), 
+               version = character(), \ldots)
 }
 
 \arguments{

@@ -15,16 +15,16 @@ autoplot.NanoStringRccSet <- function(object, type = c("boxplot-feature", "boxpl
         for (i in seq_along(geomParams)) {
             for (j in seq_along(geomParams[[i]])) {
                 if (is(geomParams[[i]][[j]], "name")) {
-                  charColName <- as.character(geomParams[[i]][[j]])
-                  if (substr(charColName, nchar(charColName), nchar(charColName)) == "_") {
-                    newLabel = substr(charColName, 1, (nchar(charColName) - 1))
-                    pData(object)[newLabel] <- pData(object)[charColName]
-                    if ("palette" %in% names(geomParams)) {
-                      levels(geomParams[["palette"]][["dataframe"]][["Variable"]])[levels(geomParams[["palette"]][["dataframe"]][["Variable"]]) == 
-                        geomParams[[i]][[j]]] <- newLabel
+                    charColName <- as.character(geomParams[[i]][[j]])
+                    if (substr(charColName, nchar(charColName), nchar(charColName)) == "_") {
+                        newLabel = substr(charColName, 1, (nchar(charColName) - 1))
+                        pData(object)[newLabel] <- pData(object)[charColName]
+                        if ("palette" %in% names(geomParams)) {
+                            levels(geomParams[["palette"]][["dataframe"]][["Variable"]])[levels(geomParams[["palette"]][["dataframe"]][["Variable"]]) == 
+                                geomParams[[i]][[j]]] <- newLabel
+                        }
+                        geomParams[[i]][[j]] <- as.name(newLabel)
                     }
-                    geomParams[[i]][[j]] <- as.name(newLabel)
-                  }
                 }
             }
         }
@@ -51,8 +51,8 @@ autoplot.NanoStringRccSet <- function(object, type = c("boxplot-feature", "boxpl
         for (i in c("line", "point")) {
             for (arg in names(geomParams[[i]])) {
                 if (is.name(geomParams[[i]][[arg]])) {
-                  mapping[[arg]] <- geomParams[[i]][[arg]]
-                  geomParams[[i]][[arg]] <- NULL
+                    mapping[[arg]] <- geomParams[[i]][[arg]]
+                    geomParams[[i]][[arg]] <- NULL
                 }
             }
         }
@@ -116,7 +116,7 @@ autoplot.NanoStringRccSet <- function(object, type = c("boxplot-feature", "boxpl
                 plot_pal <- unlist(plot_palDF[pal_ind, "MainColor"])
                 names(plot_pal) <- plot_palDF[pal_ind, "Level"]
             } else {
-                plot_pal <- tableau_color_pal(palette = "Tableau 20")(20)
+                plot_pal <- ggthemes::tableau_color_pal(palette = "Tableau 20")(20)
             }
         }
         tooltip <- colnames(scores)
@@ -150,7 +150,7 @@ autoplot.NanoStringRccSet <- function(object, type = c("boxplot-feature", "boxpl
                 ncol = 1L, title.position = "top"))
             if (!is.null(geomParams[["showLegend"]])) {
                 if (geomParams[["showLegend"]][["legend"]] == "off") {
-                  p <- p + theme(legend.position = "none")
+                    p <- p + theme(legend.position = "none")
                 }
             } else {
                 p <- p + theme(legend.position = "right")
@@ -189,11 +189,11 @@ autoplot.NanoStringRccSet <- function(object, type = c("boxplot-feature", "boxpl
             geomParams[[i]][["colour"]] <- NULL
             if (i == "point") {
                 if (!is.null(PSCol) && !is.null(RSCol)) {
-                  PSLabels <- getpslabels(object, PSCol, RSCol)
+                    PSLabels <- getpslabels(object, PSCol, RSCol)
                 } else if (!is.null(PSCol) && is.null(RSCol)) {
-                  PSLabels <- getpslabels(object, PSCol, RSCol = NULL)
+                    PSLabels <- getpslabels(object, PSCol, RSColumn = NULL)
                 } else {
-                  PSLabels <- rep("Sample", nrow(extradata))
+                    PSLabels <- rep("Sample", nrow(extradata))
                 }
                 mapping[["shape"]] <- rep(PSLabels, each = length(featureData(posCtrl)[["ControlConc"]]))
                 geomParams[[i]][["shape"]] <- NULL
@@ -242,7 +242,7 @@ autoplot.NanoStringRccSet <- function(object, type = c("boxplot-feature", "boxpl
         if (!is.null(PSCol) && !is.null(RSCol)) {
             PSLabels <- getpslabels(object, PSCol, RSCol)
         } else if (!is.null(PSCol) && is.null(RSCol)) {
-            PSLabels <- getpslabels(object, PSCol, RSCol = NULL)
+            PSLabels <- getpslabels(object, PSCol, RSColumn = NULL)
         } else {
             PSLabels <- rep("Sample", nrow(posCtrl))
         }
@@ -324,7 +324,7 @@ autoplot.NanoStringRccSet <- function(object, type = c("boxplot-feature", "boxpl
         if (!is.null(PSCol) && !is.null(RSCol)) {
             PSLabels <- getpslabels(object, PSCol, RSCol)
         } else if (!is.null(PSCol) && is.null(RSCol)) {
-            PSLabels <- getpslabels(object, PSCol, RSCol = NULL)
+            PSLabels <- getpslabels(object, PSCol, RSColumn = NULL)
         } else {
             PSLabels <- rep("Sample", nrow(hkSet))
         }
@@ -398,7 +398,7 @@ autoplot.NanoStringRccSet <- function(object, type = c("boxplot-feature", "boxpl
         if (!is.null(PSCol) && !is.null(RSCol)) {
             PSLabels <- getpslabels(object, PSCol, RSCol)
         } else if (!is.null(PSCol) && is.null(RSCol)) {
-            PSLabels <- getpslabels(object, PSCol, RSCol = NULL)
+            PSLabels <- getpslabels(object, PSCol, RSColumn = NULL)
         } else {
             hkGenes <- housekeepingSubset(object)
             hkStats <- summary(hkGenes, 2L, elt = "exprs")
@@ -453,7 +453,7 @@ autoplot.NanoStringRccSet <- function(object, type = c("boxplot-feature", "boxpl
         if (!is.null(PSCol) && !is.null(RSCol)) {
             PSLabels <- getpslabels(object, PSCol, RSCol)
         } else if (!is.null(PSCol) && is.null(RSCol)) {
-            PSLabels <- getpslabels(object, PSCol, RSCol = NULL)
+            PSLabels <- getpslabels(object, PSCol, RSColumn = NULL)
         } else {
             PSLabels <- rep("Sample", nrow(extradata))
         }
