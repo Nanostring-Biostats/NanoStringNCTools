@@ -197,10 +197,6 @@ setMethod( "getSigFuncs" , "SignatureSet" ,
 
 
 # Additional methods
-# setMethod("version", "SignatureSet",
-#           function( object ) {
-#             return( object@version )
-#           })
 setMethod("length", "SignatureSet",
           function(x) {
             length(weights(x))
@@ -229,14 +225,6 @@ validSignatureSet <- function( object )
                             paste( errorMessage , errTmp , sep = "\n" )
     )
   }
-  # if ( !inherits( object@groups , "character" ) )
-  # {
-  #   errTmp <- "Groups are not a character"
-  #   errorMessage <- switch( is.null( errorMessage ),
-  #                           errTmp ,
-  #                           paste( errorMessage , errTmp , sep = "\n" )
-  #   )
-  # }
   if ( !inherits( object@func , "character" ) )
   {
     errTmp <- "Functions are not a character"

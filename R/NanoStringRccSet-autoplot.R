@@ -466,13 +466,6 @@ function(object,
            scores <-
              t(munge(endogenousSubset(object), ~ GeneMatrix,
                      elt = elt)[["GeneMatrix"]])
-           # for ( i in seq_along( heatmapGroup ) ) {
-           #   if ( substr( heatmapGroup[i] , 1, 1) == "_" ) {
-           #     newLabel = substr( heatmapGroup[i] , 2 , nchar( heatmapGroup[i] ) )
-           #     pData( object )[newLabel] <- sData( object )[heatmapGroup[i]]
-           #     heatmapGroup[i] <- newLabel
-           #   }
-           # }
 
            p <- protoheatmap(scores, log2scale = log2scale,
                              group = heatmapGroup, object = object, 
@@ -483,13 +476,6 @@ function(object,
            scores <-
              t(munge(endogenousSubset(object), ~ SignatureMatrix,
                      elt = elt)[["SignatureMatrix"]])
-           # for ( i in seq_along( heatmapGroup ) ) {
-           #   if ( substr( heatmapGroup[i] , 1, 1) == "_" ) {
-           #     newLabel = substr( heatmapGroup[i] , 2 , nchar( heatmapGroup[i] ) )
-           #     pData( object )[newLabel] <- sData( object )[heatmapGroup[i]]
-           #     heatmapGroup[i] <- newLabel
-           #   }
-           # }
            p <- protoheatmap(scores, log2scale = log2scale,
                              group = heatmapGroup, object = object, blacklist = blacklist, 
                              show_rownames_limit = show_rownames_sig_limit, 
