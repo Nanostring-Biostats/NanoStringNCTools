@@ -60,8 +60,7 @@ solidTumor <-
 
 eg_data <- as.data.frame(assayDataElement(solidTumor, "exprs")[1:5, 1])
 eg_data[["tooltip"]] <- names(eg_data)
-geom_beeswarm_interactive(aes_string(tooltip = "tooltip"),
-                          data=eg_data)
+geom_beeswarm_interactive(aes_string(tooltip = "tooltip"), data=eg_data)
 }
 
 \seealso{\code{\link[ggbeeswarm]{geom_beeswarm}}}
