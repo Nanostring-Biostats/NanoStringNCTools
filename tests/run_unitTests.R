@@ -1,2 +1,2 @@
 require("NanoStringNCTools") || stop("unable to load NanoStringNCTools package")
-NanoStringNCTools:::.test()
+BiocGenerics:::testPackage("NanoStringNCTools")
