@@ -110,7 +110,8 @@
 SignatureSet(weights=list(x = c(a = 1),
                           y = c(b = 1/3, d = 2/3),
                           z = c(a = 2, c = 4)),
-             groups=factor(c("x", "y", "z")))
+             groups=factor("x", "y", "z"),
+             func = c(x="default", y="default", z="default"))
 }
 
 \keyword{classes}
