@@ -48,6 +48,22 @@ geom_beeswarm_interactive(mapping = NULL, data = NULL,
 
 \author{Patrick Aboyoun}
 
+\examples{
+# Create NanoStringRccSet from data files
+datadir <- system.file("extdata", "3D_Bio_Example_Data",
+                       package = "NanoStringNCTools")
+rccs <- dir(datadir, pattern = "SKMEL.*\\\\.RCC$", full.names = TRUE)
+rlf <- file.path(datadir, "3D_SolidTumor_Sig.rlf")
+pheno <- file.path(datadir, "3D_SolidTumor_PhenoData.csv")
+solidTumor <-
+  readNanoStringRccSet(rccs, rlfFile = rlf, phenoDataFile = pheno)
+
+eg_data <- as.data.frame(assayDataElement(solidTumor, "exprs")[1:5, 1])
+eg_data[["tooltip"]] <- names(eg_data)
+geom_beeswarm_interactive(aes_string(tooltip = "tooltip"),
+                          data=eg_data)
+}
+
 \seealso{\code{\link[ggbeeswarm]{geom_beeswarm}}}
 
 \keyword{graphics}
