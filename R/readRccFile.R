@@ -1,12 +1,13 @@
 readRccFile <- function(file) {
     lines <- trimws(readLines(file))
     tags <- names(.rccMetadata[["schema"]])
-    output <- sapply(tags, function(tag) {
+    output <- lapply(tags, function(tag) {
         bounds <- charmatch(sprintf(c("<%s>", "</%s>"), tag), lines)
         if (anyNA(bounds) || bounds[1L] + 1L >= bounds[2L]) 
             lines[integer(0)]
         else lines[(bounds[1L] + 1L):(bounds[2L] - 1L)]
-    }, simplify = FALSE)
+    })
+    names(output) <- tags
     for (tag in c("Header", "Sample_Attributes", "Lane_Attributes")) {
         while (length(bad <- grep(",", output[[tag]], invert = TRUE)) > 0L) {
             bad <- bad[1L]

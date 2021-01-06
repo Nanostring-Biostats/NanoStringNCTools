@@ -117,7 +117,7 @@ setMethod("names", "SignatureSet", function(x) {
     names(weights(x))
 })
 setMethod("lengths", "SignatureSet", function(x, use.names = TRUE) {
-    sapply(weights(x), function(x) sum(names(x) != "(Intercept)"), USE.NAMES = use.names)
+    vapply(weights(x), function(x) sum(names(x) != "(Intercept)"), FUN.VALUE=numeric(1), USE.NAMES = use.names)
 })
 validSignatureSet <- function(object) {
     errorMessage <- NULL

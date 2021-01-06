@@ -547,7 +547,7 @@ protoheatmap <- function(scores, log2scale, group, object, labelsize = 9L, scale
         })
         rownames(annotation_col) <- make.unique(colnames(scores), sep = "_")
         if (is.null(annotation_colors)) {
-            annotation_colors <- cumsum(sapply(annotation_col, nlevels))
+            annotation_colors <- cumsum(vapply(annotation_col, nlevels, FUN.VALUE=numeric(1)))
             annotation_colors <- Map(`:`, c(1L, head(annotation_colors, -1L) + 1L), annotation_colors)
             annotation_colors <- structure(lapply(annotation_colors, function(x) {
                 x <- x%%length(groupPalette)

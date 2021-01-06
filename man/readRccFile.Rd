@@ -36,7 +36,7 @@ readRccFile(file)
 datadir <- system.file("extdata", "3D_Bio_Example_Data",
                        package = "NanoStringNCTools")
 rccs <- dir(datadir, pattern = "SKMEL.*\\\\.RCC$", full.names = TRUE)
-rccData <- sapply(rccs, readRccFile, simplify = FALSE)
+rccData <- lapply(rccs, readRccFile)
 }
 
 \keyword{file}

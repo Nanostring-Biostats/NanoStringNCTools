@@ -30,7 +30,7 @@ readNanoStringRccSet <- function(rccFiles, rlfFile = NULL, phenoDataFile = NULL,
     feature <- lapply(data, function(x) {
         x[["Code_Summary"]][, c("CodeClass", "GeneName", "Accession")]
     })
-    stopifnot(all(sapply(feature, function(x) identical(feature[[1L]], x))))
+    stopifnot(all(vapply(feature, function(x) identical(feature[[1L]], x), FUN.VALUE=logical(1))))
     feature <- feature[[1L]]
     feature[["IsControl"]] <- NA
     feature[["IsControl"]][feature[["CodeClass"]] %in% .codeClassMetadata[.codeClassMetadata[["IsControl"]], 
@@ -61,10 +61,10 @@ readNanoStringRccSet <- function(rccFiles, rlfFile = NULL, phenoDataFile = NULL,
         feature <- cbind(feature, rlfData)
     }
     feature <- AnnotatedDataFrame(feature, dimLabels = c("featureNames", "featureColumns"))
-    name <- sapply(data, function(x) x[["Sample_Attributes"]][["SampleOwner"]])
+    name <- unlist(lapply(data, function(x) x[["Sample_Attributes"]][["SampleOwner"]]))
     name <- unique(na.omit(name))
     experiment <- MIAME(name = name, other = rlfHeader)
-    annotation <- sapply(data, function(x) x[["Sample_Attributes"]][["GeneRLF"]])
+    annotation <- unlist(lapply(data, function(x) x[["Sample_Attributes"]][["GeneRLF"]]))
     annotation <- unique(annotation)
     if (length(annotation) > 1L) 
         stop("RCC files do not have the same GeneRLF attribute")

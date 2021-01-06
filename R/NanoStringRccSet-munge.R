@@ -71,17 +71,19 @@ setMethod("munge", "NanoStringRccSet", function(data, mapping = update(design(da
     if (hasAssayDataElts) {
         assayDataElts <- intersect(vars, assayDataElementNames(data))
         if (useSignatures) {
-            df <- sapply(assayDataElts, function(elt) {
+            df <- lapply(assayDataElts, function(elt) {
                 as.vector(signatureScores(data, elt))
             })
+            names(df) <- assayDataElts
             df <- data.frame(SignatureName = rep.int(names(signatures(data)), ncol(data)), 
                 SampleName = rep(sampleNames(data), each = length(signatures(data))), df, 
                 check.names = FALSE, stringsAsFactors = FALSE)
         }
         else {
-            df <- sapply(assayDataElts, function(elt) {
+            df <- lapply(assayDataElts, function(elt) {
                 as.vector(assayDataElement2(data, elt))
             })
+            names(df) <- assayDataElts
             df <- data.frame(FeatureName = rep.int(featureNames(data), ncol(data)), SampleName = rep(sampleNames(data), 
                 each = nrow(data)), df, check.names = FALSE, stringsAsFactors = FALSE)
         }
