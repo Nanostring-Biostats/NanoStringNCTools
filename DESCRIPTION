@@ -9,7 +9,7 @@ Authors@R: c(person("Patrick", "Aboyoun", role = c("aut")),
              person("Zhi", "Yang", email = "zyang@nanostring.com", role = c("ctb")))
 Depends: R (>= 3.6), Biobase, S4Vectors, ggplot2
 Imports: BiocGenerics, Biostrings, ggbeeswarm, ggiraph, ggthemes, grDevices, IRanges,
-         methods, pheatmap, RColorBrewer, stats, utils, ggplotify
+         methods, pheatmap, RColorBrewer, stats, utils
 Suggests: biovizBase, ggbio, RUnit, rmarkdown, knitr, qpdf
 License: Artistic-2.0
 Collate: SignatureSet-class.R

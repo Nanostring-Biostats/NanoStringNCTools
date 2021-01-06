@@ -37,7 +37,6 @@ Load additional packages for vignette plotting.
 ```{r, message=FALSE, warning=FALSE}
 library(ggthemes)
 library(ggiraph)
-library(ggplotify)
 ```
 
 
