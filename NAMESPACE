@@ -21,8 +21,9 @@ importFrom(ggplot2, aes, aes_, aes_string, autoplot, element_blank,
            element_rect, geom_segment, scale_linetype_manual, 
            geom_text)
 importFrom(grDevices, colorRampPalette)
+importFrom(ggthemes, tableau_color_pal)
 importFrom(IRanges, NumericList)
-importFrom(methods, as, callGeneric, callNextMethod, is, validObject)
+importFrom(methods, as, callGeneric, callNextMethod, is, validObject, new)
 importFrom(pheatmap, pheatmap)
 importFrom(RColorBrewer, brewer.pal)
 importFrom(stats, as.formula, coef, lm, model.frame, qnorm, quantile, update,
