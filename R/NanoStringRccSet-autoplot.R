@@ -253,9 +253,9 @@ autoplot.NanoStringRccSet <- function(object, type = c("boxplot-feature", "boxpl
         geomParams[["boxplot"]][["size"]] <- 0.5 * scalingFactor
         oldClass(geomParams[["point"]]) <- "uneval"
         geomParams[["line"]][["size"]] <- 0.5 * scalingFactor
-        if (!(tooltipID %in% "SampleName")) {
-            negCtrl[["x"]] <- rep(sData(object)[[tooltipID]], each = nrow(negativeControlSubset(object)))
-            posCtrl[["x"]] <- sData(object)[[tooltipID]]
+        if (dimLabels(object)[2L] != "SampleName") {
+            negCtrl[["x"]] <- rep(sData(object)[[dimLabels(object)[2L]]], each = nrow(negativeControlSubset(object)))
+            posCtrl[["x"]] <- sData(object)[[dimLabels(object)[2L]]]
         }
         indThreshold <- data.frame(x = seq_along(order(posCtrl[["x"]])) - 0.5, xend = seq_along(order(posCtrl[["x"]])) + 
             0.5, y = cutoff[order(posCtrl[["x"]])], yend = cutoff[order(posCtrl[["x"]])], 
@@ -304,7 +304,7 @@ autoplot.NanoStringRccSet <- function(object, type = c("boxplot-feature", "boxpl
         hkSet <- as.data.frame(hkStats)
         hkSet[["tooltip"]] <- sprintf("%s | Geometric&nbsp;Mean&nbsp;=&nbsp;%s", sData(object)[[tooltipID]], 
             signif(hkSet[["GeomMean"]], tooltipDigits))
-        hkSet[["x"]] <- rownames(hkSet)
+        hkSet[["x"]] <- sData(hkGenes)[[dimLabels(hkGenes)[2L]]]
         cutX <- length(hkSet[["x"]])
         failingCutoff <- qcCutoffs[["Housekeeper"]][["failingCutoff"]]
         passingCutoff <- qcCutoffs[["Housekeeper"]][["passingCutoff"]]
