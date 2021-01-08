@@ -18,7 +18,7 @@ setReplaceMethod("signatures", c("NanoStringRccSet", "SignatureSet"), function(o
         else {
             structure(rep.int(NA_real_, nrow(X)), names = rownames(X))
         }
-    }, FUN.VALUE=numeric(1)))
+    }, FUN.VALUE=rep(numeric(1), nrow(X))))
 }
 setGeneric("signatureScores", signature = "object", function(object, ...) standardGeneric("signatureScores"))
 setMethod("signatureScores", "NanoStringRccSet", function(object, elt = "exprs") {
@@ -40,7 +40,7 @@ setMethod("signatureScores", "NanoStringRccSet", function(object, elt = "exprs")
         else scores[idx, ] <- subscores
     }
     nonLinScores <- t(vapply(nonLinFuncs, function(x, elt) eval(parse(text = paste(x, "( object , fromElt = \"", 
-        elt, "\" )", sep = ""))), FUN.VALUE=numeric(1), elt))
+        elt, "\" )", sep = ""))), FUN.VALUE=rep(numeric(1), length(sampleNames(object))), elt))
     if (ncol(nonLinScores) > 0) {
         scores <- rbind(scores, nonLinScores)
     }
