@@ -254,8 +254,9 @@ autoplot.NanoStringRccSet <- function(object, type = c("boxplot-feature", "boxpl
         oldClass(geomParams[["point"]]) <- "uneval"
         geomParams[["line"]][["size"]] <- 0.5 * scalingFactor
         if (dimLabels(object)[2L] != "SampleName") {
-            negCtrl[["x"]] <- rep(sData(object)[[dimLabels(object)[2L]]], each = nrow(negativeControlSubset(object)))
-            posCtrl[["x"]] <- sData(object)[[dimLabels(object)[2L]]]
+            negCtrl[["x"]] <- as.character(rep(sData(object)[[dimLabels(object)[2L]]], 
+                each = nrow(negativeControlSubset(object))))
+            posCtrl[["x"]] <- as.character(sData(object)[[dimLabels(object)[2L]]])
         }
         indThreshold <- data.frame(x = seq_along(order(posCtrl[["x"]])) - 0.5, xend = seq_along(order(posCtrl[["x"]])) + 
             0.5, y = cutoff[order(posCtrl[["x"]])], yend = cutoff[order(posCtrl[["x"]])], 
