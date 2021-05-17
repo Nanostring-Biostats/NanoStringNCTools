@@ -2,7 +2,7 @@ Package: NanoStringNCTools
 Title: NanoString nCounter Tools
 Description: Tools for NanoString Technologies nCounter Technology.  Provides support for reading RCC files into an ExpressionSet
              derived object.  Also includes methods for QC and normalizaztion of NanoString data.
-Version: 0.99.9
+Version: 0.99.10
 Encoding: UTF-8
 Authors@R: c(person("Patrick", "Aboyoun", role = c("aut")), 
              person("Nicole", "Ortogero", email = "nortogero@nanostring.com", role = c("cre")), 

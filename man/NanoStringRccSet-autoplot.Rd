@@ -99,9 +99,9 @@ solidTumor <-
   readNanoStringRccSet(rccs, rlfFile = rlf, phenoDataFile = pheno)
 
 # Assess experiment linearity
-autoplot(solidTumor, "ercc-linearity")
+#autoplot(solidTumor, "ercc-linearity")
 
 # Plot a feature's expression across all samples
-autoplot(solidTumor, "boxplot-feature", index=2)
+#autoplot(solidTumor, "boxplot-feature", index=2)
 }
 \keyword{datasets}
