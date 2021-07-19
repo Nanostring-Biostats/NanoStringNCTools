@@ -1,6 +1,6 @@
 ---
 title: "Introduction to the NanoStringRCCSet Class"
-author: "David Henderson, Patrick Aboyoun, Nicole Ortogero, Zhi Yang, Jason Reeves, Kara Gorman, Rona Vitancol, Thomas Smith"
+author: "David Henderson, Patrick Aboyoun, Nicole Ortogero, Zhi Yang, Jason Reeves, Kara Gorman, Rona Vitancol, Thomas Smith, Yuqi Ren"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
@@ -21,33 +21,54 @@ knitr::opts_chunk$set(
 
 ## Introduction
 
+The NanostringNCTools package enables independent analysis of NanoString nCounter data (e.g. RCC/RLF data) in R.
+
+In this vignette we will:
+
+Create a Nanostring data object (e.g. NanoStringRCCSet) integrating RCC + RLF + Annotation data
+Learn to summarize, subset, transform the data object
+Perform and visualize quality control assessments of the data
+Perform data normalization for downstream analyses
+
 The NanoStringRCCSet was inherited from Biobase's ExpressionSet class. The NanoStringRCCSet class was designed to encapsulate data and corresponding methods for Nanostring RCC files generated from the NanoString nCounter platform.
 
 
 ## Loading Packages
 
-Loading the NanoStringNCTools package allows users access to the NanoStringRCCSet class.
+First step in using the NanoStringNCTools package is to install the package and load it to allow users access to the NanoStringRCCSet class.
 
 ```{r, message=FALSE, warning=FALSE}
+#devtools::install_github("Nanostring-Biostats/NanoStringNCTools", 
+#                         force = TRUE, ref = "master")
+
 library(NanoStringNCTools)
 ```
 
-Load additional packages for vignette plotting.
+Then you also need to load some additional packages for vignette plotting.
 
 ```{r, message=FALSE, warning=FALSE}
 library(ggthemes)
 library(ggiraph)
+library(pheatmap)
 ```
 
 
 ## Building a NanoStringRCCSet from .RCC files 
 
+Next step is to load the RCC, RLF and the sample annotation file using readNanoStringRccSet function. You can save RCC, RLF and the sample annotation file in one folder for easy access and set this location as your datadir.      
+
+
 ```{r}
+# set your file location
 datadir <- system.file("extdata", "3D_Bio_Example_Data",
                        package = "NanoStringNCTools")
+# read in RCC files
 rcc_files <- dir(datadir, pattern = "SKMEL.*\\.RCC$", full.names = TRUE)
+# read in RLF file
 rlf_file <- file.path(datadir, "3D_SolidTumor_Sig.rlf")
+# read in sample annotation
 sample_annotation <- file.path(datadir, "3D_SolidTumor_PhenoData.csv")
+# load all the input files into demoData (S4 object)
 demoData <- readNanoStringRccSet(rcc_files, rlfFile = rlf_file, 
                                  phenoDataFile = sample_annotation)
 class( demoData )
@@ -59,39 +80,83 @@ demoData
 
 ## Accessing and Assigning NanoStringRCCSet Data Members
 
-Alongside the accessors associated with the ExpressionSet class, NanoStringRCCSet objects have unique additional assignment and accessor methods faciliting common ways to view nCounter data and associated labels.
+After loading all the input files, they are stored in a S4 object called demoData. Alongside the accessors associated with the ExpressionSet class, NanoStringRCCSet objects have unique additional assignment and accessor methods faciliting common ways to view nCounter data and associated labels. You can then save it to a csv file if you need to.       
 
-```{r}
-head( pData( demoData ), 2 )
-protocolData( demoData )
-svarLabels( demoData )
-head( sData(demoData), 2 )
+- The dimLabels slot provides the column names to use as labels for the features and samples repectively in the plots.    
+- The signatures slot contains signature definitions     
+- The experimentData slot stores structured information about the experiment.     
+- The assayData slot stores the expression values. It can store muultiple count matrices.    
+- The phenoData slot stores annotation data about the samples. You can add these as columns in the annotation file.      
+- The featureData slot stores information about the targets or probes for the panel used.    
+- The annotation slot stores the name of the RLF data.     
+- The protocolData slot stores information about the assay run. This information is read from the RCC files plus the annotations columns you specified in the protocolData argument.
+
+
+```{r warning = FALSE}
+# access the first two rows of the count matrix
+head(assayData(demoData)[["exprs"]], 2)
+
+# access the first two rows of the pheno data
+head(pData(demoData), 2)
+
+# access the protocol data
+protocolData(demoData)
+
+# access the first three rows of the probe information
+fData(demoData)[1:3, ]
+
+# access the available pheno and protocol data variables
+svarLabels(demoData)
+head(sData(demoData), 2)
+
+# access RLF information
+annotation(demoData)
 ```
 
 Design information can be assigned to the NanoStringRCCSet object, as well as feature and sample labels to use for NanoStringRCCSet plotting methods.
 
 ```{r}
-design( demoData ) <- ~ `Treatment`
-design( demoData )
+# assign design information
+design(demoData) <- ~ `Treatment`
+design(demoData)
 
-dimLabels( demoData )
+# check the column names to use as labels for the features and samples respectively
+dimLabels(demoData)
+
+# Change SampleID to Sample ID
 protocolData(demoData)[["Sample ID"]] <- sampleNames(demoData)
-dimLabels( demoData )[2] <- "Sample ID"
-dimLabels( demoData )
+dimLabels(demoData)[2] <- "Sample ID"
+dimLabels(demoData)
 ```
 
 
 ## Summarizing NanoString nCounter Data
 
-Easily summarize count results using the summary method. Data summaries can be generated across features or samples. Labels can be used to generate summaries based on feature or sample groupings.
+Users can easily summarize count results using the summary method. Data summaries can be generated across features or samples. Labels can be used to generate summaries based on feature or sample groupings.     
+
+- MARGIN: 1 (for loop over feature) or 2 (for loop over sample).    
+- GROUP: summarize by a group.     
+- log2=TRUE: the summary statistics are Geometric Mean with thresholding at 0.5, Size Factor (2^(`MeanLog2` - mean(`MeanLog2`))), Mean of Log2 with thresholding at 0.5, Standard Deviation of Log2 with thresholding at 0.5, Minimum, First Quartile, Median, Third Quartile, and Maximum.      
+- log2=FALSE: the summary statistics are Mean, Standard Deviation, Skewness, Excess Kurtosis, Minimum, First Quartile, Median, Third Quartile, and Maximum.     
 
 ```{r}
-head( summary( demoData , MARGIN = 1 ), 2 )
-head( summary( demoData , MARGIN = 2 ), 2 )
-unique( sData( demoData )$"Treatment" )
-head( summary( demoData , MARGIN = 2, GROUP = "Treatment" )$VEM, 2 )
-head( summary( demoData , MARGIN = 2, GROUP = "Treatment" )$"DMSO", 2 )
-head( summary( demoData , MARGIN = 2, GROUP = "Treatment", log2 = FALSE )$"DMSO", 2 )
+# summarize log2 counts for each feature
+head(summary(demoData, MARGIN = 1), 2)
+
+# summarize log2 counts for each sample
+head(summary(demoData, MARGIN = 2), 2)
+
+# check the unique levels in Treatment group
+unique(sData(demoData)$"Treatment")
+
+# summarize log2 counts for each VEM sample
+head(summary(demoData, MARGIN = 2, GROUP = "Treatment")$VEM, 2)
+
+# summarize log2 counts for each DMSO sample
+head(summary(demoData, MARGIN = 2, GROUP = "Treatment")$"DMSO", 2)
+
+# summarize counts for each DMSO sample, without log2 transformation
+head(summary(demoData, MARGIN = 2, GROUP = "Treatment", log2 = FALSE)$"DMSO", 2)
 ```
 
 
@@ -99,111 +164,216 @@ head( summary( demoData , MARGIN = 2, GROUP = "Treatment", log2 = FALSE )$"DMSO"
 
 Common subsetting methods including those to separate endogenous features from controls are provided with NanoStringRCCSet objects. In addition, users can use the subset or select arguments to further subset by feature or sample, respectively.
 
-```{r}
-length( sampleNames( demoData ) )
-length( sampleNames( subset( demoData , 
-                             select = phenoData( demoData )[["Treatment"]] == "VEM" ) ) )
+```{r warning = FALSE}
+# check the number of samples in the dataset
+length(sampleNames(demoData))
 
-dim( exprs( demoData ) )
-dim( exprs( endogenousSubset( demoData, 
-                              select = phenoData( demoData )[["Treatment"]] == "VEM" ) ) )
+# check the number of VEM samples in the dataset
+length(sampleNames(subset(demoData, select = phenoData(demoData)[["Treatment"]] == "VEM")))
 
-with( housekeepingSubset( demoData ) , table( CodeClass ) )
-with( negativeControlSubset( demoData ) , table( CodeClass ) )
-with( positiveControlSubset( demoData ) , table( CodeClass ) )
-with( controlSubset( demoData ) , table( CodeClass ) )
-with( nonControlSubset( demoData ) , table( CodeClass ) )
+# check the dimension of the expression matrix
+dim(exprs(demoData))
+
+# check the dimension of the expression matrix for VEM samples and endogenous genes only
+dim(exprs(endogenousSubset(demoData, select = phenoData(demoData)[["Treatment"]] == "VEM")))
+
+# housekeepingSubset() only selects housekeeper genes
+with(housekeepingSubset(demoData), table(CodeClass))
+
+# negativeControlSubset() only selects negative probes
+with(negativeControlSubset(demoData), table(CodeClass))
+
+# positiveControlSubset() only selects positive probes
+with(positiveControlSubset(demoData), table(CodeClass))
+
+# controlSubset() selects all control probes
+with(controlSubset(demoData), table(CodeClass))
+
+# nonControlSubset() selects all non-control probes
+with(nonControlSubset(demoData), table(CodeClass))
 ```
+
+
+The negativeControlSubset function subsets the data object and includes only the probes with Negative Code Class.     
+You can see the Code Class information in the featureData slot.
+
+```{r}
+neg_set <- negativeControlSubset(demoData)
+class(neg_set)
+```
+
 
 
 ## Apply Functions Across Assay Data
 
 Similar to the ExpressionSet's esApply function, an equivalent method is available with NanoStringRCCSet objects. Functions can be applied to assay data feature- or sample-wise.
 
-```{r}
-assayDataElement( demoData, "demoElem" ) <- 
-  assayDataApply( demoData, MARGIN=2, FUN=log, base=10, elt="exprs" )
-assayDataElement( demoData, "demoElem" )[1:3, 1:2]
-assayDataApply( demoData, MARGIN=1, FUN=mean, elt="demoElem")[1:5]
+Add the demoElem data which is computed as the logarithm of the count matrix (exprs) into the demoData by using assayDataApply function. The accessor function assayDataElement from eSet returns matrix element from assayData slot of object.     
 
-head( esBy( demoData, 
+- MARGIN: 1 (loop over the feature) or 2 (loop over the sample).     
+- FUN: the function you want to apply on the data, e.g. log, mean, etc.      
+- elt: refers to the element you want to apply on in the demoData.         
+
+```{r}
+# calculate the log counts of gene expressions for each sample
+assayDataElement(demoData, "demoElem") <- 
+  assayDataApply(demoData, MARGIN=2, FUN=log, base=10, elt="exprs")
+assayDataElement(demoData, "demoElem")[1:3, 1:2]
+
+# calculate the mean of log counts for each feature
+assayDataApply(demoData, MARGIN=1, FUN=mean, elt="demoElem")[1:5]
+
+# split data by Treatment and calculate the mean of log counts for each feature
+head(esBy(demoData, 
             GROUP = "Treatment", 
-            FUN = function( x ) { 
-              assayDataApply( x, MARGIN = 1, FUN=mean, elt="demoElem" ) 
-            } ) )
+            FUN = function(x){ 
+              assayDataApply(x, MARGIN = 1, FUN=mean, elt="demoElem") 
+            }))
 ```
 
-There is also a preloaded nCounter normalization method that comes with the NanoStringRCCSet class. This includes the default normalization performed in nSolver.
 
-```{r}
-demoData <- normalize( demoData , type="nSolver", fromELT = "exprs" , toELT = "exprs_norm" )
-assayDataElement( demoData , elt = "exprs_norm" )[1:3, 1:2]
+There is also a preloaded nCounter normalization method that comes with the NanoStringRCCSet class. This includes the default normalization performed in nSolver.    
+
+- type: data type of the object. Values maybe RNA, protein.      
+- fromELT: name of the assayDataElement to normalize.     
+- toELT: name of the assayDataElement to store normalized values.     
+
+
+```{r warning = FALSE}
+demoData <- normalize(demoData, type="nSolver", fromELT = "exprs", toELT = "exprs_norm")
+assayDataElement(demoData, elt = "exprs_norm")[1:3, 1:2]
 ```
+
+
+Below is a heatmap of log normalized data generated by NanoStringRCCSet autoplot method with unsupervised clustering dendrograms. Each row of the heatmap represents a gene and each column represents a sample. Users can custom the heatmap by setting different parameters.     
+
+- type: reference the type of plot to generate, in this case, "heatmap-genes".     
+- elt: the name of the expression matrix, i.e. the data you used to generate the plot.          
+- heatmapGroup: referencing pData columns to color samples by in heatmap.     
+- show_colnames_gene_limit: determine the number of features to display column-wise. In this case, the number of samples is larger than the limit, no column names will be displayed.    
+- show_rownames_gene_limit: determine the number of features to display row-wise. In this case, the number of genes is larger than the limit, no row names will be displayed.      
+- log2scale: indicating expression data is on log2 scale      
+
+
+```{r warning = FALSE}
+autoplot(demoData, type = "heatmap-genes", elt = "exprs_norm", heatmapGroup = c("Treatment", "BRAFGenotype"), 
+         show_colnames_gene_limit = 10, show_rownames_gene_limit = 40,
+         log2scale = FALSE)
+```
+
+
 
 
 ## Transforming NanoStringRCCSet Data to Data Frames
 
-The NanoStringRCCSet munge function helps users generate data frames for downstream modeling and visualization. There is also a transform method, which functions similarly to the base transform function.
+The NanoStringRCCSet munge function helps users generate data frames for downstream modeling and visualization. This combines available features and samples into a long format. There is also a transform method, which functions similarly to the base transform function.     
 
-```{r}
-neg_set <- negativeControlSubset( demoData )
-class( neg_set )
-neg_ctrls <- munge( neg_set )
-head( neg_ctrls, 2 )
-class( neg_ctrls )
-head( munge( demoData ), 2 )
-munge( demoData, mapping = ~`BRAFGenotype` + GeneMatrix )
+```{r warning = FALSE}
+# combine negative probes and expressions together
+neg_ctrls <- munge(neg_set, ~exprs)
+head(neg_ctrls, 2)
+class(neg_ctrls)
 
-exprs_df <- transform( assayData( demoData )[["exprs_norm"]] )
-class( exprs_df )
+# combine expressions with all features
+head(munge(demoData, ~exprs), 2)
+
+# combine mapping with the dataset, store gene expressions as a matrix
+munge(demoData, mapping = ~`BRAFGenotype` + GeneMatrix)
+
+# transform the gene expressions to normalized counts
+exprs_df <- transform(assayData(demoData)[["exprs_norm"]])
+class(exprs_df)
 exprs_df[1:3, 1:2]
 ```
 
 
 ## Built-in Quality Control Assessment
 
-Users can flag samples that fail QC thresholds or have borderline results based on housekeeper and ERCC expression, imaging quality, and binding density. Additionally, QC results can be visualized using the NanoStringRCCSet autoplot method.
+Quality control metrics are used to assess the technical performance of the nCounter profiling assay in a study. Users can flag samples that fail QC thresholds or have borderline results based on housekeeper and ERCC expression, imaging quality, binding density. First, housekeeper genes assess sample integrity by comparing the observed value versus a predetermined threshold for suitability for data analysis. The machine performance is assessed using percentage of fields of view that were attempted versus those successfully analyzed. The binding density of the probes within the imaging area, ERCC linearity, and limit of detection are used as readouts of the efficiency and specificity of the chemistry of the assay. Any sample deemed as failing any one of these QC checkpoints will be removed from the analysis.    
 
-```{r, fig.cap="Housekeeping Genes QC Plot"}
-demoData <- setQCFlags( demoData )
-tail( svarLabels( demoData ) )
-head( protocolData( demoData )[["QCFlags"]], 2 )
-head( protocolData( demoData )[["QCBorderlineFlags"]], 2 )
+Additionally, QC results can be visualized using the NanoStringRCCSet autoplot method.     
+
+- type: reference the type of plot to generate.      
+- qcCutoffs: you can also set qcCutoffs in the autoplot function. Since it has been set in the setQCFlags function, you don't need to set this parameter again in autoplot.     
+
+
+```{r warning = FALSE}
+# Use the setSeqQCFlags function to set Sequencing QC Flags to your dataset. The default cutoff are displayed in the function. 
+demoData <- setQCFlags(demoData,
+                       qcCutoffs = list(Housekeeper = c(failingCutoff = 32, passingCutoff = 100), 
+                                        Imaging = c(fovCutoff = 0.75), 
+                                        BindingDensity = c(minimumBD = 0.1, maximumBD = 2.25, maximumBDSprint = 1.8), 
+                                        ERCCLinearity = c(correlationValue = 0.95), 
+                                        ERCCLoD = c(standardDeviations = 2)))
+
+# show the last 6 column names in the data
+tail(svarLabels(demoData))
+
+# show the first 2 rows of the QC Flags results
+head(protocolData(demoData)[["QCFlags"]], 2)
+
+# show the first 2 rows of the QC Borderline Flags results
+head(protocolData(demoData)[["QCBorderlineFlags"]], 2)
 ```
 
-Binding Density QC
-```{r}
-theme_set( theme_gray( base_family = "Arial" ) )
-girafe( ggobj = autoplot( demoData , "bindingDensity-mean" ) )
-girafe( ggobj = autoplot( demoData , "bindingDensity-sd" ) )
+
+### Housekeeping Genes QC 
+
+The HK Genes QC plot shows the geometric mean of housekeeper genes in each sample. Each dot represents a sample in this plot. The sample IDs are labeled at x-axis. The corresponding geometric mean of housekeeper genes are at y-axis. If you hover mouse over a point, you can find the sample name and its geometric mean. Samples with low housekeeper signal suffer from either low sample input or low reaction efficiency. Ideally the geometric mean of counts will be above 100 for all samples, and a minimum geometric mean of 32 counts is required for analysis. Samples in-between these two thresholds are considered in the analysis, but results from these "borderline" samples should be treated with caution. In this case, all samples are above 100, so they all pass Housekeeping Genes QC.        
+
+```{r warning = FALSE}
+# set the font Arial
+theme_set(theme_gray(base_family = "Arial"))
+girafe(ggobj = autoplot(demoData, type = "housekeep-geom"))
 ```
 
-QC by Lane
-```{r}
-girafe( ggobj = autoplot( demoData , "lane-bindingDensity" ) )
-girafe( ggobj = autoplot( demoData , "lane-fov" ) )
+
+You can generate QC plots with a subset of data using the subset function. The HK Genes QC plot below only contains samples with Treatment DMSO.          
+
+```{r warning = FALSE}
+subData <- subset(demoData, select = phenoData(demoData)[["Treatment"]] == "DMSO")
+girafe(ggobj = autoplot(subData, type = "housekeep-geom"))
 ```
 
-Housekeeping Genes QC
-```{r}
-subData <- subset( demoData, select = phenoData( demoData )[["Treatment"]] == "DMSO" )
-girafe( ggobj = autoplot( subData, "housekeep-geom" ) )
+
+### Binding Density QC 
+
+The binding density represents the concentration of barcodes measured by the instrument in barcodes per square micron. Each dot in this QC plot represents a sample. The lane ID of samples are labeled at x-axis and the binding density is at y-axis. If you hover mouse over a dot, it will display its Sample ID, lane ID and binding density. The Digital Analyzer may not be able to distinguish each probe from the others if too many are present. The ideal range for assays run on an nCounter MAX or FLEX system is 0.1 - 2.25 spots per square micron and assays run on the nCounter SPRINT system should have a range of 0.1 - 1.8 spots per square micron. In this case, all samples are in the ideal range, so they all pass Binding Density QC.           
+
+
+
+```{r warning = FALSE}
+girafe(ggobj = autoplot(demoData, type = "lane-bindingDensity"))
 ```
 
-ERCC QC
-```{r}
-girafe( ggobj = autoplot( demoData , "ercc-linearity" ) )
-girafe( ggobj = autoplot( subData , "ercc-lod" ) )
+### Imaging QC 
+
+The Imaging QC metric reports the percentage of fields of view (FOVs) the Digital Analyzer or SPRINT was able to capture. Each dot represents a sample. The lane IDs are labeled at x-axis and the counted FOV is at y-axis. If you hover mouse over a point, it will display its sample ID, lane ID and counted FOV. At least 75% of FOVs should be successful to obtain robust data. In this case, all samples passed the 75% threshold, so they all pass Imaging QC.      
+
+```{r warning = FALSE}
+girafe(ggobj = autoplot(demoData, type = "lane-fov"))
 ```
 
-## Data exploration
 
-Further data exploration can be performed by visualizing a select feature's expression or by getting a bird's eye view with expression heatmaps auto-generated with unsupervised clustering dendrograms.
+### ERCC Linearity QC
 
-```{r}
-#girafe( ggobj = autoplot( demoData , "boxplot-feature" , index = featureNames(demoData)[3] , elt = "exprs" ) )
-#autoplot( demoData , "heatmap-genes" , elt = "exprs_norm" )
+The ERCC Linearity QC metric performs a correlation analysis after Log(2) transformation of the expression values. Each line in this plot represents a sample. The concentration is labeled at x-axis and gene expressions are displayed at y-axis. If you hover mouse over a line, it will show the sample ID, concentration, gene expresson and the correlation. The correlation is tested between the known concentrations of positive control target molecules added by NanoString and the resulting Log(2) counts. Correlation values lower than 0.95 may indicate an issue with the hybridization reaction and/or assay performance. In this case, all samples have correlation values above or equal to 0.95, so they all pass ERCC linearity QC.
+
+
+```{r warning = FALSE}
+girafe(ggobj = autoplot(demoData, type = "ercc-linearity"))
 ```
+
+
+### ERCC LOD QC
+
+The ERCC limit of detection of the assay compares the positive control probes and the negative control probes. Specifically, it is expected that the 0.5 fM positive control probe (Pos_E) will produce raw counts that are at least two standard deviations higher than the mean of the negative control probes (represented by the boxplot). Each dot in this plot represents a sample. The sample IDs are displayed at x-axis and the raw counts of Pos_E are at y-axis. If you hover mouse over a point, it will show the sample ID and its Pos_E counts. The critical value for each sample is drawn as a red horizontal line for each sample. In this case, all samples pass the LOD QC.          
+
+
+```{r warning=FALSE}
+girafe(ggobj = autoplot(subData, type = "ercc-lod"))
+```
+
 
 ```{r}
 sessionInfo()
