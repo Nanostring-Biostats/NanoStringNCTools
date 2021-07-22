@@ -375,6 +375,16 @@ girafe(ggobj = autoplot(subData, type = "ercc-lod"))
 ```
 
 
+## Data exploration
+
+Further data exploration can be performed by visualizing a select feature's expression or by getting a bird's eye view with expression heatmaps auto-generated with unsupervised clustering dendrograms.
+
+```{r}
+girafe( ggobj = autoplot( demoData , "boxplot-feature" , index = featureNames(demoData)[3] , elt = "exprs" ) )
+autoplot( demoData , "heatmap-genes" , elt = "exprs_norm" )
+```
+
+
 ```{r}
 sessionInfo()
 ```
