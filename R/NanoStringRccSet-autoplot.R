@@ -32,11 +32,11 @@ autoplot.NanoStringRccSet <- function(object, type = c("boxplot-feature", "boxpl
     geomParams <- as.list(geomParams)
     geomParams <- update_geom_params("base", geomParams)
     geomParams <- update_geom_params("point", geomParams, GeomInteractivePoint$default_aes[!names(GeomInteractivePoint$default_aes) %in% 
-        c("hover_css", "selected_css")])
+        c("hover_css", "selected_css", "tooltip_fill")])
     geomParams <- update_geom_params("line", geomParams, GeomInteractiveLine$default_aes[!names(GeomInteractiveLine$default_aes) %in% 
-        c("hover_css", "selected_css")])
+        c("hover_css", "selected_css", "tooltip_fill")])
     geomParams <- update_geom_params("boxplot", geomParams, GeomInteractiveBoxplot$default_aes[!names(GeomInteractiveBoxplot$default_aes) %in% 
-        c("hover_css", "selected_css")])
+        c("hover_css", "selected_css", "tooltip_fill")])
     fontFamily <- ifelse(is.null(theme_get()$text$family), "Arial", theme_get()$text$family)
     ggpoint <- function(object, mapping, ...) {
         for (arg in names(geomParams[["point"]])) {
