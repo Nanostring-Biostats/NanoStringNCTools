@@ -1,14 +1,12 @@
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
-
 # NanoStringNCTools
 
 ## Overview
 
-The NanoStringNCTools is a package that contains tools for analyzing
-data from NanoString nCounter Technology. It provides functions to read,
-perform quality control (QC) and normalization on Nanostring RCC files
-generated from the NanoString nCounter platform.
+The NanoStringNCTools package contains tools for analyzing data from 
+NanoString nCounter Technology. It provides functions to read,
+quality control (QC) and normalize starting from Nanostring 
+RCC and RLF files generated from the NanoString nCounter.
 
 It contains the definition of the NanoStringRCCSet which inherits from
 Biobase’s ExpressionSet class and complimentary functions that will help
@@ -16,22 +14,23 @@ in starting analysis.
 
 ## Installation
 
-You can download the the package from bioconductor from this link
-<https://bioconductor.org/packages/devel/bioc/html/NanoStringNCTools.html>
+### Download the release version from Bioconductor
+<https://bioconductor.org/packages/release/bioc/html/NanoStringNCTools.html>
 
+### Install the release version from Bioconductor
 ``` r
-# Install from Bioconductor
 if (!requireNamespace("BiocManager", quietly=TRUE))
     install.packages("BiocManager")
 
-BiocManager::install(version="devel")
+BiocManager::install(version="release")
 
 BiocManager::install("NanoStringNCTools")
+```
 
-# Or the development version from GitHub
-# install.packages("devtools")
+### Install the development version from GitHub
+``` r
 devtools::install_github("Nanostring-Biostats/NanoStringNCTools", 
-                         build_vignettes = TRUE)
+                         build_vignettes = TRUE, ref = "dev")
 ```
 
 ## Documentation
@@ -42,3 +41,14 @@ the version of this package installed in your system, start R and enter:
 ``` r
 browseVignettes("NanoStringNCTools")
 ```
+
+## Branches
+The release version on Bioconductor is the stable version.
+<https://bioconductor.org/packages/release/bioc/html/NanoStringNCTools.html>
+
+The devel version on Bioconductor is upstream of master on GitHub.
+It is under active development and no guarantee is made on usability
+at any given time.
+
+The dev branch on GitHub is under active development and no guarantee 
+is made on usability at any given time.
