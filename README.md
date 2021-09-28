@@ -52,3 +52,12 @@ at any given time.
 
 The dev branch on GitHub is under active development and no guarantee 
 is made on usability at any given time.
+
+## Citation
+Aboyoun, P.; Ortogero, N.; Yang, Z.; Reeves, J.; Gorman, K.; 
+Vitancol, R.; Smith, T.; Ren, Y.; Henderson, D. 
+NanoStringNCTools: NanoString nCounter Tools. R Package Version 1.0.0. 
+NanoString Technologies Inc.; Seattle, WA 98109, USA. 2021. 
+
+## License
+This project is licensed under the [MIT license](LICENSE).
