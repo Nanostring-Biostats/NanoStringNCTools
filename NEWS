@@ -1,3 +1,16 @@
+Changes in version 1.1.2 (2020-09-28)
++ Update license
+
+Changes in version 1.1.1 (2020-08-13)
++ Documentation updates
++ Handle new parameters from ggiraph update
+
+Changes in version 1.1.0 (2020-05-19)
++ Initial Bioconductor devel 3.14 version
+
+Changes in version 1.0.0 (2020-05-19)
++ Bioconductor release 3.13 version
+
 Changes in version 0.99.0 (2020-12-15)
 + Submitted to Bioconductor
 
