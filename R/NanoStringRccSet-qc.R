@@ -41,7 +41,7 @@ setMethod("setQCFlags", "NanoStringRccSet", function(object, qcCutoffs = list(Ho
     Binding <- unlist(apply(data.frame(prData[["BindingDensity"]], substr(protocolData(object)[["ScannerID"]], 
         5, 5), bindDenRange[1L]), 1, function(x) {
         maxBD <- switch(x[2], A = maxBindDen, B = maxBindDen, C = maxBindDen, D = maxBindDen, E = maxBindDen, 
-            D = maxBindDen,G = maxBindDen, H = maxBindDen, P = maxBindDenSprint, default = maxBindDen)
+            G = maxBindDen, H = maxBindDen, P = maxBindDenSprint, default = maxBindDen)
         return(x[1] < x[3] | x[1] > maxBD)
     }))
     negCtrld <- munge(negCtrl, mapping = aes_(exprs = as.name("exprs")))
