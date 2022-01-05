@@ -384,7 +384,8 @@ autoplot.NanoStringRccSet <- function(object, type = c("boxplot-feature", "boxpl
         extradata <- data.frame(PassingBD = unlist(apply(data.frame(bd = protocolData(object)[["BindingDensity"]], 
             i = instrument, min = minBD), 1, function(x) {
             maxBD <- switch(x[2], A = qcCutoffs[["BindingDensity"]][["maximumBD"]], B = qcCutoffs[["BindingDensity"]][["maximumBD"]], 
-                C = qcCutoffs[["BindingDensity"]][["maximumBD"]], D = qcCutoffs[["BindingDensity"]][["maximumBD"]], 
+                C = qcCutoffs[["BindingDensity"]][["maximumBD"]], D = qcCutoffs[["BindingDensity"]][["maximumBD"]],
+                E = qcCutoffs[["BindingDensity"]][["maximumBD"]],
                 G = qcCutoffs[["BindingDensity"]][["maximumBD"]], H = qcCutoffs[["BindingDensity"]][["maximumBD"]], 
                 P = qcCutoffs[["BindingDensity"]][["maximumBDSprint"]], default = qcCutoffs[["BindingDensity"]][["maximumBD"]])
             return(x[1] >= x[3] & x[1] <= maxBD)
