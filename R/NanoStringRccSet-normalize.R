@@ -10,7 +10,7 @@ setMethod("normalize", "NanoStringRccSet", function(object, type = c("nSolver", 
     }, nSolver = {
         assayDataElement(object, toElt) <- 1 + assayDataElement(object, fromElt)
         posCtrl <- positiveControlSubset(object)
-        pcG <- summary(object, 2L, elt = toElt)[, "GeomMean"]
+        pcG <- summary(posCtrl, 2L, elt = toElt)[, "GeomMean"]
         assayDataElement(object, toElt) <- sweep(assayDataElement(object, toElt), 2L, mean(pcG)/pcG, 
             FUN = "*")
         housekeepingSet <- housekeepingSubset(object)
