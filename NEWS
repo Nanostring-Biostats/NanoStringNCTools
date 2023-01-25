@@ -1,3 +1,6 @@
+Changes in version 1.7.1 (2022-01-25)
++ Parameters added for update in ggiraph calls
+
 Changes in version 1.5.1 (2022-10-10)
 + Bug fix in normalization nSolver method
 
