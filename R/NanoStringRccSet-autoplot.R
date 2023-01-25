@@ -32,11 +32,13 @@ autoplot.NanoStringRccSet <- function(object, type = c("boxplot-feature", "boxpl
     geomParams <- as.list(geomParams)
     geomParams <- update_geom_params("base", geomParams)
     geomParams <- update_geom_params("point", geomParams, GeomInteractivePoint$default_aes[!names(GeomInteractivePoint$default_aes) %in% 
-        c("hover_css", "selected_css", "tooltip_fill")])
+        c("hover_css", "selected_css", "tooltip_fill", "hover_nearest")])
     geomParams <- update_geom_params("line", geomParams, GeomInteractiveLine$default_aes[!names(GeomInteractiveLine$default_aes) %in% 
-        c("hover_css", "selected_css", "tooltip_fill")])
+        c("hover_css", "selected_css", "tooltip_fill", "hover_nearest")])
     geomParams <- update_geom_params("boxplot", geomParams, GeomInteractiveBoxplot$default_aes[!names(GeomInteractiveBoxplot$default_aes) %in% 
-        c("hover_css", "selected_css", "tooltip_fill")])
+        c("hover_css", "selected_css", "tooltip_fill", "hover_nearest", "outlier.data_id",
+          "outlier.tooltip", "outlier.onclick", "outlier.hover_css", 
+          "outlier.selected_css", "outlier.tooltip_fill", "outlier.hover_nearest")])
     fontFamily <- ifelse(is.null(theme_get()$text$family), "Arial", theme_get()$text$family)
     ggpoint <- function(object, mapping, ...) {
         for (arg in names(geomParams[["point"]])) {
@@ -131,7 +133,7 @@ autoplot.NanoStringRccSet <- function(object, type = c("boxplot-feature", "boxpl
         tooltip <- gsub(pattern = "\n", replacement = "", tooltip)
         df <- data.frame(x = x, score = y, tooltip = tooltip, stringsAsFactors = FALSE)
         df[["colour"]] <- colour
-        errorbar_width <- geomParams[["boxplot"]][["size"]]
+        errorbar_width <- scalingFactor
         geomParams[["boxplot"]][["size"]] <- rel(0.2) * scalingFactor
         p <- ggplot(df, aes_string(x = "x", y = "score")) + stat_boxplot(geom = "errorbar", 
             lwd = rel(0.3) * scalingFactor, width = errorbar_width, colour = geomParams[["boxplot"]][["colour"]]) + 
