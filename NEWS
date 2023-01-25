@@ -1,3 +1,6 @@
+Changes in version 1.6.1 (2022-01-25)
++ Parameters added for update in ggiraph calls
+
 Changes in version 1.3.1 (2022-01-12)
 + Enable compatibility with Gen 2.5 RCCs
 
