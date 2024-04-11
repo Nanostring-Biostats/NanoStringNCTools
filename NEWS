@@ -1,3 +1,6 @@
+Changes in version 1.11.1 (2024-04-10)
++ Remove setting font in vignette
+
 Changes in version 1.7.1 (2022-01-25)
 + Parameters added for update in ggiraph calls
 

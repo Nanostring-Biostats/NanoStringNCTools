@@ -322,8 +322,6 @@ head(protocolData(demoData)[["QCBorderlineFlags"]], 2)
 The HK Genes QC plot shows the geometric mean of housekeeper genes in each sample. Each dot represents a sample in this plot. The sample IDs are labeled at x-axis. The corresponding geometric mean of housekeeper genes are at y-axis. If you hover mouse over a point, you can find the sample name and its geometric mean. Samples with low housekeeper signal suffer from either low sample input or low reaction efficiency. Ideally the geometric mean of counts will be above 100 for all samples, and a minimum geometric mean of 32 counts is required for analysis. Samples in-between these two thresholds are considered in the analysis, but results from these "borderline" samples should be treated with caution. In this case, all samples are above 100, so they all pass Housekeeping Genes QC.        
 
 ```{r warning = FALSE}
-# set the font Arial
-theme_set(theme_gray(base_family = "Arial"))
 girafe(ggobj = autoplot(demoData, type = "housekeep-geom"))
 ```
 
