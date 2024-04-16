@@ -6,7 +6,7 @@ Version: 1.11.4
 Encoding: UTF-8
 Authors@R: c(person("Patrick", "Aboyoun", role = c("aut")), 
              person("Nicole", "Ortogero", email = "nortogero@nanostring.com", role = c("aut")), 
-	           person("Maddy", "Griswold", email = "mgriswold@nanostring.com", role = c("cre")),
+             person("Maddy", "Griswold", email = "mgriswold@nanostring.com", role = c("cre")),
              person("Zhi", "Yang", role = c("ctb")))
 Depends: R (>= 3.6), Biobase, S4Vectors, ggplot2
 Imports: BiocGenerics, Biostrings, ggbeeswarm, ggiraph, ggthemes, grDevices, IRanges,
