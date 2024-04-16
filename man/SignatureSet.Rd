@@ -62,40 +62,29 @@
 
 \section{Utilities}{
     \describe{
-      \item{}{
-        \code{length(x)}: returns the number of signatures in \code{x}.
+      \item{length(x)}{returns the number of signatures in \code{x}.
       }
-      \item{}{
-        \code{lengths(x, use.names = TRUE)}: returns a named integer vector
+      \item{lengths(x, use.names = TRUE)}{returns a named integer vector
         containing the number of genes in each of the signatures in \code{x}.
       }
-      \item{}{
-        \code{names(x)}: returns a character vector containing the signature
+      \item{names(x)}{ returns a character vector containing the signature
         names in \code{x}.
       }
-      \item{}{
-        \code{weights(object)}: returns a named \code{\link{NumericList}} that
+      \item{weights(object)}{returns a named \code{\link{NumericList}} that
         defines the linear combination based signatures.
       }
-      \item{}{
-        \code{weights(object) <- value}: replaces the \code{\link{NumericList}}
+      \item{weights(object) <- value}{replaces the \code{\link{NumericList}}
         that defines the linear combination based signatures.
       }
-      \item{}{
-        \code{getSigFuncs(object)}: returns the signature functions of an object.
+      \item{getSigFuncs(object)}{returns the signature functions of an object.
       }
-      \item{}{
-        \code{groups(object)}: returns a factor vector representing the signature groups.
+      \item{groups(object)}{returns a factor vector representing the signature groups.
       }
-      \item{}{
-        \code{groups(object) <- value}: replaces the factor vector representing the 
+      \item{groups(object) <- value}{replaces the factor vector representing the 
         signature groups.
       }
-      \item{}{
-        \code{version(object)}: returns the signature version.
-      }
-      \item{}{
-        \code{version(object) <- value}: replaces the signature version.
+      \item{version(object)}{
+        \code{}: returns the signature version.
       }
     }
 }

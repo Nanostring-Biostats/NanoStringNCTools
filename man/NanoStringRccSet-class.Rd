@@ -144,63 +144,49 @@ NanoStringRccSet(assayData,
   In addition to the standard \code{\linkS4class{ExpressionSet}} accessor
   methods, \code{NanoStringRccSet} objects have the following:
   \describe{
-    \item{}{
-      \code{sData(object)}: extracts the \code{data.frame} containing the
+    \item{sData(object)}{ extracts the \code{data.frame} containing the
       sample data, \code{cbind(pData(object), pData(protocolData(object)))}.
     }
-    \item{}{
-      \code{svarLabels(object)}: extracts the sample data column names,
+    \item{svarLabels(object)}{ extracts the sample data column names,
       \code{c(varLabels(object), varLabels(protocolData(object)))}.
     }
-    \item{}{
-      \code{dimLabels(object)}: extracts the column names to use as labels
+    \item{dimLabels(object)}{ extracts the column names to use as labels
       for the features and samples in the \code{autoplot} method.
     }
-    \item{}{
-      \code{dimLabels(object) <- value}: replaces the \code{dimLabels} of
+    \item{dimLabels(object) <- value}{ replaces the \code{dimLabels} of
       the \code{object}.
     }
-    \item{}{
-      \code{signatures(object)}: extracts the \code{\link{SignatureSet}}
+    \item{signatures(object)}{ extracts the \code{\link{SignatureSet}}
       of the \code{object}.
     }
-    \item{}{
-      \code{signatures(object) <- value}: replaces the
+    \item{signatures(object) <- value}{ replaces the
       \code{\link{SignatureSet}} of the \code{object}.
     }
-    \item{}{
-      \code{signatureScores(object, elt = "exprs")}: extracts the matrix
+    \item{signatureScores(object, elt = "exprs")}{ extracts the matrix
       of computed signature scores.
     }
-    \item{}{
-      \code{design(object)}: extracts the one-sided formula representing
+    \item{design(object)}{ extracts the one-sided formula representing
       the experimental design based on columns from
       \code{\link[Biobase]{phenoData}}.
     }
-    \item{}{
-      \code{design(object) <- value}: replaces the one-sided formula
+    \item{design(object) <- value}{ replaces the one-sided formula
       representing the experimental design based on columns from
       \code{\link[Biobase]{phenoData}}.
     }
-    \item{}{
-      \code{setSignatureFuncs(object)}: returns the signature functions.
+    \item{setSignatureFuncs(object)}{ returns the signature functions.
     }
-    \item{}{
-      \code{setSignatureFuncs(object) <- value}: replaces the signature functions.
+    \item{setSignatureFuncs(object) <- value}{ replaces the signature functions.
     }
-    \item{}{
-      \code{setSignatureGroups(object) <- value}: returns the signature groups.
+    \item{setSignatureGroups(object) <- value}{ returns the signature groups.
     }
-    \item{}{
-      \code{setSignatureGroups(object) <- value}: replaces the signature groups.
+    \item{setSignatureGroups(object) <- value}{ replaces the signature groups.
     }
   }
 }
 
 \section{Summarizing}{
   \describe{
-    \item{}{
-      \code{summary(object, MARGIN = 2L, GROUP = NULL, log2scale = TRUE, elt = "exprs", signatureScores = FALSE)}:
+    \item{summary(object, MARGIN = 2L, GROUP = NULL, log2scale = TRUE, elt = "exprs", signatureScores = FALSE)}{
       When \code{signatureScores = FALSE}, the marginal summaries of the
       \code{elt} \code{\link[Biobase]{assayData}} matrix along either the
       feature (\code{MARGIN = 1}) or sample (\code{MARGIN = 2}) dimension.
@@ -226,46 +212,38 @@ NanoStringRccSet(assayData,
   In addition to the standard \code{\linkS4class{ExpressionSet}} subsetting
   methods, \code{NanoStringRccSet} objects have the following:
   \describe{
-    \item{}{
-      \code{subset(x, subset, select, \ldots)}: Subset the feature and sample
+    \item{subset(x, subset, select, \ldots)}{ Subset the feature and sample
       dimensions using the \code{subset} and \code{select} arguments
       respectively. The \code{subset} argument will be evaluated with
       respect to the \code{\link[Biobase]{featureData}}, while the
       \code{select} argument will be evaluated with respect to the
       \code{\link[Biobase]{phenoData}} and \code{\link[Biobase]{protocolData}}.
     }
-    \item{}{
-      \code{endogenousSubset(x, subset, select)}: Extracts the endogenous
+    \item{endogenousSubset(x, subset, select)}{ Extracts the endogenous
       barcode class feature subset of \code{x} with optional additional
       subsetting using \code{subset} and \code{select}.
     }
-    \item{}{
-      \code{housekeepingSubset(x, subset, select)}: Extracts the housekeeping
+    \item{housekeepingSubset(x, subset, select)}{ Extracts the housekeeping
       barcode class feature subset of \code{x} with optional additional
       subsetting using \code{subset} and \code{select}.
     }
-    \item{}{
-      \code{negativeControlSubset(x, subset, select)}: Extracts the negative
+    \item{negativeControlSubset(x, subset, select)}{ Extracts the negative
       control barcode class feature subset of \code{x} with optional additional
       subsetting using \code{subset} and \code{select}.
     }
-    \item{}{
-      \code{positiveControlSubset(x, subset, select)}: Extracts the positive
+    \item{positiveControlSubset(x, subset, select)}{Extracts the positive
       control barcode class feature subset of \code{x} with optional additional
       subsetting using \code{subset} and \code{select}.
     }
-    \item{}{
-      \code{controlSubset(x, subset, select)}: Extracts the feature subset
+    \item{controlSubset(x, subset, select)}{Extracts the feature subset
       representing the controls of \code{x} with optional additional
       subsetting using \code{subset} and \code{select}.
     }
-    \item{}{
-      \code{nonControlSubset(x, subset, select)}: Extracts the feature subset
+    \item{nonControlSubset(x, subset, select)}{Extracts the feature subset
       representing the non-controls of \code{x} with optional additional
       subsetting using \code{subset} and \code{select}.
     }
-    \item{}{
-      \code{signatureSubset(x, subset, select)}: Extracts the feature subset
+    \item{signatureSubset(x, subset, select)}{Extracts the feature subset
       representing the genes in the \code{signatures} of \code{x} with
       optional additional subsetting using \code{subset} and \code{select}.
     }
@@ -274,18 +252,15 @@ NanoStringRccSet(assayData,
 
 \section{Looping}{
   \describe{
-    \item{}{
-      \code{assayDataApply(X, MARGIN, FUN, \ldots, elt = "exprs")}: Loop over
+    \item{assayDataApply(X, MARGIN, FUN, \ldots, elt = "exprs")}{Loop over
       the feature (\code{MARGIN = 1}) or sample (\code{MARGIN = 2}) dimension
       of \code{assayDataElement(X, elt)}.
     }
-    \item{}{
-      \code{signatureScoresApply(X, MARGIN, FUN, \ldots, elt = "exprs")}: Loop
+    \item{signatureScoresApply(X, MARGIN, FUN, \ldots, elt = "exprs")}{Loop
       over the signature (\code{MARGIN = 1}) or sample (\code{MARGIN = 2})
       dimension of \code{signatureScores(X, elt)}.
     }
-    \item{}{
-      \code{esBy(X, GROUP, FUN, \ldots, simplify = TRUE)}: Split
+    \item{esBy(X, GROUP, FUN, \ldots, simplify = TRUE)}{Split
       \code{X} by \code{GROUP} column within \code{featureData},
       \code{phenoData}, or \code{protocolData} and apply \code{FUN}
       to each partition.
@@ -295,14 +270,11 @@ NanoStringRccSet(assayData,
 
 \section{Transforming}{
   \describe{
-    \item{}{
-      \code{munge(data, mapping = update(design(data), exprs ~ .), extradata = NULL, elt = "exprs", \ldots)}:
-      munge argument \code{data} into a data.frame object for modeling and
+    \item{munge(data, mapping = update(design(data), exprs ~ .), extradata = NULL, elt = "exprs", \ldots)}{munge argument \code{data} into a data.frame object for modeling and
       visualization using the \code{mapping} argument. Supplemental data can be
       specified using the \code{extradata} argument.
     }
-    \item{}{
-      \code{transform(`_data`, \ldots)}: Similar to the
+    \item{transform(`_data`, \ldots)}{Similar to the
       \code{\link[base]{transform}} generic in the \pkg{base} package, creates
       or modifies one or more \code{\link[Biobase]{assayData}} matrices based
       upon \code{name = value} pairs in \code{\ldots}. The expressions in
@@ -315,8 +287,7 @@ NanoStringRccSet(assayData,
 
 \section{Evaluating}{
   \describe{
-    \item{}{
-      \code{with(data, expr, \ldots)}: Evaluate expression \code{expr} with
+    \item{with(data, expr, \ldots)}{Evaluate expression \code{expr} with
       respect to \code{\link[Biobase]{assayData}},
       \code{\link[Biobase]{featureData}}, \code{\link[Biobase]{phenoData}},
       and \code{\link[Biobase]{protocolData}};
@@ -327,20 +298,17 @@ NanoStringRccSet(assayData,
 
 \section{Normalizing}{
   \describe{
-    \item{}{
-      \code{normalize(object, type, fromElt = "exprs", toElt = "exprs_norm", \ldots)}:
+    \item{normalize(object, type, fromElt = "exprs", toElt = "exprs_norm", \ldots)}{
     }
   }
 }
 
 \section{Plotting}{
   \describe{
-    \item{}{
-      \code{ggplot(data, mapping = aes(), \ldots, extradata = NULL, tooltip_digits = 4L, environment = parent.frame())}:
+    \item{ggplot(data, mapping = aes(), \ldots, extradata = NULL, tooltip_digits = 4L, environment = parent.frame())}{
       the \code{NanoStringRccSet} method for \code{ggplot}.
     }
-    \item{}{
-      \code{autoplot(object, type, log2scale = TRUE, elt = "exprs", index = 1L, geomParams = list(), tooltipDigits = 4L, heatmapGroup = NULL, \ldots)}:
+    \item{autoplot(object, type, log2scale = TRUE, elt = "exprs", index = 1L, geomParams = list(), tooltipDigits = 4L, heatmapGroup = NULL, \ldots)}{
     }
   }
 }
