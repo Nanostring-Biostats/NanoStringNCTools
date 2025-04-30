@@ -33,9 +33,9 @@ setMethod("signatureScoresApply", "NanoStringRccSet", function(X, MARGIN, FUN, .
     parent <- environment(FUN)
     if (is.null(parent)) 
         parent <- emptyenv()
-    environment(FUN) <- new.env(parent = parent)
+    newEnv <- new.env(parent = parent)
     if (length(.kvs) > 0L) {
-        multiassign(names(.kvs), .kvs, environment(FUN))
+        multiassign(x = names(.kvs), value = .kvs, envir = newEnv)
     }
     if (length(.df) == 0L) {
         apply(X, MARGIN = MARGIN, FUN = FUN, ...)
@@ -44,7 +44,7 @@ setMethod("signatureScoresApply", "NanoStringRccSet", function(X, MARGIN, FUN, .
         if (MARGIN == 1L) {
             output <- vector("list", nrow(X))
             for (i in seq_along(output)) {
-                multiassign(colnames(.df), .df[i, ], environment(FUN))
+                multiassign(colnames(.df), .df[i, ], newEnv)
                 output[[i]] <- FUN(X[i, ], ...)
             }
             names(output) <- rownames(X)
@@ -52,7 +52,7 @@ setMethod("signatureScoresApply", "NanoStringRccSet", function(X, MARGIN, FUN, .
         else {
             output <- vector("list", ncol(X))
             for (j in seq_along(output)) {
-                multiassign(colnames(.df), .df[j, ], environment(FUN))
+                multiassign(colnames(.df), .df[j, ], newEnv)
                 output[[j]] <- FUN(X[, j], ...)
             }
             names(output) <- colnames(X)
