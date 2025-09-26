@@ -31,14 +31,9 @@ autoplot.NanoStringRccSet <- function(object, type = c("boxplot-feature", "boxpl
     }
     geomParams <- as.list(geomParams)
     geomParams <- update_geom_params("base", geomParams)
-    geomParams <- update_geom_params("point", geomParams, GeomInteractivePoint$default_aes[!names(GeomInteractivePoint$default_aes) %in% 
-        c("hover_css", "selected_css", "tooltip_fill", "hover_nearest")])
-    geomParams <- update_geom_params("line", geomParams, GeomInteractiveLine$default_aes[!names(GeomInteractiveLine$default_aes) %in% 
-        c("hover_css", "selected_css", "tooltip_fill", "hover_nearest")])
-    geomParams <- update_geom_params("boxplot", geomParams, GeomInteractiveBoxplot$default_aes[!names(GeomInteractiveBoxplot$default_aes) %in% 
-        c("hover_css", "selected_css", "tooltip_fill", "hover_nearest", "outlier.data_id",
-          "outlier.tooltip", "outlier.onclick", "outlier.hover_css", 
-          "outlier.selected_css", "outlier.tooltip_fill", "outlier.hover_nearest")])
+    geomParams <- update_geom_params("point", geomParams, ggplot2::get_geom_defaults("point"))
+    geomParams <- update_geom_params("line", geomParams, ggplot2::get_geom_defaults("line"))
+    geomParams <- update_geom_params("boxplot", geomParams, ggplot2::get_geom_defaults("point"))
     fontFamily <- ifelse(is.null(theme_get()$text$family), "Arial", theme_get()$text$family)
     ggpoint <- function(object, mapping, ...) {
         for (arg in names(geomParams[["point"]])) {
