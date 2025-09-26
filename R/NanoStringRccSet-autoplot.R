@@ -33,7 +33,7 @@ autoplot.NanoStringRccSet <- function(object, type = c("boxplot-feature", "boxpl
     geomParams <- update_geom_params("base", geomParams)
     geomParams <- update_geom_params("point", geomParams, ggplot2::get_geom_defaults("point"))
     geomParams <- update_geom_params("line", geomParams, ggplot2::get_geom_defaults("line"))
-    geomParams <- update_geom_params("boxplot", geomParams, ggplot2::get_geom_defaults("point"))
+    geomParams <- update_geom_params("boxplot", geomParams, ggplot2::get_geom_defaults("boxplot"))
     fontFamily <- ifelse(is.null(theme_get()$text$family), "Arial", theme_get()$text$family)
     ggpoint <- function(object, mapping, ...) {
         for (arg in names(geomParams[["point"]])) {
