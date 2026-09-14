@@ -312,7 +312,7 @@ autoplot.NanoStringRccSet <- function(object, type = c("boxplot-feature", "boxpl
         hkSet[["Quality"]] <- qcPassedText
         hkSet$Quality[hkSet$GeomMean < passingCutoff] <- qcBorderlineText
         hkSet$Quality[hkSet$GeomMean < failingCutoff] <- qcFailedText
-        hkSet <- transform(hkSet, x = reorder(x, GeomMean))
+        hkSet <- base::transform(hkSet, x = reorder(x, GeomMean))
         mapping <- aes_string(x = "x", y = "GeomMean", tooltip = "tooltip")
         PSCol <- pscheck(object)
         RSCol <- rscheck(object)
