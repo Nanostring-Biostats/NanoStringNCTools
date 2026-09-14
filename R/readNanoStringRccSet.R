@@ -48,6 +48,13 @@ readNanoStringRccSet <- function(rccFiles, rlfFile = NULL, phenoDataFile = NULL,
         rlfData <- readRlfFile(rlfFile)
         rlfHeader <- metadata(rlfData)
         rlfHeader[["RlfFileDate"]] <- as.character(rlfHeader[["RlfFileDate"]])
+        # Convert Biostrings columns to character to avoid issues with as.data.frame()
+        if ("TargetSeq" %in% names(rlfData)) {
+            rlfData[["TargetSeq"]] <- as.character(rlfData[["TargetSeq"]])
+        }
+        if ("Barcode" %in% names(rlfData)) {
+            rlfData[["Barcode"]] <- as.character(rlfData[["Barcode"]])
+        }
         rlfData <- as.data.frame(rlfData)
         rlfData <- rlfData[rlfData[["CodeClassActive"]] %in% c(2L, 3L), , drop = FALSE]
         rownames(rlfData) <- sprintf("%s_%s_%s", rlfData[["CodeClass"]], rlfData[["GeneName"]], 
